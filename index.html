@@ -702,7 +702,7 @@ function card(p, idx){
     const b = el('button', 'inlook'); b.type = 'button';
     const ti = el('img'); ti.alt = ''; ti.loading = 'lazy'; ti.referrerPolicy = 'no-referrer'; ti.src = imgSrc(looks[0].anh, 120); imgFallback(ti, looks[0].anh, 120);
     b.append(ti, el('span', null, looks.length > 1 ? 'Có trong ' + looks.length + ' outfit' : 'Có trong outfit · ' + (looks[0].ten || 'xem')));
-    b.addEventListener('click', () => openLook(looks[0].id, ti));
+    b.addEventListener('click', () => openLook(looks[0].id, ti, true));
     d.append(b);
   }
   return d;
@@ -873,7 +873,7 @@ function focusItem(no, scroll){
     if (c) c.scrollIntoView({behavior: 'smooth', block: 'center'});
   }
 }
-let lineAnim = false, opening = false, CUR = null;
+let lineAnim = false, opening = false, CUR = null, keepTab = false;
 function lookOrder(){
   const all = visibleLooks(), f = all.filter(o => lsub === 'all' || o.nguoi === lsub);
   return (f.some(o => o.id === CUR) ? f : all).map(o => o.id);
@@ -905,7 +905,8 @@ const hideTip = () => $('#stl-tip').classList.remove('on');
 function showLook(id, src, dir){
   const o = visibleLooks().find(x => x.id === id);
   if (!o){ hideLook(); return }
-  selectTab('tab-looks');
+  // mở từ Tủ đồ ("Có trong outfit") thì giữ nguyên tab Tủ đồ phía sau → đóng là về đúng chỗ cũ
+  if (!keepTab) selectTab('tab-looks');
   CUR = id; hideTip();
   const order = lookOrder();
   $('#stl-nav').hidden = order.length < 2;
@@ -990,12 +991,13 @@ function showLook(id, src, dir){
 function hideLook(){
   const stl = $('#stl');
   if (stl.hidden) return;
-  const done = () => { stl.hidden = true; stl.classList.remove('fx-close', 'fx-open', 'fx-open-scale', 'fx-live'); stl.style.transform = stl.style.opacity = stl.style.transition = ''; hideTip(); document.body.classList.remove('lock') };
+  const done = () => { keepTab = false; stl.hidden = true; stl.classList.remove('fx-close', 'fx-open', 'fx-open-scale', 'fx-live'); stl.style.transform = stl.style.opacity = stl.style.transition = ''; hideTip(); document.body.classList.remove('lock') };
   if (RM.matches){ done(); return }
   stl.classList.remove('fx-open', 'fx-open-scale'); void stl.offsetWidth; stl.classList.add('fx-close');
   window.__hideT = setTimeout(done, 190);
 }
-function openLook(id, src){
+function openLook(id, src, stay){
+  keepTab = !!stay;
   history.pushState({kt: 1}, '', '#look-' + encodeURIComponent(id));
   showLook(id, src);
 }
