@@ -177,10 +177,17 @@ function loadImage(url){
   if (!url){ img.hidden = true; $('#empty').hidden = false; return }
   img.onload = () => { img.hidden = false; $('#empty').hidden = true };
   img.onerror = () => { const id = driveId(url); if (id && !img.dataset.fb){ img.dataset.fb = 1; img.src = 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1400' } else { $('#empty').hidden = false; $('#empty').textContent = 'Không tải được ảnh — kiểm tra link / quyền share.' } };
-  delete img.dataset.fb; img.src = imgSrc(url);
+  delete img.dataset.fb; $('#empty').textContent = 'Đang tải ảnh…'; img.src = imgSrc(url);
+}
+function resetAll(){
+  $('#oid').value = ''; $('#url').value = ''; pins = []; active = 0;
+  const img = $('#img'); img.removeAttribute('src'); img.hidden = true;
+  $('#empty').hidden = false; $('#empty').textContent = 'Dán link ảnh outfit mới ở trên để bắt đầu';
+  $('#ok').textContent = ''; render(); $('#oid').focus();
 }
 $('#sel').addEventListener('change', () => {
-  const o = LOOKS.find(x => x.id === $('#sel').value); if (!o) return;
+  const o = LOOKS.find(x => x.id === $('#sel').value);
+  if (!o){ resetAll(); return }
   $('#oid').value = o.id; $('#url').value = o.anh; loadImage(o.anh);
   pins = ITEMS.filter(r => r.outfit_id === o.id).map(r => ({x: Math.round(parseFloat(String(r.x).replace(',', '.'))), y: Math.round(parseFloat(String(r.y).replace(',', '.'))), sp: r.sp_id})).filter(p => !isNaN(p.x) && !isNaN(p.y));
   active = 0; render();
