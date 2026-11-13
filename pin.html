@@ -85,32 +85,13 @@ ol.steps{padding-left:18px;color:var(--muted);font-size:13px;margin:8px 0 0}
 </main>
 
 <script>
-const SHEET_ID = '1tWndIGm5J4KH8msgGOZoiox_KW9BdbSx0uhUw4AILEE';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwrYGjv7IcnLyARS0W_wS2CAgxqbYyW_3aKSxlMlLdeRf8ZH8AIot4oxPOu31RpUfqK0g/exec';
 const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e };
-const sheetUrl = tab => 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&headers=1&sheet=' + encodeURIComponent(tab) + '&t=' + Date.now();
-function parseCSV(text){
-  const rows = []; let row = [], cell = '', q = false;
-  for (let i = 0; i < text.length; i++){
-    const c = text[i];
-    if (q){ if (c === '"'){ if (text[i+1] === '"'){ cell += '"'; i++ } else q = false } else cell += c }
-    else if (c === '"') q = true;
-    else if (c === ',') { row.push(cell); cell = '' }
-    else if (c === '\n' || c === '\r'){ if (c === '\r' && text[i+1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = '' }
-    else cell += c;
-  }
-  if (cell !== '' || row.length) { row.push(cell); rows.push(row) }
-  return rows;
-}
-function toObjects(rows){
-  const [head, ...body] = rows; if (!head) return [];
-  const keys = head.map(h => h.trim().toLowerCase());
-  return body.filter(r => r.some(v => v.trim() !== '')).map(r => Object.fromEntries(keys.map((k, i) => [k, (r[i] ?? '').trim()])));
-}
-async function fetchTab(tab){
-  const res = await fetch(sheetUrl(tab)); const text = await res.text();
-  if (!res.ok || /^\s*</.test(text)) throw new Error(tab);
-  return toObjects(parseCSV(text));
+async function fetchAll(){
+  const res = await fetch(API_URL + '?fresh=1', {cache: 'no-store'});
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
 }
 function driveId(url){ const m = String(url).match(/(?:\/d\/|[?&]id=)([A-Za-z0-9_-]{20,})/); return m ? m[1] : null }
 const imgSrc = url => { const id = driveId(url); return id ? 'https://lh3.googleusercontent.com/d/' + id + '=w1400' : url };
@@ -203,7 +184,7 @@ $('#copy').addEventListener('click', async () => {
 
 (async () => {
   try{
-    const [p, l, it] = await Promise.all([fetchTab('SanPham'), fetchTab('Outfit').catch(() => []), fetchTab('OutfitItem').catch(() => [])]);
+    const d = await fetchAll(); const p = d.products || [], l = d.looks || [], it = d.lookItems || [];
     PRODUCTS = p.filter(x => x.id); LOOKS = l.filter(x => x.id); ITEMS = it;
     const sel = $('#sel'); sel.replaceChildren(new Option('— Outfit mới —', ''));
     LOOKS.forEach(o => sel.append(new Option((o.ten || o.id) + ' · ' + (o.nguoi || ''), o.id)));

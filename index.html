@@ -453,21 +453,17 @@ html.theme-anim,html.theme-anim body,html.theme-anim *{transition:background-col
 
 <script>
 /* ================== CONFIG ==================
-   Data lấy từ Google Sheet "Danh muc san pham".
-   Sheet + folder ảnh phải để: Bất kỳ ai có đường liên kết → Người xem. */
-const SHEET_ID = '1tWndIGm5J4KH8msgGOZoiox_KW9BdbSx0uhUw4AILEE';
-const TAB_PRODUCTS = 'SanPham';
-const TAB_INFO = 'ThongTin';
-const TAB_LOOKS = 'Outfit';          // ảnh outfit toàn thân
-const TAB_LOOK_ITEMS = 'OutfitItem'; // món trong outfit + toạ độ chấm (x, y %)
+   Data lấy qua Apps Script "ketuong06 click logger" (GET → JSON sản phẩm / thông tin / outfit).
+   Google Sheet để private — web không biết link Sheet. Chỉ folder ảnh là public. */
+const API_URL = 'https://script.google.com/macros/s/AKfycbwrYGjv7IcnLyARS0W_wS2CAgxqbYyW_3aKSxlMlLdeRf8ZH8AIot4oxPOu31RpUfqK0g/exec';
 const IMG_WIDTH = 800;
-// 28: link Apps Script ghi lượt bấm về tab Clicks (để trống = tắt đếm)
-const TRACK_URL = 'https://script.google.com/macros/s/AKfycbwrYGjv7IcnLyARS0W_wS2CAgxqbYyW_3aKSxlMlLdeRf8ZH8AIot4oxPOu31RpUfqK0g/exec';
+// 28: cùng Apps Script, POST = ghi lượt bấm về tab Clicks (để trống = tắt đếm)
+const TRACK_URL = API_URL;
 const NEW_DAYS = 7; // món thêm trong 7 ngày gần nhất → nhãn "Mới"
 /* ============================================ */
 
 const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
-const CACHE_KEY = 'kt-cache-v2', SAVED_KEY = 'kt-saved-v2';
+const CACHE_KEY = 'kt-cache-v3', SAVED_KEY = 'kt-saved-v2';
 const store = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d }catch(e){ return d } },
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)) }catch(e){} }
@@ -485,38 +481,12 @@ const CHANNELS = [
 ];
 
 /* ---------- data ---------- */
-const sheetUrl = tab =>
-  'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&headers=1&sheet=' + encodeURIComponent(tab) + '&t=' + Date.now();
-
-function parseCSV(text){
-  const rows = []; let row = [], cell = '', q = false;
-  for (let i = 0; i < text.length; i++){
-    const c = text[i];
-    if (q){
-      if (c === '"'){ if (text[i+1] === '"'){ cell += '"'; i++ } else q = false }
-      else cell += c;
-    } else if (c === '"') q = true;
-    else if (c === ',') { row.push(cell); cell = '' }
-    else if (c === '\n' || c === '\r'){
-      if (c === '\r' && text[i+1] === '\n') i++;
-      row.push(cell); rows.push(row); row = []; cell = '';
-    } else cell += c;
-  }
-  if (cell !== '' || row.length) { row.push(cell); rows.push(row) }
-  return rows;
-}
-function toObjects(rows){
-  const [head, ...body] = rows;
-  const keys = head.map(h => h.trim().toLowerCase());
-  return body.filter(r => r.some(v => v.trim() !== ''))
-    .map(r => Object.fromEntries(keys.map((k, i) => [k, (r[i] ?? '').trim()])));
-}
-async function fetchTab(tab){
-  const res = await fetch(sheetUrl(tab));
+async function fetchAll(){
+  const res = await fetch(API_URL, {cache: 'no-store'});
   if (!res.ok) throw new Error('HTTP ' + res.status);
-  const text = await res.text();
-  if (/^\s*</.test(text)) throw new Error('not-public'); // Google trả trang đăng nhập = Sheet chưa public
-  return toObjects(parseCSV(text));
+  const d = await res.json();
+  if (!d || !Array.isArray(d.products)) throw new Error('bad-data');
+  return {products: d.products, info: d.info || [], looks: d.looks || [], lookItems: d.lookItems || []};
 }
 
 /* ---------- helpers ---------- */
@@ -1213,8 +1183,7 @@ $('#sort').addEventListener('change', e => { sortBy = e.target.value; applyFilte
     renderInfo(cache.info); renderProducts(cache.products); renderLooks(); route();
   } else skeleton();
   try{
-    const opt = t => fetchTab(t).catch(() => []);
-    const [products, info, looks, lookItems] = await Promise.all([fetchTab(TAB_PRODUCTS), fetchTab(TAB_INFO), opt(TAB_LOOKS), opt(TAB_LOOK_ITEMS)]);
+    const {products, info, looks, lookItems} = await fetchAll();
     const fresh = {products, info, looks, lookItems};
     if (cache && JSON.stringify(fresh) === JSON.stringify(cache)) return; // không đổi gì → khỏi vẽ lại (tránh chạy hiệu ứng 2 lần)
     LOOKS = looks; LOOK_ITEMS = lookItems;
