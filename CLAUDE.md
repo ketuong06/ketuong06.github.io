@@ -4,6 +4,19 @@ Trang "Tủ đồ" của kênh TikTok **Tường Bình Thường** (@ketuong06, 
 
 Static site 1 file (vanilla HTML/CSS/JS, không build, không framework), host bằng GitHub Pages (branch `main`, root, có `.nojekyll`). Push lên `main` là ~1 phút sau web cập nhật.
 
+## Link
+| Link | Dùng để | Cách dùng |
+|---|---|---|
+| https://ketuong06.github.io | Web Tủ đồ cho khách | Gắn vào bio / mô tả video |
+| https://ketuong06.github.io/?src=tiktok_bio · `?src=ig_bio` · `?src=<tên>` | Như trên + ghi nguồn khách tới | Mỗi nơi gắn 1 `src` riêng → xem ở nhap.html › Thống kê › Nguồn |
+| https://ketuong06.github.io/#look-<outfit_id> | Mở thẳng 1 outfit Shop the look | Copy bằng nút 🔗 trong form outfit ở nhap.html |
+| https://ketuong06.github.io/nhap.html | Trang quản trị (thay cho mở Sheet) | Nhập `ADMIN_KEY` → sửa món / outfit / thông tin / xem thống kê |
+| https://ketuong06.github.io/pin.html | Tool gắn món kiểu cũ (copy–dán) | Không cần nữa, dùng nhap.html › Outfit |
+| Google Sheet "Danh muc san pham" (Drive của Phi, private) | Nơi lưu dữ liệu thật + tab ThongKe | Chỉ mở khi cần sửa tay / xem công thức |
+| Apps Script "ketuong06 click logger" (script.google.com) | API giữa web và Sheet | Chỉ đụng khi đổi code / mật khẩu (Thuộc tính tập lệnh) |
+| Drive › "Tuong Binh Thuong - Shop" › `images` | Folder ảnh public | Ảnh up từ nhap.html tự vào đây |
+| https://github.com/ketuong06/ketuong06.github.io | Code web (public) | Mở bằng Claude Code để sửa giao diện |
+
 ## Kiến trúc data
 
 ```
@@ -94,6 +107,7 @@ index.html / pin.html / nhap.html  (const API_URL = '.../exec')
 | 21 | Màn outfit | Nút copy link outfit (`#look-<id>`) + toast "Đã copy link outfit ✓" |
 | 25 | Profile | Lúc mở trang: avatar, tên, handle, bio, link, nút TikTok trượt lên từng dòng |
 
+- `nhap.html` có cùng bộ hiệu ứng: 1B (viền tab trượt `.tab-pill` + nội dung trượt theo hướng), 2A+9A (dòng món / ô outfit / bảng thống kê hiện lần lượt, `reveal()`), 3A (hover zoom ảnh, desktop), 4A (nhấn lún), 5A (★ pop), 6A+ (bấm món / outfit → ảnh bay vào form `fly()`, các món trong outfit fade + zoom lần lượt), 7A (chấm bật lên rồi thở `.fx-live`, chấm mới thêm cũng bật lên), 8A (skeleton lúc tải), 10A, 11 (blur-up `photo()`), 14 (số món / outfit / KPI chạy `countTo()`), 15 (hàng tab dính `.stick`, phone hiện dòng mini), 16 (nút ↑), 17 (vuốt ngang đổi tab, phone), 18 (vuốt xuống đóng form, phone), 19 (form outfit: ‹ › / phím ← → qua outfit khác theo bộ lọc, hiện "1/3"), 20 (rê chuột vào chấm / dòng món → bong bóng tên món), 21 (nút copy link outfit `#look-<id>`), 25 (đầu trang hiện từng dòng).
 - `prefers-reduced-motion: reduce` → tắt hết, hiện ngay.
 - Data mạng giống cache → không vẽ lại (tránh chạy hiệu ứng 2 lần).
 - Class hiệu ứng tự gỡ khi chạy xong (`doneAnim`) để hover/nhấn vẫn hoạt động.

@@ -10,9 +10,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Be+Vietnam+Pro:wght@400;500&display=swap">
 <style>
 :root{--bg:#fff;--fg:#111;--muted:#6b6b6b;--line:#e4e4e4;--tile:#f3f3f3;--inv-bg:#111;--inv-fg:#fff;--err:#c62828;--ok:#1b7f3b;--shade:rgba(0,0,0,.35);
-  --label:"Archivo",ui-sans-serif,system-ui,sans-serif;--body:"Be Vietnam Pro",ui-sans-serif,system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;--err:#ff6b6b;--ok:#5fd18a;--shade:rgba(0,0,0,.6);color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;--err:#ff6b6b;--ok:#5fd18a;--shade:rgba(0,0,0,.6);color-scheme:dark}
+  --label:"Archivo",ui-sans-serif,system-ui,sans-serif;--body:"Be Vietnam Pro",ui-sans-serif,system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);--ease-pop:cubic-bezier(.34,1.56,.64,1);--shine:rgba(255,255,255,.65)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;--err:#ff6b6b;--ok:#5fd18a;--shade:rgba(0,0,0,.6);--shine:rgba(255,255,255,.07);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;--err:#ff6b6b;--ok:#5fd18a;--shade:rgba(0,0,0,.6);--shine:rgba(255,255,255,.07);color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--body)}
 body.lock{overflow:hidden}
@@ -54,10 +55,17 @@ select:focus,input:focus,textarea:focus{outline:2px solid var(--fg);outline-offs
 .spin{display:inline-block;width:12px;height:12px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
 @keyframes sp{to{transform:rotate(360deg)}}
 /* tabs */
-.tabs{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin:14px -16px 0;padding:8px 16px;border-bottom:1px solid var(--line)}
+.stick{position:sticky;top:0;z-index:5;background:var(--bg);margin:14px -16px 0;border-bottom:1px solid var(--line);transition:box-shadow .2s ease}
+.stick.stuck{box-shadow:0 8px 14px -12px rgba(0,0,0,.35)}
+.mini{display:none;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);padding:0 16px;height:0;overflow:hidden;opacity:0;transition:height .2s ease,opacity .2s ease,padding .2s ease}
+.mini a{color:var(--fg);text-decoration:none}
+.stick.stuck .mini{height:26px;opacity:1;padding-top:6px}
+.tabs{position:relative;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:8px 16px}
 .tabs::-webkit-scrollbar{display:none}
-.tabs button{flex:none;font:500 13px var(--body);padding:8px 14px;border:1px solid transparent;border-radius:999px;background:none;color:var(--muted);cursor:pointer}
-.tabs button[aria-selected="true"]{color:var(--fg);border-color:var(--fg)}
+.tabs button{position:relative;z-index:1;flex:none;font:500 13px var(--body);padding:8px 14px;border:1px solid transparent;border-radius:999px;background:none;color:var(--muted);cursor:pointer;transition:color .25s ease,transform .12s}
+.tabs button[aria-selected="true"]{color:var(--fg)}
+.tab-pill{position:absolute;left:0;top:0;border:1px solid var(--fg);border-radius:999px;pointer-events:none;transition:transform .38s var(--ease),width .38s var(--ease)}
+.tab-pill.now{transition:none}
 /* toolbar */
 .bar{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:14px;align-items:center}
 .bar .f{display:grid;grid-template-columns:1fr 1fr;gap:8px;grid-column:1/-1}
@@ -79,7 +87,11 @@ select:focus,input:focus,textarea:focus{outline:2px solid var(--fg);outline-offs
 .pr .mv button{width:24px;height:24px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer;font-size:9px;line-height:1;padding:0}
 .pr .mv button:hover:not([disabled]){border-color:var(--fg);color:var(--fg)}
 .pr .mv button[disabled]{opacity:.3;cursor:default}
-.th{width:52px;height:68px;object-fit:cover;background:var(--tile);display:block}
+.ph{display:block;position:relative;overflow:hidden;background:var(--tile)}
+.ph::before{content:"";position:absolute;inset:-14px;background:var(--lq,none) center/cover no-repeat;filter:blur(14px);transform:scale(1.08)}
+.ph img{position:relative;width:100%;height:100%;object-fit:cover;display:block;opacity:0;filter:blur(10px);transition:opacity .5s ease,filter .6s ease,transform .7s var(--ease)}
+.ph img.ok{opacity:1;filter:none}
+.th{width:52px;height:68px;cursor:pointer}
 .tx{min-width:0;cursor:pointer}
 .tx b{display:block;font:500 12px var(--label);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tx .n{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -92,8 +104,7 @@ select:focus,input:focus,textarea:focus{outline:2px solid var(--fg);outline-offs
 /* outfits */
 .og{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .oc{border:1px solid var(--line);min-width:0}
-.oc .ph{aspect-ratio:3/4;background:var(--tile);cursor:pointer;overflow:hidden}
-.oc .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.oc .ph{aspect-ratio:3/4;cursor:pointer}
 .oc .b{padding:8px;display:grid;gap:6px}
 .oc .t{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .oc .r{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
@@ -140,6 +151,75 @@ table{width:100%;border-collapse:collapse;font-size:13px}
 td,th{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 th{font:500 11px var(--label);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;width:1%}
+/* ===== hiệu ứng (giống web chính) ===== */
+/* 4A nhấn lún */
+.chips button:active,.tabs button:active,.icon:active,.star:active,.pr .mv button:active,.oc .ph:active,.link:active{transform:scale(.95)}
+.pr .tx:active,.th:active{transform:scale(.98)}
+.pin:active{transform:translate(-50%,-50%) scale(.9)}
+/* 3A hover zoom ảnh (desktop) */
+@media (hover:hover) and (min-width:960px){.pr:hover .ph img.ok,.oc:hover .ph img.ok{transform:scale(1.05)}}
+/* 5A ★ pop */
+.star.pop{animation:pop .45s var(--ease-pop)}
+@keyframes pop{0%{transform:scale(1)}35%{transform:scale(1.4)}65%{transform:scale(.88)}100%{transform:scale(1)}}
+/* 2A + 9A hiện lần lượt, cuộn tới mới hiện */
+.fx-pre{opacity:0;transform:translateY(14px)}
+.fx-rise{animation:rise .5s var(--ease) both;animation-delay:var(--d,0ms)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+/* 1B nội dung tab trượt theo hướng */
+.fx-panel{animation:fadeup .32s var(--ease) both}
+.fx-panel[data-dir="r"]{animation-name:slidein-r}
+.fx-panel[data-dir="l"]{animation-name:slidein-l}
+@keyframes slidein-r{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes slidein-l{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes fadeup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+/* 25 đầu trang hiện từng dòng */
+.fx-line{animation:lineup .6s var(--ease) both;animation-delay:var(--d,0ms)}
+@keyframes lineup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+/* 6A+ ảnh bay từ lưới vào form; món hiện lần lượt */
+.fx-ghost{position:fixed;z-index:70;object-fit:cover;pointer-events:none;margin:0}
+.dw.fly .panel{animation:fadein .22s ease both}
+.fx-item{animation:itemin .45s var(--ease) both;animation-delay:var(--d,0ms)}
+@keyframes itemin{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+.bd.fx-swap-r{animation:slidein-r .34s var(--ease) both}
+.bd.fx-swap-l{animation:slidein-l .34s var(--ease) both}
+/* 7A chấm bật lên rồi "thở" */
+.pin.fx-pin{animation:pinin .42s var(--ease-pop) both;animation-delay:var(--d,0ms)}
+@keyframes pinin{from{opacity:0;transform:translate(-50%,-50%) scale(0)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.pin::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--fg);opacity:0;pointer-events:none}
+.pic.fx-live .pin::after{animation:breathe 2.6s ease-out infinite;animation-delay:var(--b,0ms)}
+.pic.dragging .pin::after{animation:none}
+@keyframes breathe{0%{opacity:.55;transform:scale(.85)}70%,100%{opacity:0;transform:scale(1.55)}}
+/* 20 bong bóng tên món trên chấm */
+.tip{position:absolute;z-index:4;transform:translate(-50%,calc(-100% - 22px));background:var(--inv-bg);color:var(--inv-fg);font:500 12px/1.3 var(--body);padding:6px 9px;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis;pointer-events:none;opacity:0;transition:opacity .15s}
+.tip.on{opacity:1}
+/* 8A skeleton */
+.sk{position:relative;overflow:hidden;background:var(--tile)}
+.sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,var(--shine),transparent);animation:shimmer 1.3s ease-in-out infinite}
+@keyframes shimmer{to{transform:translateX(100%)}}
+.skl{display:grid;gap:6px;margin-top:14px}
+.skr{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:center;border:1px solid var(--line);padding:6px}
+.skr .a{height:68px}.skr .b{height:11px;width:40%;margin:4px 0}.skr .c{height:11px;width:65%;margin:4px 0}
+/* 10A nút sáng/tối */
+#themeBtn.spin svg{animation:spin .45s var(--ease)}
+@keyframes spin{from{transform:rotate(-120deg) scale(.4);opacity:0}to{transform:none;opacity:1}}
+html.theme-anim,html.theme-anim body,html.theme-anim *{transition:background-color .35s ease,color .35s ease,border-color .35s ease,fill .35s ease,stroke .35s ease !important}
+/* 16 nút lên đầu */
+.totop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:30;width:44px;height:44px;border-radius:50%;border:0;background:var(--inv-bg);color:var(--inv-fg);display:grid;place-items:center;cursor:pointer;opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .25s ease,transform .3s var(--ease)}
+.totop.show{opacity:1;transform:none;pointer-events:auto}
+.totop:active{transform:scale(.92)}
+.totop svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+body.lock .totop{display:none}
+/* 19 + 21 header form outfit */
+.hd .nav{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.hd .icon[disabled]{opacity:.35;cursor:default}
+@media (prefers-reduced-motion:reduce){
+  .fx-pre{opacity:1;transform:none}
+  .fx-rise,.fx-panel,.fx-line,.fx-item,.pin.fx-pin,.star.pop,#themeBtn.spin svg,.bd.fx-swap-r,.bd.fx-swap-l,.dw.fly .panel,.sk::after{animation:none}
+  .pic.fx-live .pin::after{animation:none}
+  .ph img,.tab-pill,.totop,.stick,.mini{transition:none}
+  .ph img{filter:none;opacity:1}
+}
 /* toast */
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;background:var(--inv-bg);color:var(--inv-fg);font-size:13px;padding:10px 16px;max-width:calc(100vw - 32px);box-shadow:0 4px 16px rgba(0,0,0,.25);transition:opacity .2s,transform .2s}
 .toast.err{background:var(--err);color:#fff}
@@ -147,9 +227,11 @@ body.lock .toast{bottom:76px}
 .toast.hide{opacity:0;transform:translate(-50%,8px);pointer-events:none}
 .gate{max-width:360px;margin:12vh auto 0}
 @media (prefers-reduced-motion:reduce){.spin{animation:none}.btn,.sw span,.sw span::after,.toast{transition:none}.dw .panel{animation:none}}
+@media (max-width:959px){.mini{display:flex}}
 @media (min-width:960px){
   .wrap{max-width:1180px;padding:28px 40px 64px}
-  .tabs{margin:18px 0 0;padding:8px 0}
+  .stick{margin:18px 0 0}
+  .tabs{padding:8px 0}
   .bar{grid-template-columns:minmax(0,1fr) 180px 180px auto}
   .bar .f{display:contents}
   #tkBar,#ofBar{grid-template-columns:minmax(0,1fr) auto}
@@ -203,13 +285,18 @@ body.lock .toast{bottom:76px}
 
   <!-- App -->
   <section id="app" class="hidden">
-    <nav class="tabs" role="tablist">
-      <button role="tab" data-t="sp" aria-selected="true">Sản phẩm</button>
-      <button role="tab" data-t="of" aria-selected="false">Outfit</button>
-      <button role="tab" data-t="tt" aria-selected="false">Thông tin kênh</button>
-      <button role="tab" data-t="tk" aria-selected="false">Thống kê</button>
-    </nav>
-    <div id="loading" class="empty"><span class="spin"></span>Đang tải dữ liệu…</div>
+    <div id="stick-s" aria-hidden="true"></div>
+    <div class="stick" id="stick">
+      <div class="mini"><span>Quản lý Tủ đồ</span><a href="./" target="_blank" rel="noopener">Mở web ↗</a></div>
+      <nav class="tabs" role="tablist">
+        <span class="tab-pill now" aria-hidden="true"></span>
+        <button role="tab" data-t="sp" aria-selected="true">Sản phẩm</button>
+        <button role="tab" data-t="of" aria-selected="false">Outfit</button>
+        <button role="tab" data-t="tt" aria-selected="false">Thông tin kênh</button>
+        <button role="tab" data-t="tk" aria-selected="false">Thống kê</button>
+      </nav>
+    </div>
+    <div id="loading"></div>
 
     <!-- Sản phẩm -->
     <div class="pane hidden" data-p="sp">
@@ -321,12 +408,14 @@ body.lock .toast{bottom:76px}
 <div class="dw wide hidden" id="dwOf" role="dialog" aria-modal="true" aria-labelledby="dwOfT">
   <div class="shade" data-close></div>
   <form class="panel" id="ofForm" autocomplete="off" novalidate>
-    <div class="hd"><button class="icon" type="button" data-close aria-label="Đóng">✕</button><span class="ttl" id="dwOfT">Thêm outfit</span></div>
+    <div class="hd"><button class="icon" type="button" data-close aria-label="Đóng">✕</button><span class="ttl" id="dwOfT">Thêm outfit</span>
+      <span class="nav" id="ofNav"><button class="icon" type="button" id="ofCopy" aria-label="Copy link outfit" title="Copy link outfit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></button>
+        <button class="icon" type="button" id="ofPrev" aria-label="Outfit trước">‹</button><span id="ofPos"></span><button class="icon" type="button" id="ofNext" aria-label="Outfit sau">›</button></span></div>
     <div class="bd">
       <div class="ogrid">
         <div>
           <p class="hint" style="margin:8px 0">Bấm lên ảnh để thêm chấm, kéo chấm để chỉnh vị trí, chọn món cho từng chấm.</p>
-          <div class="pic" id="ofPic"><div class="ph0" id="ofPh0">Chọn ảnh outfit để bắt đầu gắn món</div><img id="ofImg" alt="" hidden referrerpolicy="no-referrer"></div>
+          <div class="pic" id="ofPic"><span class="tip" id="ofTip"></span><div class="ph0" id="ofPh0">Chọn ảnh outfit để bắt đầu gắn món</div><img id="ofImg" alt="" hidden referrerpolicy="no-referrer"></div>
         </div>
         <div class="side">
           <label><b>Ảnh outfit</b> (toàn thân)</label>
@@ -360,6 +449,7 @@ body.lock .toast{bottom:76px}
 </div>
 
 <div class="toast hide" id="toast" role="status" aria-live="polite"></div>
+<button class="totop" id="totop" type="button" aria-label="Lên đầu trang"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbwrYGjv7IcnLyARS0W_wS2CAgxqbYyW_3aKSxlMlLdeRf8ZH8AIot4oxPOu31RpUfqK0g/exec';
@@ -371,12 +461,61 @@ const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls)
 const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase();
 const isOn = v => /^(true|1|x|có)$/i.test(String(v == null ? '' : v).trim());
 const desk = () => matchMedia('(min-width:960px)').matches;
+const RM = matchMedia('(prefers-reduced-motion: reduce)');
+
+/* ---------- hiệu ứng (giống web chính) ---------- */
+// gỡ class hiệu ứng khi chạy xong để hover / nhấn vẫn chạy
+function doneAnim(n, cls){ const h = e => { if (e.target !== n) return; n.classList.remove(cls); n.removeEventListener('animationend', h); }; n.addEventListener('animationend', h); }
+function play(n, cls){ if (RM.matches || !n) return; n.classList.remove(cls); void n.offsetWidth; n.classList.add(cls); doneAnim(n, cls); }
+// 2A + 9A: card trong màn hình hiện lần lượt, card ở dưới cuộn tới mới hiện
+const io = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
+  const vis = entries.filter(e => e.isIntersecting).map(e => e.target).sort((a, b) => a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
+  vis.forEach((n, i) => { io.unobserve(n); n.style.setProperty('--d', Math.min(i, 8) * 45 + 'ms'); n.classList.remove('fx-pre'); n.classList.add('fx-rise'); doneAnim(n, 'fx-rise'); });
+}, {rootMargin: '0px 0px -6% 0px', threshold: 0.05}) : null;
+function reveal(nodes){
+  nodes = [...nodes];
+  if (RM.matches || !io) return;
+  nodes.forEach(n => { n.classList.remove('fx-rise'); n.classList.add('fx-pre'); });
+  void document.body.offsetWidth; nodes.forEach(n => io.observe(n));
+}
+// 14: số chạy từ số cũ tới số mới
+function countTo(node, n){
+  const from = node.dataset.n === undefined ? n : +node.dataset.n;
+  node.dataset.n = n; cancelAnimationFrame(node._raf);
+  if (RM.matches || from === n) { node.textContent = n.toLocaleString('vi-VN'); return; }
+  const t0 = performance.now(), dur = 450;
+  const step = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); node.textContent = Math.round(from + (n - from) * e).toLocaleString('vi-VN'); if (k < 1) node._raf = requestAnimationFrame(step); };
+  node._raf = requestAnimationFrame(step);
+}
+// 11: ảnh mờ → nét
+function lqSrc(url){ const id = driveId(url); if (id) return 'https://lh3.googleusercontent.com/d/' + id + '=w32'; if (/susercontent\.com\/file\//.test(url) && !/_tn$/.test(url)) return url + '_tn'; return ''; }
+function photo(url, w, cls){
+  const ph = el('span', 'ph' + (cls ? ' ' + cls : '')), im = new Image(); im.loading = 'lazy'; ph.append(im);
+  const lq = url && !/^data:/.test(url) ? lqSrc(url) : ''; if (lq) ph.style.setProperty('--lq', 'url("' + lq + '")');
+  const ok = () => im.classList.add('ok');
+  im.addEventListener('load', ok);
+  setImg(im, url, w);
+  im.addEventListener('error', () => { if (!im.getAttribute('src')) ok(); });
+  if (!url || RM.matches) ok();
+  return ph;
+}
+// 6A+: ảnh bay từ chỗ bấm vào form
+function fly(fromImg, toEl, after){
+  const a = fromImg && fromImg.getBoundingClientRect(), b = toEl && toEl.getBoundingClientRect();
+  if (RM.matches || !a || !b || !a.width || !b.width || !(fromImg.currentSrc || fromImg.src)) { after && after(); return; }
+  const g = el('img', 'fx-ghost'); g.src = fromImg.currentSrc || fromImg.src; g.alt = ''; g.referrerPolicy = 'no-referrer';
+  Object.assign(g.style, {left: a.left + 'px', top: a.top + 'px', width: a.width + 'px', height: a.height + 'px'});
+  g.style.transformOrigin = '0 0'; document.body.append(g); toEl.style.visibility = 'hidden';
+  g.animate([{transform: 'none'}, {transform: 'translate(' + (b.left - a.left) + 'px,' + (b.top - a.top) + 'px) scale(' + b.width / a.width + ',' + b.height / a.height + ')'}],
+    {duration: 460, easing: 'cubic-bezier(.2,.7,.2,1)'}).onfinish = () => { toEl.style.visibility = ''; g.remove(); after && after(); };
+}
 let KEY = ''; try { KEY = localStorage.getItem(KEY_LS) || ''; } catch (e) {}
 let DB = null; // {SanPham:{head,rows}, Outfit, ThongTin, OutfitItem}
 
 /* ---------- tiện ích ---------- */
 $('themeBtn').onclick = () => {
   const r = document.documentElement;
+  if (!RM.matches) { r.classList.add('theme-anim'); clearTimeout(window.__tt); window.__tt = setTimeout(() => r.classList.remove('theme-anim'), 400); play($('themeBtn'), 'spin'); }
   const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme:dark)').matches;
   r.dataset.theme = dark ? 'light' : 'dark';
   try { localStorage.setItem('kt-theme', r.dataset.theme); } catch (e) {}
@@ -425,13 +564,18 @@ function showGate(err){
   $('gateMsg').textContent = err || ''; $('gateMsg').className = 'msg' + (err ? ' err' : '');
   setTimeout(() => $('key').focus(), 50);
 }
+function skeleton(){
+  const w = el('div', 'skl');
+  for (let i = 0; i < 6; i++) { const r = el('div', 'skr'), t = el('div'); t.append(el('div', 'sk b'), el('div', 'sk c')); r.append(el('div', 'sk a'), t); w.append(r); }
+  return w;
+}
 async function showApp(){
   $('gate').classList.add('hidden'); $('app').classList.remove('hidden'); $('toplinks').classList.remove('hidden'); $('reload').classList.remove('hidden');
-  const ld = $('loading'); ld.classList.remove('hidden'); ld.innerHTML = '<span class="spin"></span>Đang tải dữ liệu…';
+  const ld = $('loading'); ld.classList.remove('hidden'); ld.replaceChildren(skeleton());
   try { await loadDB(); }
   catch (e) { if (!$('app').classList.contains('hidden')) { ld.replaceChildren(el('span', 'msg err', 'Không tải được dữ liệu: ' + e.message)); } return; }
   ld.classList.add('hidden');
-  openTab(location.hash.slice(1) || 'sp');
+  openTab(location.hash.slice(1) || 'sp', true);
 }
 $('gateForm').onsubmit = async e => {
   e.preventDefault();
@@ -443,16 +587,33 @@ $('gateForm').onsubmit = async e => {
   finally { busy(b, false); }
 };
 $('logout').onclick = () => { KEY = ''; DB = null; CLICKS = null; try { localStorage.removeItem(KEY_LS); } catch (e) {} showGate(); };
-$('reload').onclick = async () => { const b = $('reload'); b.disabled = true; try { await loadDB(); CLICKS = null; if (curTab === 'tk') loadClicks(); toast('Đã tải lại dữ liệu mới nhất'); } catch (e) { toast(e.message, 1); } b.disabled = false; };
+$('reload').onclick = async () => { const b = $('reload'); b.disabled = true; try { await loadDB(); reveal(document.querySelectorAll('#spList .pr, #ofList .oc')); CLICKS = null; if (curTab === 'tk') loadClicks(); toast('Đã tải lại dữ liệu mới nhất'); } catch (e) { toast(e.message, 1); } b.disabled = false; };
 
 /* ---------- tabs ---------- */
-let curTab = 'sp';
+let curTab = '';
 document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) openTab(b.dataset.t); });
-function openTab(t){
-  if (!['sp', 'of', 'tt', 'tk'].includes(t)) t = 'sp';
+const TABS = ['sp', 'of', 'tt', 'tk'];
+function movePill(now){
+  const b = document.querySelector('.tabs button[aria-selected="true"]'), p = document.querySelector('.tab-pill');
+  if (!b || !b.offsetWidth) return;
+  p.classList.toggle('now', !!now);
+  p.style.width = b.offsetWidth + 'px'; p.style.height = b.offsetHeight + 'px'; p.style.top = b.offsetTop + 'px';
+  p.style.transform = 'translateX(' + b.offsetLeft + 'px)';
+  if (now) requestAnimationFrame(() => p.classList.remove('now'));
+}
+addEventListener('resize', () => movePill(true));
+function openTab(t, first){
+  if (!TABS.includes(t)) t = 'sp';
+  const dir = TABS.indexOf(t) > TABS.indexOf(curTab) ? 'r' : TABS.indexOf(t) < TABS.indexOf(curTab) ? 'l' : '';
+  const changed = t !== curTab || first;
   curTab = t;
   document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.t === t));
   document.querySelectorAll('.pane').forEach(p => p.classList.toggle('hidden', p.dataset.p !== t));
+  movePill(first);
+  const tb = document.querySelector('.tabs button[aria-selected="true"]'); if (tb && tb.scrollIntoView && !first) tb.scrollIntoView({block: 'nearest', inline: 'nearest', behavior: RM.matches ? 'auto' : 'smooth'});
+  const pane = document.querySelector('.pane[data-p="' + t + '"]');
+  if (changed && !RM.matches) { pane.dataset.dir = first ? '' : dir; play(pane, 'fx-panel'); }
+  if (changed) { if (t === 'sp') reveal(document.querySelectorAll('#spList .pr')); if (t === 'of') reveal(document.querySelectorAll('#ofList .oc')); }
   history.replaceState(history.state, '', '#' + t);
   if (t === 'tk' && !CLICKS) loadClicks();
 }
@@ -468,7 +629,7 @@ function fillNhom(){
   $('sp_nhom').replaceChildren(...ns.map(n => new Option(n, n))); if (c2) $('sp_nhom').value = c2;
   $('brands').replaceChildren(...[...new Set(SP().map(p => p.brand).filter(Boolean))].sort().map(b => new Option(b)));
 }
-['spQ', 'spNhom', 'spSt'].forEach(id => $(id).addEventListener('input', renderSp));
+['spQ', 'spNhom', 'spSt'].forEach(id => $(id).addEventListener('input', () => renderSp(true)));
 function spFiltered(){
   const q = norm($('spQ').value.trim()), nh = $('spNhom').value, st = $('spSt').value;
   return SP().filter(p => (!q || norm(p.brand + ' ' + p.ten + ' ' + p.nhom + ' ' + p.id).includes(q))
@@ -476,10 +637,15 @@ function spFiltered(){
     && (!st || (st === 'on' && isOn(p.hien_thi)) || (st === 'off' && !isOn(p.hien_thi)) || (st === 'pin' && isOn(p.ghim))
         || ((st === 'Phi' || st === 'Tường') && (p.nguoi === st || p.nguoi === 'Cả hai' || !p.nguoi))));
 }
-function renderSp(){
+function counter(box, parts){
+  // parts: [số, 'chữ', số, 'chữ'…] — số chạy (14)
+  if (box.childElementCount !== parts.length) { box.replaceChildren(...parts.map((_, i) => el('span', i % 2 ? '' : 'num'))); }
+  parts.forEach((v, i) => { const n = box.children[i]; if (typeof v === 'number') countTo(n, v); else n.textContent = v; });
+}
+function renderSp(anim){
   const all = SP(), rows = spFiltered(), canMove = rows.length === all.length && all.length > 1;
   const on = all.filter(p => isOn(p.hien_thi)).length;
-  $('spCount').textContent = all.length + ' món · ' + on + ' đang hiện' + (rows.length !== all.length ? ' · lọc ra ' + rows.length : '') + (canMove ? ' · ▲▼ = thứ tự trên web (món ★ luôn đứng đầu)' : '');
+  counter($('spCount'), [all.length, ' món · ', on, ' đang hiện' + (rows.length !== all.length ? ' · lọc ra ' + rows.length : '') + (canMove ? ' · ▲▼ = thứ tự trên web (món ★ luôn đứng đầu)' : '')]);
   const box = $('spList'); box.replaceChildren();
   if (!rows.length) { const e = el('div', 'empty', all.length ? 'Không có món nào khớp' : 'Chưa có món nào — bấm “+ Thêm món”'); e.style.gridColumn = '1/-1'; box.append(e); return; }
   rows.forEach(p => {
@@ -492,8 +658,8 @@ function renderSp(){
       u.onclick = () => moveSp(i, -1); d.onclick = () => moveSp(i, 1);
       mv.append(u, d); r.append(mv);
     }
-    const im = el('img', 'th'); im.loading = 'lazy'; setImg(im, p.anh, 120); im.onclick = () => openSp(p); im.style.cursor = 'pointer';
-    const tx = el('div', 'tx'); tx.onclick = () => openSp(p); tx.title = 'Bấm để sửa';
+    const im = photo(p.anh, 120, 'th'); im.onclick = () => openSp(p, im.querySelector('img'));
+    const tx = el('div', 'tx'); tx.onclick = () => openSp(p, im.querySelector('img')); tx.title = 'Bấm để sửa';
     const m = el('span', 'm');
     if (isNew(p.ngay_them)) m.append(el('span', 'tag', 'Mới'));
     m.append([p.nhom, p.nguoi, p.size_mac && 'size ' + p.size_mac].filter(Boolean).join(' · '));
@@ -504,11 +670,12 @@ function renderSp(){
     cb.onchange = () => quickSave('SanPham', p, {hien_thi: cb.checked}, cb.checked ? 'Đã hiện' : 'Đã ẩn');
     sw.append(cb, el('span'));
     const st = el('button', 'star', '★'); st.type = 'button'; st.title = 'Top pick'; st.setAttribute('aria-pressed', isOn(p.ghim)); st.setAttribute('aria-label', 'Top pick ' + (p.ten || ''));
-    st.onclick = () => quickSave('SanPham', p, {ghim: !isOn(p.ghim)}, !isOn(p.ghim) ? 'Đã ghim ★' : 'Đã bỏ ghim');
+    st.onclick = () => { const on = !isOn(p.ghim); quickSave('SanPham', p, {ghim: on}, on ? 'Đã ghim ★' : 'Đã bỏ ghim'); if (on) { const ns = [...$('spList').querySelectorAll('.pr')].find(r => r._p === p); if (ns) play(ns.querySelector('.star'), 'pop'); } };
     ctl.append(sw, st);
-    r.append(im, tx, ctl);
+    r.append(im, tx, ctl); r._p = p;
     box.append(r);
   });
+  if (anim) reveal(box.children);
 }
 async function quickSave(tab, obj, patch, okText){
   const old = {}; Object.keys(patch).forEach(k => { old[k] = obj[k]; obj[k] = String(patch[k]); });
@@ -596,7 +763,7 @@ const spState = {img: null, row: null};
 const spPick = picker($('spDrop'), $('sp_anh'), spState);
 chipsBind($('sp_nguoi'), v => { $('sp_size_mac').placeholder = v === 'Cả hai' ? 'Phi: L | Tường: S' : 'M'; dirty = true; });
 $('spAdd').onclick = () => openSp(null);
-function openSp(p){
+function openSp(p, fromImg){
   spState.row = p; spState.img = null; spState.dupOk = false;
   $('dwSpT').textContent = p ? (p.brand ? p.brand + ' · ' : '') + (p.ten || p.id) : 'Thêm món';
   $('sp_link_mua').value = p ? p.link_mua || '' : '';
@@ -613,7 +780,11 @@ function openSp(p){
   $('sp_anh').value = p ? p.anh || '' : '';
   $('spDel').classList.toggle('hidden', !p);
   spMsg('');
-  spPick.paint(); showDw('dwSp');
+  spPick.paint();
+  const fl = !!(fromImg && fromImg.classList.contains('ok') && p && p.anh && !RM.matches);
+  $('dwSp').classList.toggle('fly', fl);
+  showDw('dwSp');
+  if (fl) { const to = $('spDrop').querySelector('img'); if (to) fly(fromImg, to); }
 }
 function spMsg(t, cls){ $('spMsg').textContent = t || ''; $('spMsg').className = 'msg' + (cls ? ' ' + cls : ''); }
 $('spForm').addEventListener('input', () => { if ($('spMsg').classList.contains('err')) spMsg(''); });
@@ -660,16 +831,16 @@ $('spDel').onclick = async () => {
 /* ================= OUTFIT ================= */
 const OF = () => DB.Outfit.rows;
 const itemsOf = id => DB.OutfitItem.rows.filter(i => i.outfit_id === id);
-chipsBind($('ofWho'), renderOf);
-function renderOf(){
-  const who = chipsGet($('ofWho'));
-  const rows = OF().filter(o => !who || o.nguoi === who || o.nguoi === 'Cả hai');
-  $('ofCount').textContent = OF().length + ' outfit · ' + OF().filter(o => isOn(o.hien_thi)).length + ' đang hiện';
+chipsBind($('ofWho'), () => renderOf(true));
+const ofRows = () => { const who = chipsGet($('ofWho')); return OF().filter(o => !who || o.nguoi === who || o.nguoi === 'Cả hai'); };
+function renderOf(anim){
+  const rows = ofRows();
+  counter($('ofCount'), [OF().length, ' outfit · ', OF().filter(o => isOn(o.hien_thi)).length, ' đang hiện']);
   const box = $('ofList'); box.replaceChildren();
   if (!rows.length) { const e = el('div', 'empty', OF().length ? 'Không có outfit nào khớp' : 'Chưa có outfit nào — bấm “+ Thêm outfit”'); e.style.gridColumn = '1/-1'; box.append(e); return; }
   rows.forEach(o => {
     const c = el('div', 'oc' + (isOn(o.hien_thi) ? '' : ' off'));
-    const ph = el('div', 'ph'); const im = new Image(); im.loading = 'lazy'; setImg(im, o.anh, 500); ph.append(im); ph.onclick = () => openOf(o);
+    const ph = photo(o.anh, 500); ph.onclick = () => openOf(o, ph.querySelector('img'));
     const b = el('div', 'b');
     const r = el('div', 'r');
     r.append(el('span', '', (o.nguoi || '—') + ' · ' + itemsOf(o.id).length + ' món'));
@@ -677,9 +848,10 @@ function renderOf(){
     const cb = el('input'); cb.type = 'checkbox'; cb.checked = isOn(o.hien_thi); cb.setAttribute('aria-label', 'Hiện outfit ' + (o.ten || ''));
     cb.onchange = () => quickSave('Outfit', o, {hien_thi: cb.checked}, cb.checked ? 'Đã hiện outfit' : 'Đã ẩn outfit');
     sw.append(cb, el('span')); r.append(sw);
-    const ed = el('button', 'btn sm', 'Sửa · gắn món'); ed.type = 'button'; ed.onclick = () => openOf(o);
+    const ed = el('button', 'btn sm', 'Sửa · gắn món'); ed.type = 'button'; ed.onclick = () => openOf(o, ph.querySelector('img'));
     b.append(el('div', 't', o.ten || o.id), r, ed); c.append(ph, b); box.append(c);
   });
+  if (anim) reveal(box.children);
 }
 
 /* ---------- editor outfit + gắn chấm ---------- */
@@ -698,13 +870,19 @@ function ofLoadImg(url){
   img.onload = img.onerror = null;
   if (!url) { img.hidden = true; img.removeAttribute('src'); $('ofPh0').hidden = false; $('ofPh0').textContent = 'Chọn ảnh outfit để bắt đầu gắn món'; ofRender(); return; }
   $('ofPh0').hidden = false; $('ofPh0').textContent = 'Đang tải ảnh…'; img.hidden = true; ofRender();
-  img.onload = () => { img.hidden = false; $('ofPh0').hidden = true; ofRender(); };
+  img.onload = () => {
+    img.hidden = false; $('ofPh0').hidden = true; ofRender();
+    if (!ofState.intro) return; ofState.intro = false;
+    const go = () => ofIntro();
+    if (ofState.from) { const f = ofState.from; ofState.from = null; fly(f, img, go); } else go();
+  };
   const id = driveId(url);
   img.onerror = () => { if (id && !img.dataset.fb) { img.dataset.fb = 1; img.src = 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1400'; } else { $('ofPh0').textContent = 'Không tải được ảnh — kiểm tra link / quyền share.'; } };
   delete img.dataset.fb; img.src = /^data:/.test(url) ? url : imgSrc(url, 1400);
 }
-function openOf(o){
+function openOf(o, fromImg, swapDir){
   ofState.row = o; ofState.img = null; ofState.active = 0; ofState.missOk = false;
+  ofState.intro = !RM.matches; ofState.from = fromImg && fromImg.classList.contains('ok') ? fromImg : null;
   $('dwOfT').textContent = o ? 'Outfit · ' + (o.ten || o.id) : 'Thêm outfit';
   $('of_anh').value = o ? o.anh || '' : ''; $('ofPickTxt').textContent = '';
   $('of_ten').value = o ? o.ten || '' : '';
@@ -715,9 +893,37 @@ function openOf(o){
   ofState.pins = o ? itemsOf(o.id).map(r => ({x: num(r.x), y: num(r.y), sp: r.sp_id, ghi_chu: r.ghi_chu || ''})).filter(p => !isNaN(p.x) && !isNaN(p.y)) : [];
   $('ofDel').classList.toggle('hidden', !o);
   ofMsg('');
-  showDw('dwOf');
+  ofNavSync();
+  if (swapDir) { play($('ofForm').querySelector('.bd'), swapDir > 0 ? 'fx-swap-r' : 'fx-swap-l'); dirty = false; }
+  else { $('dwOf').classList.toggle('fly', !!ofState.from && !RM.matches); showDw('dwOf'); }
+  $('ofPic').classList.remove('fx-live');
   ofLoadImg($('of_anh').value.trim());
 }
+// 19: qua outfit trước / sau (theo bộ lọc đang chọn)
+function ofNavSync(){
+  const list = ofRows(), i = ofState.row ? list.indexOf(ofState.row) : -1;
+  $('ofPrev').classList.toggle('hidden', i < 0); $('ofNext').classList.toggle('hidden', i < 0); $('ofCopy').classList.toggle('hidden', !ofState.row);
+  $('ofPos').textContent = i >= 0 && list.length > 1 ? (i + 1) + '/' + list.length : '';
+  $('ofPrev').disabled = i <= 0; $('ofNext').disabled = i < 0 || i >= list.length - 1;
+}
+function ofGo(d){
+  const list = ofRows(), i = list.indexOf(ofState.row), o = list[i + d];
+  if (!o) return;
+  if (dirty && !confirm('Bỏ các thay đổi chưa lưu?')) return;
+  openOf(o, null, d);
+}
+$('ofPrev').onclick = () => ofGo(-1); $('ofNext').onclick = () => ofGo(1);
+document.addEventListener('keydown', e => {
+  if (openDw !== $('dwOf') || /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
+  if (e.key === 'ArrowLeft') ofGo(-1); else if (e.key === 'ArrowRight') ofGo(1);
+});
+// 21: copy link outfit
+$('ofCopy').onclick = async () => {
+  if (!ofState.row) return;
+  const url = 'https://ketuong06.github.io/#look-' + ofState.row.id;
+  let ok = false; try { await navigator.clipboard.writeText(url); ok = true; } catch (e) {}
+  toast(ok ? 'Đã copy link outfit ✓' : url);
+};
 function ofMsg(t, cls){ $('ofMsg').textContent = t || ''; $('ofMsg').className = 'msg' + (cls ? ' ' + cls : ''); }
 function ofRender(){
   const pic = $('ofPic'), S = ofState; pic.querySelectorAll('.pin').forEach(p => p.remove());
@@ -725,7 +931,7 @@ function ofRender(){
   const ready = !$('ofImg').hidden;
   S.pins.forEach((p, i) => {
     const no = i + 1;
-    if (ready) { const d = el('div', 'pin' + (S.active === no ? ' on' : ''), String(no)); d.style.left = p.x + '%'; d.style.top = p.y + '%'; d.dataset.i = i; pic.append(d); }
+    if (ready) { const d = el('div', 'pin' + (S.active === no ? ' on' : ''), String(no)); d.style.left = p.x + '%'; d.style.top = p.y + '%'; d.style.setProperty('--b', (i * 250) + 'ms'); d.dataset.i = i; pic.append(d); }
     const row = el('div', 'pi' + (S.active === no ? ' on' : ''));
     const sel = el('select'); sel.append(new Option('— Chọn món —', ''));
     SP().forEach(pr => sel.append(new Option([pr.brand, pr.ten].filter(Boolean).join(' – ') + (isOn(pr.hien_thi) ? '' : ' (ẩn)'), pr.id)));
@@ -740,6 +946,13 @@ function ofRender(){
   if (!S.pins.length) list.append(el('p', 'hint', ready ? 'Chưa có chấm nào — bấm lên ảnh để thêm.' : 'Thêm ảnh trước, rồi bấm lên ảnh để gắn món.'));
   ofCount();
 }
+// 7A: chấm bật lên lần lượt rồi "thở"; 6A: món hiện lần lượt
+function ofIntro(){
+  if (RM.matches) { $('ofPic').classList.add('fx-live'); return; }
+  document.querySelectorAll('#ofPic .pin').forEach((n, i) => { n.style.setProperty('--d', (i * 90) + 'ms'); n.style.setProperty('--b', (900 + i * 250) + 'ms'); n.classList.remove('fx-pin'); void n.offsetWidth; n.classList.add('fx-pin'); doneAnim(n, 'fx-pin'); });
+  document.querySelectorAll('#ofPins .pi').forEach((n, i) => { n.style.setProperty('--d', (120 + i * 70) + 'ms'); n.classList.remove('fx-item'); void n.offsetWidth; n.classList.add('fx-item'); doneAnim(n, 'fx-item'); });
+  setTimeout(() => $('ofPic').classList.add('fx-live'), 400);
+}
 function ofCount(){ const n = ofState.pins.filter(p => p.sp).length, m = ofState.pins.length - n; $('ofPinCnt').textContent = '· ' + n + ' món' + (m ? ' · ' + m + ' chấm chưa chọn' : ''); }
 function ofMark(){
   document.querySelectorAll('#ofPic .pin').forEach((d, i) => d.classList.toggle('on', i + 1 === ofState.active));
@@ -753,8 +966,9 @@ let drag = null;
 $('ofPic').addEventListener('pointerdown', e => {
   if ($('ofImg').hidden) return;
   const pe = e.target.closest('.pin');
-  if (pe) { drag = +pe.dataset.i; ofState.active = drag + 1; ofMark(); pe.setPointerCapture(e.pointerId); e.preventDefault(); return; }
+  if (pe) { drag = +pe.dataset.i; ofState.active = drag + 1; ofMark(); $('ofPic').classList.add('dragging'); hideTip(); pe.setPointerCapture(e.pointerId); e.preventDefault(); return; }
   ofState.pins.push(Object.assign(posFrom(e), {sp: ''})); ofState.active = ofState.pins.length; dirty = true; ofRender();
+  const np = document.querySelectorAll('#ofPic .pin'); play(np[np.length - 1], 'fx-pin'); hideTip();
   const s = document.querySelectorAll('#ofPins select')[ofState.pins.length - 1];
   if (s && desk()) s.focus({preventScroll: true});
 });
@@ -763,7 +977,18 @@ $('ofPic').addEventListener('pointermove', e => {
   Object.assign(ofState.pins[drag], posFrom(e)); dirty = true;
   const d = document.querySelectorAll('#ofPic .pin')[drag]; d.style.left = ofState.pins[drag].x + '%'; d.style.top = ofState.pins[drag].y + '%';
 });
-const endDrag = () => { if (drag !== null) { drag = null; ofRender(); } };
+const endDrag = () => { if (drag !== null) { drag = null; $('ofPic').classList.remove('dragging'); ofRender(); } };
+// 20: rê chuột vào chấm → bong bóng tên món (desktop)
+const spName = id => { const p = SP().find(x => x.id === id); return p ? [p.brand, p.ten].filter(Boolean).join(' · ') : ''; };
+function hideTip(){ $('ofTip').classList.remove('on'); }
+$('ofPic').addEventListener('mouseover', e => {
+  const pe = e.target.closest('.pin'); if (!pe || drag !== null) return;
+  const p = ofState.pins[+pe.dataset.i]; const t = p && p.sp ? spName(p.sp) : 'Chưa chọn món';
+  const tip = $('ofTip'); tip.textContent = t; tip.style.left = pe.style.left; tip.style.top = pe.style.top; tip.classList.add('on');
+});
+$('ofPic').addEventListener('mouseout', e => { if (e.target.closest('.pin')) hideTip(); });
+$('ofPins').addEventListener('mouseover', e => { const r = e.target.closest('.pi'); if (!r) return; const i = [...$('ofPins').children].indexOf(r); const pe = document.querySelectorAll('#ofPic .pin')[i]; if (pe) pe.dispatchEvent(new MouseEvent('mouseover', {bubbles: true})); });
+$('ofPins').addEventListener('mouseleave', hideTip);
 $('ofPic').addEventListener('pointerup', endDrag); $('ofPic').addEventListener('pointercancel', endDrag);
 
 $('ofForm').onsubmit = async e => {
@@ -855,7 +1080,8 @@ function renderTk(){
   const body = $('tkBody'); body.replaceChildren();
   const k = el('div', 'kpis');
   [[rows.length, 'lượt bấm Mua ngay'], [CLICKS.filter(r => String(r[0]).slice(0, 10) === today()).length, 'hôm nay'], [new Set(rows.map(r => r[1])).size, 'món được bấm'], [rows.filter(r => r[3] === 'outfit').length, 'bấm từ Shop the look']]
-    .forEach(([n, t]) => { const c = el('div', 'kpi'); c.append(el('b', '', n.toLocaleString('vi-VN')), el('span', '', t)); k.append(c); });
+    .forEach(([n, t], i) => { const c = el('div', 'kpi'), b = el('b', '', '0'); const prev = (renderTk._k || [])[i]; b.dataset.n = prev == null ? 0 : prev; countTo(b, n); c.append(b, el('span', '', t)); k.append(c); });
+  renderTk._k = [rows.length, CLICKS.filter(r => String(r[0]).slice(0, 10) === today()).length, new Set(rows.map(r => r[1])).size, rows.filter(r => r[3] === 'outfit').length];
   body.append(k);
   if (!rows.length) { body.append(el('div', 'empty', 'Chưa có lượt bấm nào trong khoảng này')); return; }
   const g = el('div', 'stats'); body.append(g);
@@ -873,7 +1099,58 @@ function renderTk(){
   if (byOutfit.length) table('Outfit kéo nhiều lượt mua', byOutfit, 'Outfit');
   const byDay = count(r => String(r[0]).slice(0, 10)).sort((a, b) => a[0] < b[0] ? 1 : -1);
   table('Theo ngày', byDay.map(([d, n]) => [d.split('-').reverse().join('/'), n]), 'Ngày', '', 60);
+  reveal([k.parentNode.querySelector('.kpis'), ...g.children]);
 }
+
+/* ---------- 25: đầu trang hiện từng dòng ---------- */
+if (!RM.matches) document.querySelectorAll('.top .up, .top h1, .top .icons').forEach((n, i) => { n.style.setProperty('--d', i * 90 + 'ms'); n.classList.add('fx-line'); doneAnim(n, 'fx-line'); });
+/* ---------- 15: hàng tab dính trên đầu khi cuộn ---------- */
+if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => $('stick').classList.toggle('stuck', !e.isIntersecting && e.boundingClientRect.top < 0)).observe($('stick-s'));
+/* ---------- 16: nút lên đầu trang ---------- */
+(() => {
+  const b = $('totop'); let tick = false;
+  const upd = () => { b.classList.toggle('show', scrollY > 700); tick = false; };
+  addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(upd); } }, {passive: true});
+  b.onclick = () => scrollTo({top: 0, behavior: RM.matches ? 'auto' : 'smooth'});
+})();
+/* ---------- 17: vuốt ngang để chuyển tab (phone) ---------- */
+(() => {
+  const area = $('app'); let x0, y0, t0, skip;
+  area.addEventListener('touchstart', e => {
+    skip = e.touches.length > 1 || !!openDw || !!e.target.closest('.chips, .tabs, .bar, input, select, textarea, .sw, .mv, table');
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
+  }, {passive: true});
+  area.addEventListener('touchend', e => {
+    if (skip || desk()) return;
+    const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+    if (Date.now() - t0 > 700 || Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
+    const i = TABS.indexOf(curTab) + (dx < 0 ? 1 : -1);
+    if (TABS[i]) openTab(TABS[i]);
+  }, {passive: true});
+})();
+/* ---------- 18: vuốt xuống để đóng form (phone, khi đang ở đầu form) ---------- */
+document.querySelectorAll('.dw .panel').forEach(pn => {
+  let y0, x0, dy = 0, mode = null;
+  pn.addEventListener('touchstart', e => {
+    mode = null; if (desk() || e.touches.length > 1 || pn.scrollTop > 0 || e.target.closest('.pic, input, select, textarea, .drop')) return;
+    y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; dy = 0; mode = 'maybe';
+  }, {passive: true});
+  pn.addEventListener('touchmove', e => {
+    if (!mode) return;
+    dy = e.touches[0].clientY - y0; const dx = e.touches[0].clientX - x0;
+    if (mode === 'maybe') { if (Math.abs(dy) < 8 && Math.abs(dx) < 8) return; mode = dy > 0 && Math.abs(dy) > Math.abs(dx) ? 'down' : null; if (!mode) return; }
+    e.preventDefault(); pn.style.transition = 'none'; pn.style.transform = 'translateY(' + Math.max(0, dy) * 0.65 + 'px)'; pn.style.opacity = String(1 - Math.min(dy / 700, 0.45));
+  }, {passive: false});
+  pn.addEventListener('touchend', () => {
+    if (mode !== 'down') { mode = null; return; }
+    mode = null;
+    const reset = () => { pn.style.transition = 'transform .3s cubic-bezier(.2,.7,.2,1), opacity .3s ease'; pn.style.transform = ''; pn.style.opacity = ''; };
+    if (dy > 110) {
+      pn.style.transition = 'transform .22s ease, opacity .22s ease'; pn.style.transform = 'translateY(60%)'; pn.style.opacity = '0';
+      setTimeout(() => { if (!closeDw()) reset(); else { pn.style.transition = pn.style.transform = pn.style.opacity = ''; } }, 160);
+    } else reset();
+  });
+});
 
 /* ---------- boot ---------- */
 if (KEY) showApp(); else showGate();
