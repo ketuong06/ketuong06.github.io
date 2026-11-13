@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Gắn món vào outfit · Tường Bình Thường</title>
+<script>try{var t=localStorage.getItem('kt-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Be+Vietnam+Pro:wght@400;500&display=swap">
+<style>
+:root{--bg:#fff;--fg:#111;--muted:#6b6b6b;--line:#e4e4e4;--tile:#f3f3f3;--inv-bg:#111;--inv-fg:#fff;
+  --label:"Archivo",ui-sans-serif,system-ui,sans-serif;--body:"Be Vietnam Pro",ui-sans-serif,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--body)}
+.wrap{max-width:480px;margin:0 auto;padding:20px 16px 48px}
+.up{font-family:var(--label);text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted)}
+h1{font:500 20px/1.25 var(--label);margin:4px 0 6px}
+p.hint{color:var(--muted);font-size:13px;margin:0 0 16px}
+label{display:block;font-size:12px;color:var(--muted);margin:12px 0 4px}
+select,input,textarea{width:100%;font:14px var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);padding:9px 10px;border-radius:0}
+select:focus,input:focus,textarea:focus{outline:2px solid var(--fg);outline-offset:-1px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{font:500 13px var(--body);padding:9px 14px;border:1px solid var(--fg);background:var(--bg);color:var(--fg);cursor:pointer}
+.btn.pri{background:var(--inv-bg);color:var(--inv-fg)}
+.pic{position:relative;line-height:0;margin-top:16px;background:var(--tile);cursor:crosshair;touch-action:none;user-select:none}
+.pic img{display:block;width:100%;height:auto;pointer-events:none}
+.pic .empty{line-height:1.5;padding:48px 16px;text-align:center;color:var(--muted);font-size:13px;cursor:default}
+.pin{position:absolute;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:var(--bg);color:var(--fg);
+  border:2px solid var(--fg);font:600 12px/1 var(--label);display:grid;place-items:center;cursor:grab;box-shadow:0 1px 6px rgba(0,0,0,.35)}
+.pin.on{background:var(--inv-bg);color:var(--inv-fg)}
+.list{display:grid;gap:8px;margin-top:14px}
+.it{display:grid;grid-template-columns:26px 1fr auto auto;gap:8px;align-items:center;border:1px solid var(--line);padding:8px}
+.it.on{border-color:var(--fg)}
+.it .no{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--fg);display:grid;place-items:center;font:600 11px/1 var(--label)}
+.it .xy{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.it select{padding:7px 8px;font-size:13px}
+.it .del{border:0;background:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:4px 6px}
+.out{margin-top:20px}
+textarea{min-height:120px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+.actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.ok{font-size:12px;color:var(--muted)}
+ol.steps{padding-left:18px;color:var(--muted);font-size:13px;margin:8px 0 0}
+@media (min-width:960px){
+  .wrap{max-width:1180px;padding:32px 40px 64px}
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:48px;align-items:start}
+  .pic{margin-top:0}
+  .side{position:sticky;top:24px}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <span class="up">Tool nội bộ · @ketuong06</span>
+  <h1>Gắn món vào ảnh outfit</h1>
+  <p class="hint">Bấm lên ảnh để thêm chấm, kéo chấm để chỉnh vị trí, chọn món cho từng chấm. Xong thì copy kết quả dán vào tab <b>OutfitItem</b> trong Sheet.</p>
+
+  <div class="cols">
+    <div>
+      <div class="row2">
+        <div><label for="sel">Outfit có sẵn (tab Outfit)</label><select id="sel"><option value="">— Đang tải… —</option></select></div>
+        <div><label for="oid">outfit_id</label><input id="oid" placeholder="vd: tuong-cafe-01"></div>
+      </div>
+      <label for="url">Link ảnh outfit (Drive hoặc link ảnh)</label>
+      <input id="url" placeholder="https://drive.google.com/file/d/…/view">
+      <div class="pic" id="pic"><div class="empty" id="empty">Chọn outfit hoặc dán link ảnh để bắt đầu</div><img id="img" alt="" hidden referrerpolicy="no-referrer"></div>
+    </div>
+
+    <div class="side">
+      <span class="up">Các chấm</span>
+      <div class="list" id="list"></div>
+      <div class="out">
+        <span class="up">Kết quả · dán vào tab OutfitItem</span>
+        <textarea id="out" readonly></textarea>
+        <div class="actions"><button class="btn pri" id="copy" type="button">Copy kết quả</button><button class="btn" id="clear" type="button">Xoá hết chấm</button><span class="ok" id="ok"></span></div>
+        <ol class="steps">
+          <li>Trong tab OutfitItem, xoá các dòng cũ của outfit này (nếu có).</li>
+          <li>Bấm vào ô cột A ở dòng trống đầu tiên → Ctrl/Cmd + V.</li>
+          <li>Outfit mới thì nhớ thêm 1 dòng ở tab Outfit (id, tick hien_thi, nguoi, ten, anh).</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const SHEET_ID = '1tWndIGm5J4KH8msgGOZoiox_KW9BdbSx0uhUw4AILEE';
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e };
+const sheetUrl = tab => 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&headers=1&sheet=' + encodeURIComponent(tab) + '&t=' + Date.now();
+function parseCSV(text){
+  const rows = []; let row = [], cell = '', q = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (q){ if (c === '"'){ if (text[i+1] === '"'){ cell += '"'; i++ } else q = false } else cell += c }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(cell); cell = '' }
+    else if (c === '\n' || c === '\r'){ if (c === '\r' && text[i+1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = '' }
+    else cell += c;
+  }
+  if (cell !== '' || row.length) { row.push(cell); rows.push(row) }
+  return rows;
+}
+function toObjects(rows){
+  const [head, ...body] = rows; if (!head) return [];
+  const keys = head.map(h => h.trim().toLowerCase());
+  return body.filter(r => r.some(v => v.trim() !== '')).map(r => Object.fromEntries(keys.map((k, i) => [k, (r[i] ?? '').trim()])));
+}
+async function fetchTab(tab){
+  const res = await fetch(sheetUrl(tab)); const text = await res.text();
+  if (!res.ok || /^\s*</.test(text)) throw new Error(tab);
+  return toObjects(parseCSV(text));
+}
+function driveId(url){ const m = String(url).match(/(?:\/d\/|[?&]id=)([A-Za-z0-9_-]{20,})/); return m ? m[1] : null }
+const imgSrc = url => { const id = driveId(url); return id ? 'https://lh3.googleusercontent.com/d/' + id + '=w1400' : url };
+
+let PRODUCTS = [], LOOKS = [], ITEMS = [], pins = [], active = 0;
+
+function render(){
+  const pic = $('#pic'); pic.querySelectorAll('.pin').forEach(p => p.remove());
+  const list = $('#list'); list.replaceChildren();
+  pins.forEach((p, i) => {
+    const no = i + 1;
+    const d = el('div', 'pin' + (active === no ? ' on' : ''), String(no));
+    d.style.left = p.x + '%'; d.style.top = p.y + '%'; d.dataset.i = i;
+    pic.append(d);
+
+    const row = el('div', 'it' + (active === no ? ' on' : ''));
+    const sel = el('select'); sel.append(new Option('— Chọn món —', ''));
+    PRODUCTS.forEach(pr => sel.append(new Option([pr.brand, pr.ten].filter(Boolean).join(' – ') + '  (' + pr.id + ')', pr.id)));
+    sel.value = p.sp; sel.addEventListener('change', () => { p.sp = sel.value; output() });
+    sel.addEventListener('focus', () => { active = no; mark() });
+    const del = el('button', 'del', '×'); del.type = 'button'; del.title = 'Xoá chấm';
+    del.addEventListener('click', () => { pins.splice(i, 1); active = 0; render() });
+    row.append(el('span', 'no', String(no)), sel, el('span', 'xy', p.x + ', ' + p.y), del);
+    list.append(row);
+  });
+  if (!pins.length) list.append(el('p', 'hint', 'Chưa có chấm nào — bấm lên ảnh để thêm.'));
+  output();
+}
+function mark(){
+  $$('#pic .pin').forEach((d, i) => d.classList.toggle('on', i + 1 === active));
+  $$('#list .it').forEach((d, i) => d.classList.toggle('on', i + 1 === active));
+}
+function output(){
+  const id = $('#oid').value.trim() || 'outfit-id';
+  $('#out').value = pins.filter(p => p.sp).map(p => [id, p.sp, p.x, p.y].join('\t')).join('\n');
+  const miss = pins.filter(p => !p.sp).length;
+  $('#ok').textContent = miss ? miss + ' chấm chưa chọn món' : '';
+}
+function posFrom(e){
+  const r = $('#img').getBoundingClientRect();
+  const x = Math.round(Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100)));
+  const y = Math.round(Math.min(100, Math.max(0, (e.clientY - r.top) / r.height * 100)));
+  return {x, y};
+}
+let drag = null;
+$('#pic').addEventListener('pointerdown', e => {
+  if ($('#img').hidden) return;
+  const pinEl = e.target.closest('.pin');
+  if (pinEl){ drag = +pinEl.dataset.i; active = drag + 1; mark(); pinEl.setPointerCapture(e.pointerId); e.preventDefault(); return }
+  pins.push({...posFrom(e), sp: ''}); active = pins.length; render();
+  const s = $$('#list select')[pins.length - 1]; if (s) s.focus({preventScroll: true});
+});
+$('#pic').addEventListener('pointermove', e => {
+  if (drag === null) return;
+  Object.assign(pins[drag], posFrom(e));
+  const d = $$('#pic .pin')[drag]; d.style.left = pins[drag].x + '%'; d.style.top = pins[drag].y + '%';
+});
+const endDrag = () => { if (drag !== null){ drag = null; render() } };
+$('#pic').addEventListener('pointerup', endDrag);
+$('#pic').addEventListener('pointercancel', endDrag);
+
+function loadImage(url){
+  const img = $('#img');
+  if (!url){ img.hidden = true; $('#empty').hidden = false; return }
+  img.onload = () => { img.hidden = false; $('#empty').hidden = true };
+  img.onerror = () => { const id = driveId(url); if (id && !img.dataset.fb){ img.dataset.fb = 1; img.src = 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1400' } else { $('#empty').hidden = false; $('#empty').textContent = 'Không tải được ảnh — kiểm tra link / quyền share.' } };
+  delete img.dataset.fb; img.src = imgSrc(url);
+}
+$('#sel').addEventListener('change', () => {
+  const o = LOOKS.find(x => x.id === $('#sel').value); if (!o) return;
+  $('#oid').value = o.id; $('#url').value = o.anh; loadImage(o.anh);
+  pins = ITEMS.filter(r => r.outfit_id === o.id).map(r => ({x: Math.round(parseFloat(String(r.x).replace(',', '.'))), y: Math.round(parseFloat(String(r.y).replace(',', '.'))), sp: r.sp_id})).filter(p => !isNaN(p.x) && !isNaN(p.y));
+  active = 0; render();
+});
+$('#url').addEventListener('change', () => loadImage($('#url').value.trim()));
+$('#oid').addEventListener('input', output);
+$('#clear').addEventListener('click', () => { pins = []; active = 0; render() });
+$('#copy').addEventListener('click', async () => {
+  const t = $('#out').value; if (!t){ $('#ok').textContent = 'Chưa có dòng nào để copy'; return }
+  try{ await navigator.clipboard.writeText(t); $('#ok').textContent = 'Đã copy ' + t.split('\n').length + ' dòng ✓' }
+  catch(e){ $('#out').select(); $('#ok').textContent = 'Bôi đen sẵn rồi — bấm Ctrl/Cmd + C' }
+});
+
+(async () => {
+  try{
+    const [p, l, it] = await Promise.all([fetchTab('SanPham'), fetchTab('Outfit').catch(() => []), fetchTab('OutfitItem').catch(() => [])]);
+    PRODUCTS = p.filter(x => x.id); LOOKS = l.filter(x => x.id); ITEMS = it;
+    const sel = $('#sel'); sel.replaceChildren(new Option('— Outfit mới —', ''));
+    LOOKS.forEach(o => sel.append(new Option((o.ten || o.id) + ' · ' + (o.nguoi || ''), o.id)));
+  }catch(e){ $('#sel').replaceChildren(new Option('— Không tải được Sheet —', '')) }
+  render();
+})();
+</script>
+</body>
+</html>

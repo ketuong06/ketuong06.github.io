@@ -88,6 +88,60 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
   color:var(--fg);text-decoration:none}
 .channels a span:last-child{color:var(--muted);font-size:13px}
 
+/* sub filter (Outfit → Phi / Tường) */
+.filters.sub{margin-top:10px}
+.filters.sub[hidden]{display:none}
+.filters.sub button{border-color:var(--line);padding:6px 12px;font-size:12px}
+.filters.sub button[aria-pressed="true"]{border-color:var(--inv-bg)}
+
+/* lookbook row */
+.looks{margin-top:20px}
+.looks[hidden]{display:none}
+.looks-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
+.looks-h small{color:var(--muted);font-size:12px}
+.looks-row{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;padding-bottom:2px}
+.looks-row::-webkit-scrollbar{display:none}
+.look{flex:none;width:44%;max-width:200px;scroll-snap-align:start;border:0;background:none;padding:0;margin:0;
+  text-align:left;color:inherit;font:inherit;cursor:pointer;display:grid;gap:2px}
+.look img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--tile);display:block;margin-bottom:6px;transition:filter .25s ease}
+.look .t{font-size:13px;font-weight:500;line-height:1.35}
+.look .n{font-size:12px;color:var(--muted)}
+@media (hover:hover){.look:hover img{filter:brightness(.92)}}
+
+/* shop the look overlay */
+body.lock{overflow:hidden}
+.stl{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;overscroll-behavior:contain}
+.stl[hidden]{display:none}
+.stl-top{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));
+  background:var(--bg);border-bottom:1px solid var(--line)}
+.stl-top h2{font:500 16px/1.3 var(--label);margin:2px 0 0}
+.stl-top .up{color:var(--muted)}
+.stl-close{flex:none;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--line);border-radius:999px;
+  background:none;color:var(--fg);cursor:pointer;padding:0}
+.stl-close:hover{border-color:var(--fg)}
+.stl-close svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round}
+.stl-stage{position:relative;max-width:480px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left,0px)) 40px}
+.stl-pic{position:relative;line-height:0}
+.stl-pic img{display:block;width:100%;height:auto;background:var(--tile)}
+.pin{position:absolute;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;padding:0;cursor:pointer;
+  background:var(--bg);color:var(--fg);border:2px solid var(--fg);font:600 12px/1 var(--label);display:grid;place-items:center;
+  box-shadow:0 1px 6px rgba(0,0,0,.35);transition:transform .15s ease}
+.pin.on,.pin:hover{background:var(--inv-bg);color:var(--inv-fg);transform:translate(-50%,-50%) scale(1.12)}
+.stl-col{display:none}
+.stl-list{display:grid;gap:10px;margin-top:18px}
+.stl-lines{display:none}
+.it{display:grid;grid-template-columns:24px 64px 1fr;gap:12px;align-items:center;padding:8px 10px 8px 8px;
+  border:1px solid var(--line);color:inherit;text-decoration:none;background:var(--bg);transition:border-color .15s ease}
+.it.on,.it:hover{border-color:var(--fg)}
+.it .no{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--fg);display:grid;place-items:center;font:600 11px/1 var(--label)}
+.it.on .no{background:var(--inv-bg);color:var(--inv-fg)}
+.it img{width:64px;height:80px;object-fit:cover;background:var(--tile);display:block}
+.it .tx{display:grid;gap:2px;min-width:0}
+.it .b{font-size:13px;font-weight:500}
+.it .nm{font-size:12px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.it .buy{margin-top:2px;text-decoration:underline;text-underline-offset:3px;font-size:10px}
+
 footer{margin-top:40px;color:var(--muted);text-align:center}
 a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .card img{transition:filter .25s ease}
@@ -113,6 +167,25 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
   .filters button{padding:9px 18px;font-size:14px}
   .showing{margin:18px 0 20px}
   .grid{grid-template-columns:repeat(3,1fr);gap:40px 20px}
+  .filters.sub{margin-top:12px}
+  .filters.sub button{padding:7px 14px;font-size:13px}
+  .looks{margin-top:28px}
+  .look{width:200px}
+  /* overlay desktop: items left/right, photo center, connector lines */
+  .stl-top{padding:16px 40px}
+  .stl-top h2{font-size:18px}
+  .stl-stage{max-width:none;display:grid;grid-template-columns:minmax(220px,300px) auto minmax(220px,300px);
+    justify-content:center;align-items:center;gap:0 88px;min-height:calc(100vh - 74px);padding:32px 40px}
+  .stl-pic img{width:auto;max-width:min(560px,40vw);max-height:calc(100vh - 140px)}
+  .stl-col{display:flex;flex-direction:column;gap:14px}
+  .stl-list{display:none}
+  .stl-lines{display:block;position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:2}
+  .stl-lines path{fill:none;stroke-linejoin:round;transition:opacity .15s ease,stroke-width .15s ease}
+  .stl-lines .halo{stroke:var(--bg);stroke-width:3;opacity:.7}
+  .stl-lines .ln{stroke:var(--fg);stroke-width:1;opacity:.6}
+  .stl-lines .ln.on{opacity:1;stroke-width:2}
+  .stl-lines .halo.on{stroke-width:5;opacity:.9}
+  .pin{z-index:3}
   .card .brand,.card .name{font-size:14px}
   .card .name{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.9em}
   footer{margin-top:72px;padding-top:24px;border-top:1px solid var(--line)}
@@ -150,6 +223,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
 
   <section id="panel-shop" role="tabpanel" aria-labelledby="tab-shop">
     <div class="filters" id="filters" role="group" aria-label="Lọc sản phẩm"></div>
+    <div class="filters sub" id="subfilters" role="group" aria-label="Lọc theo người mặc" hidden></div>
+    <section class="looks" id="looks" hidden>
+      <div class="looks-h"><span class="up">Shop the look</span><small>Bấm vào ảnh để xem từng món</small></div>
+      <div class="looks-row" id="looks-row"></div>
+    </section>
     <p class="showing" id="showing" aria-live="polite">Đang tải…</p>
     <div class="grid" id="grid"></div>
   </section>
@@ -163,6 +241,20 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
   <footer class="up"><span data-k="ten_kenh">Tường Bình Thường</span> · <span id="year"></span></footer>
 </main>
 
+<div class="stl" id="stl" role="dialog" aria-modal="true" aria-labelledby="stl-title" hidden>
+  <div class="stl-top">
+    <div><span class="up" id="stl-who">Outfit</span><h2 id="stl-title">Outfit</h2></div>
+    <button class="stl-close" id="stl-close" type="button" aria-label="Đóng"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="stl-stage" id="stl-stage">
+    <svg class="stl-lines" id="stl-lines" aria-hidden="true"></svg>
+    <div class="stl-col" id="stl-l"></div>
+    <div class="stl-pic" id="stl-pic"><img id="stl-img" alt=""></div>
+    <div class="stl-col" id="stl-r"></div>
+    <div class="stl-list" id="stl-list"></div>
+  </div>
+</div>
+
 <script>
 /* ================== CONFIG ==================
    Data lấy từ Google Sheet "Danh muc san pham".
@@ -170,11 +262,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
 const SHEET_ID = '1tWndIGm5J4KH8msgGOZoiox_KW9BdbSx0uhUw4AILEE';
 const TAB_PRODUCTS = 'SanPham';
 const TAB_INFO = 'ThongTin';
+const TAB_LOOKS = 'Outfit';          // ảnh outfit toàn thân
+const TAB_LOOK_ITEMS = 'OutfitItem'; // món trong outfit + toạ độ chấm (x, y %)
 const IMG_WIDTH = 800;
 /* ============================================ */
 
 const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
-const CACHE_KEY = 'kt-cache-v1', SAVED_KEY = 'kt-saved-v2';
+const CACHE_KEY = 'kt-cache-v2', SAVED_KEY = 'kt-saved-v2';
 const store = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d }catch(e){ return d } },
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)) }catch(e){} }
@@ -231,16 +325,16 @@ function driveId(url){
   const m = String(url).match(/(?:\/d\/|[?&]id=)([A-Za-z0-9_-]{20,})/);
   return m ? m[1] : null;
 }
-function imgSrc(url){
+function imgSrc(url, w){
   const id = driveId(url);
-  return id ? 'https://lh3.googleusercontent.com/d/' + id + '=w' + IMG_WIDTH : url;
+  return id ? 'https://lh3.googleusercontent.com/d/' + id + '=w' + (w || IMG_WIDTH) : url;
 }
-function imgFallback(img, url){
+function imgFallback(img, url, w){
   const id = driveId(url);
   if (!id) return;
   img.addEventListener('error', () => {
     if (img.dataset.fb) return; img.dataset.fb = 1;
-    img.src = 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + IMG_WIDTH;
+    img.src = 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + (w || IMG_WIDTH);
   }, {once:true});
 }
 const isOn = v => !/^(false|0|no|không|khong|ẩn|an)$/i.test(String(v).trim()); // trống = hiện
@@ -278,7 +372,7 @@ function renderInfo(info){
 
 let saved = store.get(SAVED_KEY, []);
 function card(p){
-  const d = el('div', 'card'); d.dataset.c = p.nhom || 'Khác';
+  const d = el('div', 'card'); d.dataset.c = p.nhom || 'Khác'; d.dataset.w = p.nguoi || '';
   const a = el('a'); a.href = safeUrl(p.link_mua); a.target = '_blank'; a.rel = 'noopener sponsored';
   const img = el('img'); img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
   img.alt = [p.brand, p.ten].filter(Boolean).join(' – ');
@@ -299,18 +393,34 @@ function card(p){
   return d;
 }
 
-let current = 'all';
+const OUTFIT = 'Outfit';
+const SUBS = [{k:'all', label:'Tất cả'}, {k:'Phi', label:'Đồ Phi mặc'}, {k:'Tường', label:'Đồ Tường mặc'}];
+let current = 'all', sub = 'all';
+let PRODUCTS = [], LOOKS = [], LOOK_ITEMS = [];
+// món để trống người mặc hoặc "Cả hai" thì hiện ở cả 2 bên
+const forWho = (who, s) => s === 'all' || !who || who === s || /^c(ả|a) hai$/i.test(who);
+const desk = window.matchMedia('(min-width: 960px)');
+const canHover = window.matchMedia('(hover: hover)');
+
 function renderProducts(list){
+  PRODUCTS = list;
   const items = list.filter(p => isOn(p.hien_thi) && (p.ten || p.brand));
 
-  const groups = [...new Set(items.map(p => p.nhom || 'Khác'))];
+  let groups = [...new Set(items.map(p => p.nhom || 'Khác'))];
+  if (groups.includes(OUTFIT)) groups = [OUTFIT, ...groups.filter(g => g !== OUTFIT)];
   if (current !== 'all' && !groups.includes(current)) current = 'all';
   const fwrap = $('#filters'); fwrap.replaceChildren();
   ['all', ...groups].forEach(g => {
-    const b = el('button', null, g === 'all' ? 'Tất cả' : g);
-    b.dataset.f = g; b.setAttribute('aria-pressed', g === current);
-    b.addEventListener('click', () => { current = g; applyFilter() });
+    const b = el('button', null, g === 'all' ? 'Tất cả' : g); b.type = 'button';
+    b.dataset.f = g;
+    b.addEventListener('click', () => { current = g; sub = 'all'; applyFilter() });
     fwrap.append(b);
+  });
+  const swrap = $('#subfilters'); swrap.replaceChildren();
+  SUBS.forEach(({k, label}) => {
+    const b = el('button', null, label); b.type = 'button'; b.dataset.s = k;
+    b.addEventListener('click', () => { sub = k; applyFilter() });
+    swrap.append(b);
   });
 
   const grid = $('#grid'); grid.replaceChildren();
@@ -321,9 +431,121 @@ function renderProducts(list){
 function applyFilter(){
   let n = 0;
   $$('#filters button').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === current));
-  $$('#grid .card').forEach(c => { c.hidden = current !== 'all' && c.dataset.c !== current; if (!c.hidden) n++ });
+  $('#subfilters').hidden = current !== OUTFIT;
+  $$('#subfilters button').forEach(b => b.setAttribute('aria-pressed', b.dataset.s === sub));
+  $$('#grid .card').forEach(c => {
+    c.hidden = (current !== 'all' && c.dataset.c !== current) || (current === OUTFIT && !forWho(c.dataset.w, sub));
+    if (!c.hidden) n++;
+  });
   $('#showing').textContent = 'Đang hiện ' + n + ' món';
+  renderLooks();
 }
+
+/* ---------- lookbook + shop the look ---------- */
+const num = v => parseFloat(String(v).replace(',', '.'));
+const clamp = v => Math.min(100, Math.max(0, v));
+function itemsOf(id){
+  return LOOK_ITEMS.filter(r => r.outfit_id === id)
+    .map(r => ({p: PRODUCTS.find(p => p.id === r.sp_id), x: num(r.x), y: num(r.y)}))
+    .filter(r => r.p && !isNaN(r.x) && !isNaN(r.y))
+    .map(r => ({p: r.p, x: clamp(r.x), y: clamp(r.y)}));
+}
+const visibleLooks = () => LOOKS.filter(o => isOn(o.hien_thi) && o.id && o.anh);
+function renderLooks(){
+  const list = current === OUTFIT ? visibleLooks().filter(o => sub === 'all' || o.nguoi === sub) : [];
+  $('#looks').hidden = !list.length;
+  $('#looks-row').replaceChildren(...list.map(o => {
+    const b = el('button', 'look'); b.type = 'button';
+    const img = el('img'); img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
+    img.alt = o.ten || 'Outfit'; img.src = imgSrc(o.anh); imgFallback(img, o.anh);
+    b.append(img, el('span', 'up', 'Outfit · ' + (o.nguoi || '')), el('span', 't', o.ten || ''), el('span', 'n', itemsOf(o.id).length + ' món'));
+    b.addEventListener('click', () => openLook(o.id));
+    return b;
+  }));
+}
+function itemCard(p, no){
+  const a = el('a', 'it'); a.href = safeUrl(p.link_mua); a.target = '_blank'; a.rel = 'noopener sponsored'; a.dataset.i = no;
+  const img = el('img'); img.loading = 'lazy'; img.alt = ''; img.referrerPolicy = 'no-referrer';
+  if (p.anh){ img.src = imgSrc(p.anh, 300); imgFallback(img, p.anh, 300) }
+  const tx = el('span', 'tx'); tx.append(el('span', 'b', p.brand), el('span', 'nm', p.ten), el('span', 'buy up', 'Mua ngay'));
+  a.append(el('span', 'no', String(no)), img, tx);
+  a.addEventListener('mouseenter', () => { if (canHover.matches) focusItem(no) });
+  a.addEventListener('focus', () => focusItem(no));
+  return a;
+}
+function focusItem(no, scroll){
+  $$('#stl [data-i]').forEach(e => e.classList.toggle('on', e.dataset.i === String(no)));
+  if (scroll && !desk.matches){
+    const c = $('#stl-list [data-i="' + no + '"]');
+    if (c) c.scrollIntoView({behavior: 'smooth', block: 'center'});
+  }
+}
+function showLook(id){
+  const o = visibleLooks().find(x => x.id === id);
+  if (!o){ hideLook(); return }
+  const its = itemsOf(id).sort((a, b) => a.y - b.y);
+  $('#stl-who').textContent = 'Outfit · ' + (o.nguoi || '');
+  $('#stl-title').textContent = o.ten || 'Outfit';
+  const img = $('#stl-img'); delete img.dataset.fb; img.referrerPolicy = 'no-referrer';
+  img.alt = o.ten || 'Outfit'; img.onload = drawLines; img.src = imgSrc(o.anh, 1400); imgFallback(img, o.anh, 1400);
+  const pic = $('#stl-pic'); pic.querySelectorAll('.pin').forEach(x => x.remove());
+  const L = $('#stl-l'), Rc = $('#stl-r'), list = $('#stl-list');
+  [L, Rc, list].forEach(x => x.replaceChildren());
+  its.forEach((it, i) => {
+    const no = i + 1;
+    const pin = el('button', 'pin', String(no)); pin.type = 'button'; pin.dataset.i = no;
+    pin.style.left = it.x + '%'; pin.style.top = it.y + '%';
+    pin.setAttribute('aria-label', no + '. ' + [it.p.brand, it.p.ten].filter(Boolean).join(' – '));
+    pin.addEventListener('click', () => focusItem(no, true));
+    pin.addEventListener('mouseenter', () => { if (canHover.matches) focusItem(no) });
+    pic.append(pin);
+    (it.x < 50 ? L : Rc).append(itemCard(it.p, no));
+    list.append(itemCard(it.p, no));
+  });
+  if (!its.length) list.append(el('p', 'msg', 'Outfit này chưa gắn món nào.'));
+  const stl = $('#stl'); stl.hidden = false; stl.scrollTop = 0;
+  document.body.classList.add('lock');
+  requestAnimationFrame(drawLines);
+  $('#stl-close').focus({preventScroll: true});
+}
+function hideLook(){
+  $('#stl').hidden = true; document.body.classList.remove('lock');
+}
+function openLook(id){
+  history.pushState({kt: 1}, '', '#look-' + encodeURIComponent(id));
+  showLook(id);
+}
+function closeLook(){
+  if (history.state && history.state.kt) history.back();
+  else { history.replaceState(null, '', location.pathname + location.search); hideLook() }
+}
+function route(){
+  const m = location.hash.match(/^#look-(.+)$/);
+  if (m) showLook(decodeURIComponent(m[1])); else if (!$('#stl').hidden) hideLook();
+}
+function drawLines(){
+  const svg = $('#stl-lines'); svg.replaceChildren();
+  if ($('#stl').hidden || !desk.matches) return;
+  const st = $('#stl-stage').getBoundingClientRect(), pic = $('#stl-img').getBoundingClientRect();
+  svg.setAttribute('width', st.width); svg.setAttribute('height', st.height);
+  $$('#stl-pic .pin').forEach(pin => {
+    const no = pin.dataset.i, c = $('.stl-col [data-i="' + no + '"]'); if (!c) return;
+    const pr = pin.getBoundingClientRect(), cr = c.getBoundingClientRect(), left = cr.right <= pic.left + 1;
+    const dx = pr.left + pr.width / 2 - st.left, dy = pr.top + pr.height / 2 - st.top;
+    const ax = (left ? cr.right : cr.left) - st.left, ay = cr.top + cr.height / 2 - st.top;
+    const ex = (left ? pic.left - 28 : pic.right + 28) - st.left;
+    const d = 'M' + ax + ' ' + ay + ' H' + ex + ' L' + dx + ' ' + dy;
+    ['halo', 'ln'].forEach(cls => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', d); path.setAttribute('class', cls); path.dataset.i = no; svg.append(path);
+    });
+  });
+}
+$('#stl-close').addEventListener('click', closeLook);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#stl').hidden) closeLook() });
+window.addEventListener('popstate', route);
+window.addEventListener('resize', drawLines);
+if (window.ResizeObserver) new ResizeObserver(drawLines).observe($('#stl-stage'));
 function skeleton(){
   const g = $('#grid'); g.replaceChildren();
   for (let i = 0; i < 4; i++){
@@ -359,11 +581,17 @@ $('#year').textContent = new Date().getFullYear();
 /* ---------- boot: hiện cache ngay, rồi lấy data mới ---------- */
 (async () => {
   const cache = store.get(CACHE_KEY, null);
-  if (cache){ renderInfo(cache.info); renderProducts(cache.products) } else skeleton();
+  if (cache){
+    LOOKS = cache.looks || []; LOOK_ITEMS = cache.lookItems || [];
+    renderInfo(cache.info); renderProducts(cache.products); route();
+  } else skeleton();
   try{
-    const [products, info] = await Promise.all([fetchTab(TAB_PRODUCTS), fetchTab(TAB_INFO)]);
+    const opt = t => fetchTab(t).catch(() => []);
+    const [products, info, looks, lookItems] = await Promise.all([fetchTab(TAB_PRODUCTS), fetchTab(TAB_INFO), opt(TAB_LOOKS), opt(TAB_LOOK_ITEMS)]);
+    LOOKS = looks; LOOK_ITEMS = lookItems;
     renderInfo(info); renderProducts(products);
-    store.set(CACHE_KEY, {products, info});
+    if (!$('#stl').hidden || location.hash) route();
+    store.set(CACHE_KEY, {products, info, looks, lookItems});
   }catch(e){
     console.error('[ketuong] load failed:', e);
     if (!cache){
