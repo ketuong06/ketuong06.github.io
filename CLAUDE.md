@@ -45,16 +45,38 @@ Trang "Tủ đồ" của kênh Tường Bình Thường (@ketuong06) — https:/
 - Data mạng giống cache → không vẽ lại (tránh chạy hiệu ứng 2 lần).
 - Class hiệu ứng tự gỡ khi chạy xong (`doneAnim`) để hover/nhấn vẫn hoạt động.
 
+## Tiện ích (2026-11-13)
+| Mã | Ở đâu | Làm gì |
+|---|---|---|
+| 26 | Đầu trang | Mở trong TikTok / IG / Facebook / Zalo / LINE → thanh nhắc "Mở bằng trình duyệt" (Android: intent Chrome; iOS: `x-safari-https://`), Copy link, ẩn được (sessionStorage `kt-inapp-x`) |
+| 27 | `<head>` | OG + Twitter card, ảnh `og.jpg` 1200×630 |
+| 28 | Bấm "Mua ngay" (Tủ đồ + overlay) | `track()` → `sendBeacon` tới Apps Script (`TRACK_URL`) → tab **Clicks**; tab **ThongKe** tự tổng hợp |
+| 29 | Icon | `favicon.svg` (giỏ hàng, tự đổi màu theo sáng/tối), `favicon.ico`, `apple-touch-icon.png`, `manifest.webmanifest` + icon 192/512 |
+| 30 | Card | Cột `size_mac`: "M" hoặc "Phi: L \| Tường: S". Chỉ hiện khi chọn Đồ Phi mặc / Đồ Tường mặc → "Phi mặc size L" |
+| 34 | Card | "Có trong outfit · <tên>" (ảnh nhỏ) → mở Shop the look |
+| 35 | Card | Cột `ghim` = TRUE → nhãn ★ Top pick + luôn đứng đầu |
+| 36 | Card + sắp xếp | Cột `ngay_them` (yyyy-mm-dd) → nhãn "Mới" trong 7 ngày; dropdown Nổi bật / Mới nhất |
+| 37 | Tủ đồ | Ô tìm kiếm không dấu (brand + tên + nhóm) |
+| 38 | Sidebar + footer | Nút "Hợp tác với tụi mình" → mailto `email` trong ThongTin |
+| 39 | Card | Nút chia sẻ (Web Share API, fallback copy link affiliate) |
+
+### Đếm lượt bấm
+- Apps Script: project **"ketuong06 click logger"** (tài khoản phi.nguyen04072000), web app chạy bằng tài khoản Phi, quyền "Bất kỳ ai". Code: `doPost` ghi `[thời gian, sp_id, món, bam_tu, outfit_id, nguồn, thiết bị, trang]` vào tab Clicks; chỉ nhận `bam_tu` = `tu_do` | `outfit`.
+- Nguồn: `?src=` / `?utm_source=` → app đang mở (tiktok, instagram…) → domain referrer → `truc_tiep`. Lưu sessionStorage `kt-src`.
+- Sửa code Apps Script thì phải **Triển khai → Quản lý → sửa phiên bản** (giữ nguyên URL), không tạo bài triển khai mới (URL đổi).
+
 ## Sheet
 | Tab | Cột |
 |---|---|
-| SanPham | id, hien_thi, nhom, nguoi, brand, ten, link_mua, anh |
-| ThongTin | key, value (ten_kenh, handle, bio, avatar, tiktok, instagram, youtube, zalo) |
+| SanPham | id, hien_thi, nhom, nguoi, brand, ten, link_mua, anh, size_mac, ghim, ngay_them |
+| ThongTin | key, value (ten_kenh, handle, bio, avatar, tiktok, instagram, youtube, zalo, email) |
+| Clicks | thoi_gian, sp_id, mon, bam_tu, outfit_id, nguon, thiet_bi, trang (Apps Script ghi) |
+| ThongKe | công thức QUERY tổng hợp theo món / nguồn / ngày / thiết bị / bấm từ (locale vi_VN → dùng `;`) |
 | Outfit | id, hien_thi, nguoi, ten, anh, ghi_chu |
 | OutfitItem | outfit_id, sp_id, x, y, ghi_chu (x, y = % trên ảnh) |
 
 ## Rule khi chỉnh sửa
 1. **Mọi chỉnh sửa giao diện phải áp dụng cho CẢ 2 phiên bản phone và desktop.** Sửa CSS/markup xong phải kiểm tra lại cả 2 (mobile ~375–390px và desktop ≥ 960px, thêm ≥ 1280px cho lưới 4 cột). Áp dụng cho cả `pin.html`.
 2. Kiểm tra cả 2 chế độ sáng và tối.
-3. Không đổi tên tab Sheet (`SanPham`, `ThongTin`, `Outfit`, `OutfitItem`) hay tên cột dòng 1.
+3. Không đổi tên tab Sheet (`SanPham`, `ThongTin`, `Outfit`, `OutfitItem`, `Clicks`) hay tên cột dòng 1.
 4. Web không hiển thị giá sản phẩm.
