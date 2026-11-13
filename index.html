@@ -207,13 +207,10 @@ body.lock{overflow:hidden}
 .inapp .x{margin-left:auto;border:0;padding:4px 6px;font-size:16px;line-height:1;opacity:.8}
 .inapp small{opacity:.75;font-size:12px}
 
-/* 38: hợp tác */
-.cta2{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding:11px;border-radius:999px;border:1px solid var(--line);
-  color:var(--fg);text-decoration:none;font-weight:500;font-size:14px;transition:border-color .2s ease,transform .14s ease}
-.cta2[hidden]{display:none}
-.cta2:hover{border-color:var(--fg)}
-.cta2:active{transform:scale(.95)}
-.cta2 svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* 38: liên hệ hợp tác (chỉ hiện chữ, không link) */
+.contact{margin:12px 0 0;text-align:center;font-size:13px;color:var(--muted)}
+.contact[hidden]{display:none}
+.contact span{color:var(--fg);user-select:all;-webkit-user-select:all;overflow-wrap:anywhere}
 
 /* 37: tìm kiếm */
 .search{position:relative;margin-top:10px}
@@ -247,8 +244,6 @@ body.lock{overflow:hidden}
 .share{position:absolute;top:48px;right:8px;width:34px;height:34px;display:grid;place-items:center;border:0;background:var(--bg);color:var(--fg);cursor:pointer;transition:transform .14s ease}
 .share:active{transform:scale(.9)}
 .share svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.foot-mail{display:block;margin-top:8px;color:var(--muted);text-transform:none;letter-spacing:0;font-size:12px}
-.foot-mail a{color:inherit}
 
 footer{margin-top:40px;color:var(--muted);text-align:center}
 a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
@@ -330,6 +325,8 @@ html.theme-anim,html.theme-anim body,html.theme-anim *{transition:background-col
   .links{flex-direction:column;gap:10px}
   .links a{font-size:14px}
   .cta{margin-top:24px}
+  .contact{text-align:left}
+  .contact span{display:block;margin-top:2px}
   .stick{margin:0;padding:0 0 12px}
   .mini{display:none}
   .seg{max-width:380px}
@@ -371,7 +368,7 @@ html.theme-anim,html.theme-anim body,html.theme-anim *{transition:background-col
 
 <main class="wrap">
   <div class="inapp" id="inapp" role="region" aria-label="Gợi ý mở bằng trình duyệt" hidden>
-    <div><b>Bạn đang xem trong <span id="inapp-name">ứng dụng</span>.</b> Mở bằng trình duyệt để mua mượt hơn và chắc chắn nhận đúng ưu đãi nha.</div>
+    <div><b>Bạn đang xem trong <span id="inapp-name">ứng dụng</span>.</b> Mở bằng trình duyệt để mua mượt hơn nha.</div>
     <div class="row">
       <a class="pri" id="inapp-open" href="#" hidden>Mở bằng trình duyệt</a>
       <button type="button" id="inapp-copy">Copy link</button>
@@ -393,7 +390,7 @@ html.theme-anim,html.theme-anim body,html.theme-anim *{transition:background-col
   <p class="bio" data-k="bio"></p>
   <div class="links" id="links"></div>
   <a class="cta" id="cta" target="_blank" rel="noopener" hidden>Theo dõi trên TikTok</a>
-  <a class="cta2" id="collab" hidden><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>Hợp tác với tụi mình</a>
+  <p class="contact" id="collab" hidden>Contact qua mail: <span id="collab-mail"></span></p>
   </aside>
 
   <div class="content">
@@ -427,8 +424,7 @@ html.theme-anim,html.theme-anim body,html.theme-anim *{transition:background-col
   </div>
   </div>
 
-  <footer class="up"><span data-k="ten_kenh">Tường Bình Thường</span> · <span id="year"></span>
-    <span class="foot-mail" id="foot-mail" hidden>Hợp tác: <a id="foot-mail-a"></a></span></footer>
+  <footer class="up"><span data-k="ten_kenh">Tường Bình Thường</span> · <span id="year"></span></footer>
 </main>
 
 <button class="totop" id="totop" type="button" aria-label="Lên đầu trang"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
@@ -573,6 +569,12 @@ const SOURCE = (() => {
   try{ sessionStorage.setItem('kt-src', src) }catch(e){}
   return src;
 })();
+// đọc nguồn xong thì xoá ?src khỏi thanh địa chỉ → link khách copy/share đi vẫn sạch
+(() => {
+  const u = new URL(location.href); let ch = false;
+  ['src', 'utm_source', 'utm_medium', 'utm_campaign'].forEach(k => { if (u.searchParams.has(k)){ u.searchParams.delete(k); ch = true } });
+  if (ch) history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+})();
 const DEVICE = /iPad|Tablet/i.test(UA) ? 'tablet' : /Mobi|Android|iPhone/i.test(UA) ? 'phone' : 'desktop';
 function track(p, from, outfitId){
   if (!TRACK_URL || !p) return;
@@ -655,11 +657,8 @@ function renderInfo(info){
   if (kv.tiktok){ cta.href = safeUrl(kv.tiktok); cta.hidden = false; $('#mini-tt').href = safeUrl(kv.tiktok) }
   // 38: hợp tác qua email
   const mail = (kv.email || '').trim();
-  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){
-    const href = 'mailto:' + mail + '?subject=' + encodeURIComponent('Hợp tác với ' + (kv.ten_kenh || 'Tường Bình Thường'));
-    $('#collab').href = href; $('#collab').hidden = false;
-    $('#foot-mail-a').href = href; $('#foot-mail-a').textContent = mail; $('#foot-mail').hidden = false;
-  } else { $('#collab').hidden = true; $('#foot-mail').hidden = true }
+  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){ $('#collab-mail').textContent = mail; $('#collab').hidden = false }
+  else $('#collab').hidden = true;
   intro();
 }
 

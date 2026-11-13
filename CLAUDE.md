@@ -48,7 +48,7 @@ Trang "Tủ đồ" của kênh Tường Bình Thường (@ketuong06) — https:/
 ## Tiện ích (2026-11-13)
 | Mã | Ở đâu | Làm gì |
 |---|---|---|
-| 26 | Đầu trang | Mở trong TikTok / IG / Facebook / Zalo / LINE → thanh nhắc "Mở bằng trình duyệt" (Android: intent Chrome; iOS: `x-safari-https://`), Copy link, ẩn được (sessionStorage `kt-inapp-x`) |
+| 26 | Đầu trang | Mở trong TikTok / IG / Facebook / Zalo / LINE → thanh nhắc "Mở bằng trình duyệt để mua mượt hơn nha" (Android: intent Chrome; iOS: `x-safari-https://`), Copy link, ẩn được (sessionStorage `kt-inapp-x`) |
 | 27 | `<head>` | OG + Twitter card, ảnh `og.jpg` 1200×630 |
 | 28 | Bấm "Mua ngay" (Tủ đồ + overlay) | `track()` → `sendBeacon` tới Apps Script (`TRACK_URL`) → tab **Clicks**; tab **ThongKe** tự tổng hợp |
 | 29 | Icon | `favicon.svg` (giỏ hàng, tự đổi màu theo sáng/tối), `favicon.ico`, `apple-touch-icon.png`, `manifest.webmanifest` + icon 192/512 |
@@ -57,12 +57,12 @@ Trang "Tủ đồ" của kênh Tường Bình Thường (@ketuong06) — https:/
 | 35 | Card | Cột `ghim` = TRUE → nhãn ★ Top pick + luôn đứng đầu |
 | 36 | Card + sắp xếp | Cột `ngay_them` (yyyy-mm-dd) → nhãn "Mới" trong 7 ngày; dropdown Nổi bật / Mới nhất |
 | 37 | Tủ đồ | Ô tìm kiếm không dấu (brand + tên + nhóm) |
-| 38 | Sidebar + footer | Nút "Hợp tác với tụi mình" → mailto `email` trong ThongTin |
+| 38 | Sidebar (dưới nút TikTok) | Chỉ hiện chữ "Contact qua mail: <email>" (lấy `email` trong ThongTin), không có nút/link mailto |
 | 39 | Card | Nút chia sẻ (Web Share API, fallback copy link affiliate) |
 
 ### Đếm lượt bấm
 - Apps Script: project **"ketuong06 click logger"** (tài khoản phi.nguyen04072000), web app chạy bằng tài khoản Phi, quyền "Bất kỳ ai". Code: `doPost` ghi `[thời gian, sp_id, món, bam_tu, outfit_id, nguồn, thiết bị, trang]` vào tab Clicks; chỉ nhận `bam_tu` = `tu_do` | `outfit`.
-- Nguồn: `?src=` / `?utm_source=` → app đang mở (tiktok, instagram…) → domain referrer → `truc_tiep`. Lưu sessionStorage `kt-src`.
+- Nguồn: `?src=` / `?utm_source=` → app đang mở (tiktok, instagram…) → domain referrer → `truc_tiep`. Lưu sessionStorage `kt-src`, sau đó xoá `?src`/`utm_*` khỏi thanh địa chỉ (link khách copy/share đi vẫn sạch).
 - Sửa code Apps Script thì phải **Triển khai → Quản lý → sửa phiên bản** (giữ nguyên URL), không tạo bài triển khai mới (URL đổi).
 
 ## Sheet
