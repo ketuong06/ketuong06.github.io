@@ -118,7 +118,7 @@ index.html / pin.html / nhap.html  (const API_URL = '.../exec')
 | 26 | Đầu trang | Mở trong TikTok / IG / Facebook / Zalo / LINE → thanh "Bạn đang xem trong X. Mở bằng trình duyệt để mua mượt hơn nha." (Android: intent Chrome; iOS: `x-safari-https://`), nút Copy link, ẩn được (sessionStorage `kt-inapp-x`) |
 | 27 | `<head>` | OG + Twitter card, ảnh `og.jpg` 1200×630 |
 | 28 | Bấm "Mua ngay" (Tủ đồ + overlay) | `track()` → `navigator.sendBeacon` (text/plain JSON) tới `TRACK_URL` → tab **Clicks**; tab **ThongKe** tự tổng hợp |
-| 29 | Icon | favicon giỏ hàng, apple-touch-icon, manifest + icon 192/512/maskable |
+| 29 | Icon | favicon giỏ hàng **nền trong suốt**: `favicon.svg` (tự đổi màu theo sáng/tối, trình duyệt ưu tiên) + `favicon.ico` 16/32/48 (nét đen viền trắng mảnh, dùng cho trình duyệt cũ; khai báo `sizes="32x32"` để không lấn SVG). Đổi icon thì tăng `?v=` trong thẻ `<link rel=icon>` ở cả 3 trang. `apple-touch-icon` / icon PWA 192/512/maskable giữ nền đặc vì iOS/Android tô đen phần trong suốt |
 | 30 | Card | Cột `size_mac`: "M" hoặc "Phi: L \| Tường: S". Chỉ hiện khi chọn Đồ Phi mặc / Đồ Tường mặc → "Phi mặc size L" / "Tường mặc size S" |
 | 34 | Card | "Có trong outfit · <tên>" (ảnh nhỏ) → mở overlay Shop the look, đóng lại vẫn ở Tủ đồ |
 | 35 | Card | Cột `ghim` = TRUE → nhãn ★ Top pick + luôn đứng đầu |
