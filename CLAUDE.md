@@ -14,7 +14,7 @@ Apps Script web app "ketuong06 click logger"   ← apps-script/Code.gs (bản th
    GET  /exec        → JSON {products, info, looks, lookItems}   (CacheService 60s)
    GET  /exec?fresh=1 → bỏ qua cache (pin.html dùng)
    POST /exec        → ghi 1 dòng vào tab Clicks (lượt bấm "Mua ngay")
-   POST /exec {action:'check'|'add_product', key} → nhap.html thêm sản phẩm (cần ADMIN_KEY)
+   POST /exec {action, key, …} → nhap.html quản trị (cần ADMIN_KEY): load / save / delete / reorder / set_items / save_info / upload / clicks
         │
         ▼
 index.html / pin.html / nhap.html  (const API_URL = '.../exec')
@@ -31,15 +31,27 @@ index.html / pin.html / nhap.html  (const API_URL = '.../exec')
 - Deploy lại: **Triển khai → Quản lý bài triển khai → ✏️ sửa → Phiên bản: Phiên bản mới → Triển khai**. KHÔNG tạo "bài triển khai mới" (URL `/exec` sẽ đổi → phải sửa `API_URL` ở cả `index.html` và `pin.html`).
 - `doGet` trả các cột: SanPham `id, hien_thi, nhom, nguoi, brand, ten, link_mua, anh, size_mac, ghim, ngay_them`; ThongTin `key, value`; Outfit `id, hien_thi, nguoi, ten, anh`; OutfitItem `outfit_id, sp_id, x, y`. Mọi giá trị là string (`"true"`/`"false"`, ngày `yyyy-MM-dd`). Thêm cột mới cho web → thêm vào `TABS` trong Apps Script + deploy phiên bản mới.
 - `doPost` (không có `action`) chỉ nhận `bam_tu` = `tu_do` | `outfit`, ghi `[thời gian, sp_id, món, bam_tu, outfit_id, nguồn, thiết bị, trang]` vào tab Clicks.
-- `doPost` có `action` → `admin()`: so `key` với Script Property `ADMIN_KEY` (sai → `{ok:false,error:'Sai mật khẩu'}`). `check` = kiểm tra mật khẩu; `add_product` = tạo id (slug không dấu từ brand + tên, trùng thì thêm `-2`, `-3`…), nếu có ảnh base64 thì lưu vào folder `IMG_FOLDER_ID` (link `drive.google.com/file/d/<id>/view`), appendRow vào SanPham theo đúng thứ tự cột dòng 1, `ngay_them` = hôm nay, rồi xoá cache `data` để web thấy ngay.
+- `doPost` có `action` → `admin()`: so `key` với Script Property `ADMIN_KEY` (sai → `{ok:false,error:'Sai mật khẩu'}`, chờ 0.8s chống dò). Mọi thao tác ghi xong đều xoá cache `data` để web thấy ngay.
+  | action | Tham số | Làm gì |
+  |---|---|---|
+  | `check` | – | kiểm tra mật khẩu |
+  | `load` | – | trả `{SanPham, Outfit, ThongTin, OutfitItem}` mỗi tab `{head, rows}`, đủ mọi cột kể cả dòng ẩn |
+  | `save` | `tab`, `row`, `orig` | `orig` rỗng = thêm (id = slug không dấu từ brand+tên / người+tên outfit, trùng thì `-2`…; SanPham tự điền `ngay_them` hôm nay; `hien_thi` mặc định TRUE). `orig` = id → sửa, **chỉ ghi các cột có trong `row`**, cột khác giữ nguyên, id không đổi |
+  | `delete` | `tab`, `id` | xoá dòng; xoá món/outfit thì gỡ luôn chấm liên quan trong OutfitItem (ảnh Drive giữ nguyên) |
+  | `reorder` | `tab`, `ids[]` | sắp lại thứ tự dòng (= thứ tự "Nổi bật" trên web, món ghim vẫn đứng đầu) |
+  | `set_items` | `outfit_id`, `items[{sp_id,x,y,ghi_chu}]` | thay toàn bộ chấm của 1 outfit |
+  | `save_info` | `info[{key,value}]` | sửa/thêm dòng ThongTin |
+  | `upload` | `image{data(base64),mime}`, `name` | lưu ảnh vào folder `IMG_FOLDER_ID`, share "ai có link", trả `anh` = `drive.google.com/file/d/<id>/view` |
+  | `clicks` | – | 20.000 dòng Clicks gần nhất (`[thời gian 'yyyy-MM-dd HH:mm', sp_id, món, bam_tu, outfit_id, nguồn, thiết bị, trang]`) |
+- Kiểu dữ liệu khi ghi: `hien_thi`, `ghim` → boolean; `ngay_them` → Date; `x`, `y` → số (1 chữ số thập phân); còn lại → text.
 - **Script Properties** (Cài đặt dự án ⚙ → Thuộc tính tập lệnh): `ADMIN_KEY` (mật khẩu nhap.html), `IMG_FOLDER_ID` (ID folder ảnh public). Không ghi 2 giá trị này vào code hay repo. Lần đầu thêm DriveApp phải chạy hàm `test` trong editor để cấp quyền Drive.
 
 ## File
 | File | Vai trò |
 |---|---|
 | `index.html` | Trang chính. 2 layout trong 1 file: **phone** (mặc định) và **desktop** (`@media (min-width:960px)`, lưới 4 cột ≥ 1280px) |
-| `pin.html` | Tool nội bộ gắn món vào ảnh outfit: chọn outfit → bấm lên ảnh → chọn món → copy TSV `outfit_id, sp_id, x, y` (x, y = % nguyên) dán vào tab `OutfitItem`. Chọn "— Outfit mới —" thì reset trắng. Không link từ trang chính, có `noindex`. Đọc API với `?fresh=1` |
-| `nhap.html` | Tool nội bộ **thêm sản phẩm không cần mở Sheet**: đăng nhập bằng `ADMIN_KEY` (lưu `localStorage: kt-admin-key`), form link mua / brand (gợi ý từ brand đã có) / nhóm / tên / ai dùng (Phi · Tường · Cả hai) / size / hiện / ghim; ảnh chọn từ máy, kéo thả hoặc dán (tự thu nhỏ ≤ 1600px JPEG) hoặc dán link ảnh; xem trước card; cảnh báo trùng link mua; danh sách món đang có + tìm. Không link từ trang chính, `noindex` |
+| `nhap.html` | **Trang quản trị — làm mọi thứ thay cho mở Google Sheet.** Đăng nhập bằng `ADMIN_KEY` (lưu `localStorage: kt-admin-key`). 4 tab: **Sản phẩm** (tìm, lọc nhóm / hiện / ẩn / ★ / Phi / Tường; công tắc Hiện và nút ★ bấm là lưu; ▲▼ đổi thứ tự khi không lọc; bấm món → form sửa: ảnh up từ máy / kéo thả / dán (thu nhỏ ≤ 1600px JPEG) hoặc link, link mua, brand gợi ý, nhóm, tên, ai dùng, size, hiện, ghim, ngày thêm, id chỉ đọc; cảnh báo trùng link mua; Xoá) · **Outfit** (lưới outfit, công tắc Hiện, form sửa: ảnh, tên, của ai, ghi chú, hiện + **gắn món ngay trên ảnh** như pin.html rồi lưu thẳng vào OutfitItem; Xoá) · **Thông tin kênh** (avatar up được, tên, handle, bio, link MXH, zalo, email + key lạ khác trong ThongTin) · **Thống kê** (7 ngày / 30 ngày / tất cả: tổng lượt, hôm nay, món được bấm, bấm từ Shop the look; bảng theo món / nguồn / thiết bị / vị trí / outfit / ngày). Form đang sửa mà đóng (✕, Esc, Back) thì hỏi trước khi bỏ. Request chạy tuần tự. Không link từ trang chính, `noindex` |
+| `pin.html` | (Cũ, vẫn chạy) tool gắn món kiểu copy–dán TSV vào OutfitItem. Đã có trong nhap.html → tab Outfit |
 | `apps-script/Code.gs` | Bản tham khảo code Apps Script (placeholder SHEET_ID) |
 | `favicon.svg` / `favicon.ico` / `apple-touch-icon.png` / `icon-192.png` / `icon-512.png` / `icon-maskable-512.png` / `manifest.webmanifest` | Icon giỏ hàng (svg tự đổi màu theo sáng/tối) + PWA manifest |
 | `og.jpg` | Ảnh chia sẻ OG/Twitter 1200×630 |
@@ -117,10 +129,11 @@ index.html / pin.html / nhap.html  (const API_URL = '.../exec')
 | HuongDan | hướng dẫn điền Sheet |
 
 - `hien_thi` = TRUE mới hiện. `anh` = link Drive (file trong folder ảnh public) hoặc link ảnh Shopee.
-- Việc còn treo: điền `size_mac`; thay outfit demo `demo-tuong-jolie` bằng ảnh outfit thật rồi gắn món bằng `pin.html`.
+- Bình thường không cần mở Sheet nữa: mọi thứ sửa ở `nhap.html`. Sheet vẫn là nơi lưu thật, sửa tay trong Sheet vẫn được.
+- Việc còn treo: điền `size_mac`; thay outfit demo `demo-tuong-jolie` bằng ảnh outfit thật.
 
 ## Rule khi chỉnh sửa
-1. **Mọi chỉnh sửa giao diện phải áp dụng cho CẢ 2 phiên bản phone và desktop.** Sửa CSS/markup xong phải kiểm tra cả 2 (mobile ~375–390px và desktop ≥ 960px, thêm ≥ 1280px cho lưới 4 cột). Áp dụng cho cả `pin.html`.
+1. **Mọi chỉnh sửa giao diện phải áp dụng cho CẢ 2 phiên bản phone và desktop.** Sửa CSS/markup xong phải kiểm tra cả 2 (mobile ~375–390px và desktop ≥ 960px, thêm ≥ 1280px cho lưới 4 cột). Áp dụng cho cả `pin.html` và `nhap.html`.
 2. Kiểm tra cả 2 chế độ sáng và tối.
 3. Không đổi tên tab Sheet (`SanPham`, `ThongTin`, `Outfit`, `OutfitItem`, `Clicks`) hay tên cột dòng 1 (Apps Script đọc theo tên).
 4. Web không hiển thị giá sản phẩm.
@@ -128,4 +141,4 @@ index.html / pin.html / nhap.html  (const API_URL = '.../exec')
 6. Đổi cấu trúc data trả về (thêm cột/tab) → sửa Apps Script + deploy phiên bản mới (giữ URL) + cập nhật `apps-script/Code.gs`; nếu đổi format cache thì tăng `CACHE_KEY` (`kt-cache-vN`).
 
 ## Test local
-Không có test trong repo. Cách đã dùng: Playwright (Python, headless Chromium) mở `index.html` qua `http.server`, route-mock request `GET .../exec` trả JSON giả `{products, info, looks, lookItems}` và chặn POST tracking; chụp màn hình ở 390px, 1024px, 1280px × sáng/tối; kiểm tra không có lỗi console, bộ lọc, overlay Shop the look, keepTab, `pin.html`.
+Không có test trong repo. `nhap.html` test end-to-end bằng cách chạy chính `apps-script/Code.gs` trong Node với SpreadsheetApp / DriveApp / CacheService… giả lập (Sheet = mảng 2 chiều), Playwright route request `script.google.com/.../exec` sang server giả đó rồi kiểm tra dữ liệu Sheet sau từng thao tác. Cách đã dùng: Playwright (Python, headless Chromium) mở `index.html` qua `http.server`, route-mock request `GET .../exec` trả JSON giả `{products, info, looks, lookItems}` và chặn POST tracking; chụp màn hình ở 390px, 1024px, 1280px × sáng/tối; kiểm tra không có lỗi console, bộ lọc, overlay Shop the look, keepTab, `pin.html`.

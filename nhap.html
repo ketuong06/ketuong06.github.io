@@ -2,92 +2,174 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>Thêm sản phẩm · Tường Bình Thường</title>
+<title>Quản lý Tủ đồ · Tường Bình Thường</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <script>try{var t=localStorage.getItem('kt-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Be+Vietnam+Pro:wght@400;500&display=swap">
 <style>
-:root{--bg:#fff;--fg:#111;--muted:#6b6b6b;--line:#e4e4e4;--tile:#f3f3f3;--inv-bg:#111;--inv-fg:#fff;--err:#c62828;--ok:#1b7f3b;
+:root{--bg:#fff;--fg:#111;--muted:#6b6b6b;--line:#e4e4e4;--tile:#f3f3f3;--inv-bg:#111;--inv-fg:#fff;--err:#c62828;--ok:#1b7f3b;--shade:rgba(0,0,0,.35);
   --label:"Archivo",ui-sans-serif,system-ui,sans-serif;--body:"Be Vietnam Pro",ui-sans-serif,system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;--err:#ff6b6b;--ok:#5fd18a;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;--err:#ff6b6b;--ok:#5fd18a;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;--err:#ff6b6b;--ok:#5fd18a;--shade:rgba(0,0,0,.6);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;--err:#ff6b6b;--ok:#5fd18a;--shade:rgba(0,0,0,.6);color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--body)}
-.wrap{max-width:480px;margin:0 auto;padding:20px 16px 48px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+body.lock{overflow:hidden}
+.wrap{max-width:760px;margin:0 auto;padding:16px 16px 64px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .up{font-family:var(--label);text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted)}
-h1{font:500 20px/1.25 var(--label);margin:4px 0 6px}
-h2{font:500 15px/1.3 var(--label);margin:28px 0 8px}
-p.hint{color:var(--muted);font-size:13px;margin:0 0 16px}
+h1{font:500 20px/1.25 var(--label);margin:4px 0 4px}
+h2{font:500 15px/1.3 var(--label);margin:24px 0 8px}
+h3{font:500 12px/1.3 var(--label);margin:20px 0 6px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.hint{color:var(--muted);font-size:13px;margin:0}
+.toplinks{font-size:13px;color:var(--muted);margin-top:2px}
+.toplinks a,.link{color:var(--muted);font:13px var(--body);text-decoration:underline;background:none;border:0;padding:0;cursor:pointer}
+.icon{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line);border-radius:999px;background:none;color:var(--fg);cursor:pointer;padding:0;flex:none;font-size:14px}
+.icon:hover{border-color:var(--fg)}
+.icons{display:flex;gap:6px}
 label{display:block;font-size:12px;color:var(--muted);margin:12px 0 4px}
 label b{color:var(--fg);font-weight:500}
-select,input[type=text],input[type=url],input[type=password],input[type=search]{width:100%;font:14px var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);padding:9px 10px;border-radius:0;-webkit-appearance:none;appearance:none}
+select,input[type=text],input[type=url],input[type=password],input[type=search],input[type=date],input[type=email],textarea{width:100%;font:14px var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);padding:9px 10px;border-radius:0;-webkit-appearance:none;appearance:none}
+textarea{min-height:72px;resize:vertical}
+input[readonly]{color:var(--muted);background:var(--tile)}
 select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 15px) 55%,calc(100% - 10px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:28px}
-select:focus,input:focus{outline:2px solid var(--fg);outline-offset:-1px}
+select:focus,input:focus,textarea:focus{outline:2px solid var(--fg);outline-offset:-1px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{font:500 13px var(--body);padding:7px 12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer}
 .chips button[aria-pressed="true"]{border-color:var(--fg);background:var(--inv-bg);color:var(--inv-fg)}
 .chk{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--fg);cursor:pointer}
 .chk input{width:18px;height:18px;accent-color:var(--fg);margin:0}
-.btn{font:500 13px var(--body);padding:10px 16px;border:1px solid var(--fg);background:var(--bg);color:var(--fg);cursor:pointer;transition:transform .12s}
+.btn{font:500 13px var(--body);padding:10px 16px;border:1px solid var(--fg);background:var(--bg);color:var(--fg);cursor:pointer;transition:transform .12s;white-space:nowrap}
 .btn:active{transform:scale(.97)}
 .btn.pri{background:var(--inv-bg);color:var(--inv-fg)}
+.btn.danger{border-color:var(--err);color:var(--err)}
 .btn[disabled]{opacity:.5;cursor:default}
 .btn.sm{padding:6px 10px;font-size:12px}
-.link{border:0;background:none;color:var(--muted);font:13px var(--body);text-decoration:underline;cursor:pointer;padding:0}
-.theme{width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--line);border-radius:999px;background:none;color:var(--fg);cursor:pointer;padding:0;flex:none}
-.theme:hover{border-color:var(--fg)}
-/* ảnh */
-.drop{position:relative;width:min(240px,100%);display:grid;place-items:center;aspect-ratio:3/4;background:var(--tile);border:1px dashed var(--line);cursor:pointer;overflow:hidden;text-align:center;color:var(--muted);font-size:13px;padding:16px}
-.drop.over{border-color:var(--fg)}
-.drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.drop .x{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:0;background:var(--bg);color:var(--fg);cursor:pointer;font-size:18px;line-height:1;z-index:2;box-shadow:0 1px 4px rgba(0,0,0,.25)}
-.drop input{display:none}
-.or{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;margin:10px 0 0}
-.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
-/* preview card như trên web */
-.card{border:0}
-.card .ph{aspect-ratio:3/4;background:var(--tile);overflow:hidden;position:relative}
-.card .ph img{width:100%;height:100%;object-fit:cover;display:block}
-.card .badge{position:absolute;top:8px;left:8px;font:600 10px/1 var(--label);letter-spacing:.06em;text-transform:uppercase;background:var(--inv-bg);color:var(--inv-fg);padding:5px 7px}
-.card .brand{font:500 13px var(--label);margin-top:8px;text-transform:uppercase;letter-spacing:.04em}
-.card .name{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card .size{font-size:12px;color:var(--muted)}
-.card .buy{display:block;margin-top:8px;text-align:center;font:500 13px var(--body);padding:9px;background:var(--inv-bg);color:var(--inv-fg)}
-.pv{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:start}
-.pv .meta{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
-/* trạng thái */
-.msg{margin-top:12px;font-size:13px;min-height:1.5em}
-.msg.err{color:var(--err)}.msg.ok{color:var(--ok)}
 .actions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;align-items:center}
-/* list */
-.list{display:grid;gap:6px}
-.it{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);padding:6px}
-.it img{width:44px;height:58px;object-fit:cover;background:var(--tile);display:block}
-.it .t{font-size:13px;overflow:hidden}
-.it .t b{display:block;font:500 12px var(--label);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.it .t span{display:block;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.it .tag{font-size:11px;color:var(--muted);white-space:nowrap}
-.it.hid{opacity:.55}
-.gate{max-width:360px;margin:12vh auto 0}
+.msg{margin-top:10px;font-size:13px;min-height:1.5em}
+.msg.err{color:var(--err)}.msg.ok{color:var(--ok)}
 .hidden{display:none!important}
 .spin{display:inline-block;width:12px;height:12px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
 @keyframes sp{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.spin{animation:none}.btn{transition:none}}
+/* tabs */
+.tabs{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin:14px -16px 0;padding:8px 16px;border-bottom:1px solid var(--line)}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;font:500 13px var(--body);padding:8px 14px;border:1px solid transparent;border-radius:999px;background:none;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--fg);border-color:var(--fg)}
+/* toolbar */
+.bar{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:14px;align-items:center}
+.bar .f{display:grid;grid-template-columns:1fr 1fr;gap:8px;grid-column:1/-1}
+.count{font-size:12px;color:var(--muted);margin:12px 0 8px;font-variant-numeric:tabular-nums}
+/* switch */
+.sw{position:relative;display:inline-block;width:36px;height:20px;flex:none}
+.sw input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;z-index:1;width:100%;height:100%}
+.sw span{position:absolute;inset:0;border-radius:999px;background:var(--line);transition:background .2s}
+.sw span::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--bg);transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.sw input:checked+span{background:var(--fg)}
+.sw input:checked+span::after{transform:translateX(16px)}
+.sw input:focus-visible+span{outline:2px solid var(--fg);outline-offset:2px}
+/* product rows */
+.list{display:grid;gap:6px}
+.pr{display:grid;grid-template-columns:auto 52px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);padding:6px 8px 6px 6px}
+.pr.nomv{grid-template-columns:52px minmax(0,1fr) auto}
+.pr.off .th,.pr.off .tx{opacity:.5}
+.pr .mv{display:grid;gap:2px}
+.pr .mv button{width:24px;height:24px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer;font-size:9px;line-height:1;padding:0}
+.pr .mv button:hover:not([disabled]){border-color:var(--fg);color:var(--fg)}
+.pr .mv button[disabled]{opacity:.3;cursor:default}
+.th{width:52px;height:68px;object-fit:cover;background:var(--tile);display:block}
+.tx{min-width:0;cursor:pointer}
+.tx b{display:block;font:500 12px var(--label);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx .n{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx .m{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{display:inline-block;font:600 9px/1 var(--label);letter-spacing:.06em;text-transform:uppercase;padding:3px 5px;border:1px solid var(--fg);color:var(--fg);margin-right:4px;vertical-align:1px}
+.ctl{display:flex;align-items:center;gap:8px}
+.star{width:30px;height:30px;border:1px solid var(--line);border-radius:999px;background:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:0}
+.star[aria-pressed="true"]{color:var(--inv-fg);background:var(--inv-bg);border-color:var(--inv-bg)}
+.empty{color:var(--muted);font-size:13px;padding:24px 0;text-align:center}
+/* outfits */
+.og{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.oc{border:1px solid var(--line);min-width:0}
+.oc .ph{aspect-ratio:3/4;background:var(--tile);cursor:pointer;overflow:hidden}
+.oc .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.oc .b{padding:8px;display:grid;gap:6px}
+.oc .t{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oc .r{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.oc.off .ph{opacity:.5}
+/* drawer */
+.dw{position:fixed;inset:0;z-index:40;display:flex;justify-content:flex-end}
+.dw .shade{position:absolute;inset:0;background:var(--shade)}
+.dw .panel{position:relative;background:var(--bg);width:100%;height:100%;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;animation:dwIn .22s ease;margin:0}
+@keyframes dwIn{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+.dw .hd{position:sticky;top:0;z-index:3;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:10px 16px;padding-top:max(10px,env(safe-area-inset-top))}
+.dw .hd .ttl{flex:1;font:500 15px var(--label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dw .bd{padding:4px 16px 24px;flex:1}
+.dw .ft{position:sticky;bottom:0;z-index:3;background:var(--bg);border-top:1px solid var(--line);padding:10px 16px;padding-bottom:max(10px,env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center}
+.dw .ft .sp{flex:1}
+/* image picker */
+.drop{position:relative;width:min(220px,100%);display:grid;place-items:center;aspect-ratio:3/4;background:var(--tile);border:1px dashed var(--line);cursor:pointer;overflow:hidden;text-align:center;color:var(--muted);font-size:13px;padding:16px}
+.drop.sq{aspect-ratio:1;width:112px;border-radius:50%;padding:8px}
+.drop.over{border-color:var(--fg)}
+.drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.drop .chg{position:absolute;left:8px;bottom:8px;z-index:2;font:500 11px var(--body);padding:4px 8px;background:var(--bg);color:var(--fg)}
+.drop.sq .chg{left:50%;transform:translateX(-50%);bottom:10px}
+.drop input{display:none}
+.or{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;margin:10px 0 0}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+/* pin editor */
+.pic{position:relative;line-height:0;background:var(--tile);width:fit-content;max-width:100%;min-width:min(100%,280px);margin:0 auto;cursor:crosshair;touch-action:none;user-select:none;-webkit-user-select:none}
+.pic img{display:block;width:auto;max-width:100%;max-height:72vh;height:auto;pointer-events:none}
+.pic .ph0{line-height:1.5;padding:56px 16px;text-align:center;color:var(--muted);font-size:13px;cursor:default}
+.pin{position:absolute;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:var(--bg);color:var(--fg);border:2px solid var(--fg);font:600 12px/1 var(--label);display:grid;place-items:center;cursor:grab;box-shadow:0 1px 6px rgba(0,0,0,.35)}
+.pin.on{background:var(--inv-bg);color:var(--inv-fg)}
+.pins{display:grid;gap:6px;margin-top:8px}
+.pi{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:8px;align-items:center;border:1px solid var(--line);padding:6px}
+.pi.on{border-color:var(--fg)}
+.pi .no{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--fg);display:grid;place-items:center;font:600 11px/1 var(--label)}
+.pi select{padding:7px 28px 7px 8px;font-size:13px}
+.pi .del{border:0;background:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:4px 6px}
+.picrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+/* stats */
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.kpi{border:1px solid var(--line);padding:10px}
+.kpi b{display:block;font:500 22px/1.1 var(--label);font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font:500 11px var(--label);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;width:1%}
+/* toast */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;background:var(--inv-bg);color:var(--inv-fg);font-size:13px;padding:10px 16px;max-width:calc(100vw - 32px);box-shadow:0 4px 16px rgba(0,0,0,.25);transition:opacity .2s,transform .2s}
+.toast.err{background:var(--err);color:#fff}
+body.lock .toast{bottom:76px}
+.toast.hide{opacity:0;transform:translate(-50%,8px);pointer-events:none}
+.gate{max-width:360px;margin:12vh auto 0}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}.btn,.sw span,.sw span::after,.toast{transition:none}.dw .panel{animation:none}}
 @media (min-width:960px){
-  .wrap{max-width:1180px;padding:32px 40px 64px}
-  .cols{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:48px;align-items:start}
-  .side{position:sticky;top:24px}
-  .drop{width:100%}
-  .formgrid{display:grid;grid-template-columns:260px minmax(0,1fr);gap:28px;align-items:start}
-  .pv{grid-template-columns:1fr}
-  .pv .card{max-width:220px}
-  h2.first{margin-top:0}
-  .list{max-height:52vh;overflow:auto;padding-right:4px}
+  .wrap{max-width:1180px;padding:28px 40px 64px}
+  .tabs{margin:18px 0 0;padding:8px 0}
+  .bar{grid-template-columns:minmax(0,1fr) 180px 180px auto}
+  .bar .f{display:contents}
+  #tkBar,#ofBar{grid-template-columns:minmax(0,1fr) auto}
+  .list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .og{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+  .dw .panel{width:600px;animation:dwSide .22s ease}
+  .dw.wide .panel{width:min(1080px,94vw)}
+  @keyframes dwSide{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+  .dw .bd{padding:8px 24px 28px}
+  .dw .hd,.dw .ft{padding-left:24px;padding-right:24px}
+  .pgrid{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;align-items:start}
+  .ogrid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:28px;align-items:start}
+  .ogrid .side{position:sticky;top:64px}
+  .pic img{max-height:calc(100vh - 190px)}
+  .info{max-width:620px}
+  .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 32px}
+  .stats .full{grid-column:1/-1}
+  .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
+@media (min-width:1280px){.list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -95,16 +177,22 @@ select:focus,input:focus{outline:2px solid var(--fg);outline-offset:-1px}
   <div class="top">
     <div>
       <span class="up">Tool nội bộ · @ketuong06</span>
-      <h1>Thêm sản phẩm</h1>
+      <h1>Quản lý Tủ đồ</h1>
+      <div class="toplinks hidden" id="toplinks"><a href="./" target="_blank" rel="noopener">Mở web ↗</a> · <button class="link" id="logout" type="button">Đăng xuất</button></div>
     </div>
-    <button class="theme" id="themeBtn" type="button" aria-label="Đổi sáng / tối">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
-    </button>
+    <div class="icons">
+      <button class="icon hidden" id="reload" type="button" aria-label="Tải lại dữ liệu" title="Tải lại dữ liệu từ Sheet">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+      </button>
+      <button class="icon" id="themeBtn" type="button" aria-label="Đổi sáng / tối">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+      </button>
+    </div>
   </div>
 
   <!-- Đăng nhập -->
   <section id="gate" class="gate hidden">
-    <p class="hint">Nhập mật khẩu quản lý để thêm món vào Tủ đồ.</p>
+    <p class="hint">Nhập mật khẩu quản lý.</p>
     <form id="gateForm">
       <label for="key">Mật khẩu</label>
       <input type="password" id="key" autocomplete="current-password" required>
@@ -115,272 +203,679 @@ select:focus,input:focus{outline:2px solid var(--fg);outline-offset:-1px}
 
   <!-- App -->
   <section id="app" class="hidden">
-    <p class="hint">Điền xong bấm <b>Lưu</b> → món tự vào tab <b>SanPham</b> và lên web sau vài giây. <a href="./" target="_blank" rel="noopener" style="color:inherit">Mở web ↗</a> · <button class="link" id="logout" type="button">Đăng xuất</button></p>
-    <div class="cols">
-      <form id="f" autocomplete="off" novalidate>
-        <div class="formgrid">
-          <div>
-            <label><b>Ảnh</b> (bấm / kéo thả / dán)</label>
-            <div class="drop" id="drop" tabindex="0" role="button" aria-label="Chọn ảnh">
-              <span id="dropTxt">Chọn ảnh từ máy<br><small>ảnh dọc 3:4 đẹp nhất</small></span>
-              <input type="file" id="file" accept="image/*">
-            </div>
-            <div class="or">hoặc</div>
-            <label for="anh">Link ảnh (Drive / Shopee)</label>
-            <input type="url" id="anh" placeholder="https://…">
-          </div>
-          <div>
-            <label for="link_mua"><b>Link mua</b> *</label>
-            <input type="url" id="link_mua" placeholder="https://s.shopee.vn/…" required>
-            <div class="row2">
-              <div><label for="brand"><b>Brand</b></label><input type="text" id="brand" list="brands" placeholder="Jolie"></div>
-              <div><label for="nhom"><b>Nhóm</b></label>
-                <select id="nhom"><option>Outfit</option><option>Phụ kiện</option><option>Đồ quay</option><option>Khác</option></select>
-              </div>
-            </div>
-            <datalist id="brands"></datalist>
-            <label for="ten"><b>Tên món</b> *</label>
-            <input type="text" id="ten" placeholder="Đầm hoa nhí tay phồng" required>
-            <label><b>Ai dùng</b></label>
-            <div class="chips" id="nguoi">
-              <button type="button" data-v="Phi">Phi</button>
-              <button type="button" data-v="Tường" aria-pressed="true">Tường</button>
-              <button type="button" data-v="Cả hai">Cả hai</button>
-            </div>
-            <label for="size_mac"><b>Size mặc</b> (không bắt buộc)</label>
-            <input type="text" id="size_mac" placeholder="M">
-            <label class="chk"><input type="checkbox" id="hien_thi" checked> Hiện lên web ngay</label>
-            <label class="chk"><input type="checkbox" id="ghim"> ★ Top pick (ghim lên đầu)</label>
-            <div class="actions">
-              <button class="btn pri" id="save" type="submit">Lưu sản phẩm</button>
-              <button class="btn" id="clear" type="button">Xoá form</button>
-            </div>
-            <div class="msg" id="msg" role="status"></div>
-          </div>
-        </div>
-      </form>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-t="sp" aria-selected="true">Sản phẩm</button>
+      <button role="tab" data-t="of" aria-selected="false">Outfit</button>
+      <button role="tab" data-t="tt" aria-selected="false">Thông tin kênh</button>
+      <button role="tab" data-t="tk" aria-selected="false">Thống kê</button>
+    </nav>
+    <div id="loading" class="empty"><span class="spin"></span>Đang tải dữ liệu…</div>
 
-      <aside class="side">
-        <h2 class="first">Xem trước</h2>
-        <div class="pv">
-          <div class="card">
-            <div class="ph" id="pvPh"><span class="badge hidden" id="pvBadge">★ Top pick</span></div>
-            <div class="brand" id="pvBrand">Brand</div>
-            <div class="name" id="pvName">Tên món</div>
-            <div class="size hidden" id="pvSize"></div>
-            <span class="buy">Mua ngay</span>
-          </div>
-          <div class="meta" id="pvMeta"></div>
+    <!-- Sản phẩm -->
+    <div class="pane hidden" data-p="sp">
+      <div class="bar">
+        <input type="search" id="spQ" placeholder="Tìm brand, tên…" aria-label="Tìm món">
+        <div class="f">
+          <select id="spNhom" aria-label="Nhóm"><option value="">Mọi nhóm</option></select>
+          <select id="spSt" aria-label="Lọc"><option value="">Tất cả</option><option value="on">Đang hiện</option><option value="off">Đang ẩn</option><option value="pin">★ Top pick</option><option value="Phi">Phi dùng</option><option value="Tường">Tường dùng</option></select>
         </div>
-        <h2>Đang có trên Sheet <span class="up" id="cnt"></span></h2>
-        <input type="search" id="q" placeholder="Tìm để tránh nhập trùng…">
-        <div class="list" id="list" style="margin-top:8px"></div>
-      </aside>
+        <button class="btn pri" id="spAdd" type="button">+ Thêm món</button>
+      </div>
+      <div class="count" id="spCount"></div>
+      <div class="list" id="spList"></div>
+    </div>
+
+    <!-- Outfit -->
+    <div class="pane hidden" data-p="of">
+      <div class="bar" id="ofBar">
+        <div class="chips" id="ofWho"><button type="button" data-v="" aria-pressed="true">Tất cả</button><button type="button" data-v="Phi" aria-pressed="false">Phi</button><button type="button" data-v="Tường" aria-pressed="false">Tường</button></div>
+        <button class="btn pri" id="ofAdd" type="button">+ Thêm outfit</button>
+      </div>
+      <div class="count" id="ofCount"></div>
+      <div class="og" id="ofList"></div>
+    </div>
+
+    <!-- Thông tin kênh -->
+    <div class="pane hidden" data-p="tt">
+      <form id="ttForm" class="info" autocomplete="off">
+        <label><b>Avatar</b></label>
+        <div class="drop sq" id="ttAvDrop" tabindex="0" role="button" aria-label="Đổi avatar"><span>Chọn ảnh</span><input type="file" accept="image/*"></div>
+        <label for="tt_avatar">Link avatar</label><input type="url" id="tt_avatar" data-k="avatar">
+        <div class="row2">
+          <div><label for="tt_ten_kenh"><b>Tên kênh</b></label><input type="text" id="tt_ten_kenh" data-k="ten_kenh"></div>
+          <div><label for="tt_handle"><b>Handle</b></label><input type="text" id="tt_handle" data-k="handle"></div>
+        </div>
+        <label for="tt_bio"><b>Bio</b></label><textarea id="tt_bio" data-k="bio"></textarea>
+        <label for="tt_tiktok"><b>TikTok</b></label><input type="url" id="tt_tiktok" data-k="tiktok">
+        <label for="tt_instagram"><b>Instagram</b></label><input type="url" id="tt_instagram" data-k="instagram">
+        <label for="tt_youtube"><b>YouTube</b></label><input type="url" id="tt_youtube" data-k="youtube">
+        <div class="row2">
+          <div><label for="tt_zalo"><b>Zalo</b></label><input type="text" id="tt_zalo" data-k="zalo"></div>
+          <div><label for="tt_email"><b>Email liên hệ</b></label><input type="email" id="tt_email" data-k="email"></div>
+        </div>
+        <div id="ttExtra"></div>
+        <div class="actions"><button class="btn pri" id="ttSave" type="submit">Lưu thông tin</button><button class="btn" id="ttReset" type="button">Hoàn tác</button></div>
+        <div class="msg" id="ttMsg"></div>
+      </form>
+    </div>
+
+    <!-- Thống kê -->
+    <div class="pane hidden" data-p="tk">
+      <div class="bar" id="tkBar">
+        <div class="chips" id="tkRange"><button type="button" data-v="7" aria-pressed="true">7 ngày</button><button type="button" data-v="30" aria-pressed="false">30 ngày</button><button type="button" data-v="0" aria-pressed="false">Tất cả</button></div>
+        <button class="btn" id="tkReload" type="button">Tải lại</button>
+      </div>
+      <div id="tkBody"></div>
     </div>
   </section>
 </main>
 
+<!-- Drawer sửa sản phẩm -->
+<div class="dw hidden" id="dwSp" role="dialog" aria-modal="true" aria-labelledby="dwSpT">
+  <div class="shade" data-close></div>
+  <form class="panel" id="spForm" autocomplete="off" novalidate>
+    <div class="hd"><button class="icon" type="button" data-close aria-label="Đóng">✕</button><span class="ttl" id="dwSpT">Thêm món</span></div>
+    <div class="bd">
+      <div class="pgrid">
+        <div>
+          <label><b>Ảnh</b> (bấm / kéo thả / dán)</label>
+          <div class="drop" id="spDrop" tabindex="0" role="button" aria-label="Chọn ảnh"><span>Chọn ảnh từ máy<br><small>ảnh dọc 3:4 đẹp nhất</small></span><input type="file" accept="image/*"></div>
+          <div class="or">hoặc</div>
+          <label for="sp_anh">Link ảnh (Drive / Shopee)</label>
+          <input type="url" id="sp_anh" placeholder="https://…">
+        </div>
+        <div>
+          <label for="sp_link_mua"><b>Link mua</b> *</label>
+          <input type="url" id="sp_link_mua" placeholder="https://s.shopee.vn/…">
+          <div class="row2">
+            <div><label for="sp_brand"><b>Brand</b></label><input type="text" id="sp_brand" list="brands" placeholder="Jolie"></div>
+            <div><label for="sp_nhom"><b>Nhóm</b></label><select id="sp_nhom"></select></div>
+          </div>
+          <datalist id="brands"></datalist>
+          <label for="sp_ten"><b>Tên món</b> *</label>
+          <input type="text" id="sp_ten" placeholder="Đầm hoa nhí tay phồng">
+          <label><b>Ai dùng</b></label>
+          <div class="chips" id="sp_nguoi"><button type="button" data-v="Phi">Phi</button><button type="button" data-v="Tường">Tường</button><button type="button" data-v="Cả hai">Cả hai</button></div>
+          <label for="sp_size_mac"><b>Size mặc</b> (không bắt buộc)</label>
+          <input type="text" id="sp_size_mac" placeholder="M">
+          <label class="chk"><input type="checkbox" id="sp_hien_thi"> Hiện lên web</label>
+          <label class="chk"><input type="checkbox" id="sp_ghim"> ★ Top pick (ghim lên đầu)</label>
+          <div class="row2">
+            <div><label for="sp_ngay_them">Ngày thêm</label><input type="date" id="sp_ngay_them"></div>
+            <div><label for="sp_id">id</label><input type="text" id="sp_id" readonly placeholder="tự tạo"></div>
+          </div>
+          <div class="msg" id="spMsg" role="status"></div>
+        </div>
+      </div>
+    </div>
+    <div class="ft">
+      <button class="btn danger hidden" id="spDel" type="button">Xoá</button>
+      <span class="sp"></span>
+      <button class="btn" type="button" data-close>Huỷ</button>
+      <button class="btn pri" id="spSave" type="submit">Lưu</button>
+    </div>
+  </form>
+</div>
+
+<!-- Drawer sửa outfit -->
+<div class="dw wide hidden" id="dwOf" role="dialog" aria-modal="true" aria-labelledby="dwOfT">
+  <div class="shade" data-close></div>
+  <form class="panel" id="ofForm" autocomplete="off" novalidate>
+    <div class="hd"><button class="icon" type="button" data-close aria-label="Đóng">✕</button><span class="ttl" id="dwOfT">Thêm outfit</span></div>
+    <div class="bd">
+      <div class="ogrid">
+        <div>
+          <p class="hint" style="margin:8px 0">Bấm lên ảnh để thêm chấm, kéo chấm để chỉnh vị trí, chọn món cho từng chấm.</p>
+          <div class="pic" id="ofPic"><div class="ph0" id="ofPh0">Chọn ảnh outfit để bắt đầu gắn món</div><img id="ofImg" alt="" hidden referrerpolicy="no-referrer"></div>
+        </div>
+        <div class="side">
+          <label><b>Ảnh outfit</b> (toàn thân)</label>
+          <div class="picrow">
+            <button class="btn" type="button" id="ofPick">Chọn ảnh từ máy</button>
+            <input type="file" accept="image/*" id="ofFile" hidden>
+            <span class="hint" id="ofPickTxt"></span>
+          </div>
+          <label for="of_anh">hoặc link ảnh</label>
+          <input type="url" id="of_anh" placeholder="https://drive.google.com/file/d/…">
+          <label for="of_ten"><b>Tên outfit</b></label>
+          <input type="text" id="of_ten" placeholder="Đi cafe cuối tuần">
+          <label><b>Outfit của</b></label>
+          <div class="chips" id="of_nguoi"><button type="button" data-v="Phi">Phi</button><button type="button" data-v="Tường">Tường</button><button type="button" data-v="Cả hai">Cả hai</button></div>
+          <label for="of_ghi_chu">Ghi chú (không hiện lên web)</label>
+          <input type="text" id="of_ghi_chu">
+          <label class="chk"><input type="checkbox" id="of_hien_thi"> Hiện lên web</label>
+          <h3>Các món trong outfit <span id="ofPinCnt"></span></h3>
+          <div class="pins" id="ofPins"></div>
+          <div class="msg" id="ofMsg" role="status"></div>
+        </div>
+      </div>
+    </div>
+    <div class="ft">
+      <button class="btn danger hidden" id="ofDel" type="button">Xoá</button>
+      <span class="sp"></span>
+      <button class="btn" type="button" data-close>Huỷ</button>
+      <button class="btn pri" id="ofSave" type="submit">Lưu</button>
+    </div>
+  </form>
+</div>
+
+<div class="toast hide" id="toast" role="status" aria-live="polite"></div>
+
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbwrYGjv7IcnLyARS0W_wS2CAgxqbYyW_3aKSxlMlLdeRf8ZH8AIot4oxPOu31RpUfqK0g/exec';
 const KEY_LS = 'kt-admin-key';
+const NHOM_DEFAULT = ['Outfit', 'Phụ kiện', 'Đồ quay', 'Khác'];
+const NEW_DAYS = 7;
 const $ = id => document.getElementById(id);
-let KEY = '';
-try { KEY = localStorage.getItem(KEY_LS) || ''; } catch (e) {}
-let imgData = null;      // {data(base64), mime, url(objectURL)}
-let products = [];
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase();
+const isOn = v => /^(true|1|x|có)$/i.test(String(v == null ? '' : v).trim());
+const desk = () => matchMedia('(min-width:960px)').matches;
+let KEY = ''; try { KEY = localStorage.getItem(KEY_LS) || ''; } catch (e) {}
+let DB = null; // {SanPham:{head,rows}, Outfit, ThongTin, OutfitItem}
 
-/* ---------- theme ---------- */
+/* ---------- tiện ích ---------- */
 $('themeBtn').onclick = () => {
   const r = document.documentElement;
   const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme:dark)').matches;
   r.dataset.theme = dark ? 'light' : 'dark';
   try { localStorage.setItem('kt-theme', r.dataset.theme); } catch (e) {}
 };
-
-/* ---------- API ---------- */
-async function post(body){
-  const res = await fetch(API_URL, {method: 'POST', body: JSON.stringify(body)}); // text/plain → không preflight
-  const txt = await res.text();
-  try { return JSON.parse(txt); } catch (e) { throw new Error('Apps Script trả về không đúng (' + txt.slice(0, 80) + ') — đã deploy phiên bản mới chưa?'); }
+let toastT;
+function toast(t, err){
+  const x = $('toast'); x.textContent = t; x.className = 'toast' + (err ? ' err' : '');
+  clearTimeout(toastT); toastT = setTimeout(() => x.classList.add('hide'), err ? 5000 : 2200);
 }
+function driveId(url){ const m = String(url).match(/(?:\/d\/|[?&]id=)([A-Za-z0-9_-]{20,})/); return m ? m[1] : null; }
+function imgSrc(url, w){ const id = driveId(url); return id ? 'https://lh3.googleusercontent.com/d/' + id + '=w' + (w || 400) : String(url || ''); }
+function setImg(im, url, w){
+  im.referrerPolicy = 'no-referrer'; im.alt = '';
+  if (!url) { im.removeAttribute('src'); return; }
+  const id = driveId(url);
+  im.onerror = () => { if (id && !im.dataset.fb) { im.dataset.fb = 1; im.src = 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + (w || 400); } else { im.onerror = null; im.removeAttribute('src'); } };
+  delete im.dataset.fb; im.src = /^data:/.test(url) ? url : imgSrc(url, w);
+}
+function today(){ const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function isNew(d){ const m = String(d || '').match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return false; return (Date.now() - new Date(+m[1], m[2] - 1, +m[3])) / 864e5 < NEW_DAYS; }
+function chipsVal(box, v){ box.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v)); }
+function chipsGet(box){ const b = box.querySelector('[aria-pressed="true"]'); return b ? b.dataset.v : ''; }
+function chipsBind(box, fn){ box.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; chipsVal(box, b.dataset.v); fn && fn(b.dataset.v); }); }
+function busy(btn, on, text){ if (!btn) return; if (on) { if (!btn.disabled) btn.dataset.t = btn.textContent; btn.disabled = true; btn.innerHTML = '<span class="spin"></span>' + (text || 'Đang lưu…'); } else { btn.disabled = false; if (btn.dataset.t) btn.textContent = btn.dataset.t; } }
+
+/* ---------- API (chạy tuần tự để Sheet không bị ghi chồng) ---------- */
+let queue = Promise.resolve();
+function api(body){
+  const run = () => fetch(API_URL, {method: 'POST', body: JSON.stringify(Object.assign({key: KEY}, body))}) // text/plain → không preflight
+    .then(r => r.text())
+    .then(t => {
+      let j; try { j = JSON.parse(t); } catch (e) { throw new Error('Apps Script chưa cập nhật bản mới (trả về: ' + t.slice(0, 60) + ')'); }
+      if (!j.ok && j.error === 'Sai mật khẩu' && body.action !== 'check') showGate('Mật khẩu đã đổi, nhập lại nha');
+      if (!j.ok) throw new Error(j.error || 'Lỗi không rõ');
+      return j;
+    });
+  const p = queue.then(run, run); queue = p.catch(() => {}); return p;
+}
+async function loadDB(){ DB = (await api({action: 'load'})).data; renderAll(); }
 
 /* ---------- đăng nhập ---------- */
 function showGate(err){
-  $('app').classList.add('hidden'); $('gate').classList.remove('hidden');
+  closeDw(true);
+  $('app').classList.add('hidden'); $('toplinks').classList.add('hidden'); $('reload').classList.add('hidden');
+  $('gate').classList.remove('hidden');
   $('gateMsg').textContent = err || ''; $('gateMsg').className = 'msg' + (err ? ' err' : '');
   setTimeout(() => $('key').focus(), 50);
 }
-function showApp(){
-  $('gate').classList.add('hidden'); $('app').classList.remove('hidden');
-  loadList();
+async function showApp(){
+  $('gate').classList.add('hidden'); $('app').classList.remove('hidden'); $('toplinks').classList.remove('hidden'); $('reload').classList.remove('hidden');
+  const ld = $('loading'); ld.classList.remove('hidden'); ld.innerHTML = '<span class="spin"></span>Đang tải dữ liệu…';
+  try { await loadDB(); }
+  catch (e) { if (!$('app').classList.contains('hidden')) { ld.replaceChildren(el('span', 'msg err', 'Không tải được dữ liệu: ' + e.message)); } return; }
+  ld.classList.add('hidden');
+  openTab(location.hash.slice(1) || 'sp');
 }
 $('gateForm').onsubmit = async e => {
   e.preventDefault();
   const k = $('key').value.trim(); if (!k) return;
-  const b = $('gateBtn'); b.disabled = true; b.innerHTML = '<span class="spin"></span>Đang kiểm tra';
-  try {
-    const r = await post({action: 'check', key: k});
-    if (!r.ok) throw new Error(r.error || 'Sai mật khẩu');
-    KEY = k; try { localStorage.setItem(KEY_LS, k); } catch (e) {}
-    $('key').value = ''; showApp();
-  } catch (err) { showGate(err.message); }
-  finally { b.disabled = false; b.textContent = 'Vào'; }
+  const b = $('gateBtn'); busy(b, true, 'Đang kiểm tra');
+  const old = KEY; KEY = k;
+  try { await api({action: 'check'}); try { localStorage.setItem(KEY_LS, k); } catch (e) {} $('key').value = ''; showApp(); }
+  catch (err) { KEY = old; showGate(err.message); }
+  finally { busy(b, false); }
 };
-$('logout').onclick = () => { KEY = ''; try { localStorage.removeItem(KEY_LS); } catch (e) {} showGate(); };
+$('logout').onclick = () => { KEY = ''; DB = null; CLICKS = null; try { localStorage.removeItem(KEY_LS); } catch (e) {} showGate(); };
+$('reload').onclick = async () => { const b = $('reload'); b.disabled = true; try { await loadDB(); CLICKS = null; if (curTab === 'tk') loadClicks(); toast('Đã tải lại dữ liệu mới nhất'); } catch (e) { toast(e.message, 1); } b.disabled = false; };
 
-/* ---------- ảnh ---------- */
-function driveId(url){ const m = String(url).match(/(?:\/d\/|[?&]id=)([A-Za-z0-9_-]{20,})/); return m ? m[1] : null; }
-function imgSrc(url, w){ const id = driveId(url); return id ? 'https://lh3.googleusercontent.com/d/' + id + '=w' + (w || 400) : url; }
+/* ---------- tabs ---------- */
+let curTab = 'sp';
+document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) openTab(b.dataset.t); });
+function openTab(t){
+  if (!['sp', 'of', 'tt', 'tk'].includes(t)) t = 'sp';
+  curTab = t;
+  document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.t === t));
+  document.querySelectorAll('.pane').forEach(p => p.classList.toggle('hidden', p.dataset.p !== t));
+  history.replaceState(history.state, '', '#' + t);
+  if (t === 'tk' && !CLICKS) loadClicks();
+}
+function renderAll(){ fillNhom(); renderSp(); renderOf(); fillInfo(); }
 
-async function readImage(file){
-  if (!file || !/^image\//.test(file.type)) return msg('File không phải ảnh', 'err');
-  // thu nhỏ còn cạnh dài ≤ 1600px, JPEG 0.86 cho nhẹ (ảnh điện thoại 4–8MB → ~300KB)
-  const url = URL.createObjectURL(file);
-  const img = new Image(); img.src = url;
-  try { await img.decode(); } catch (e) { URL.revokeObjectURL(url); return msg('Không đọc được ảnh này', 'err'); }
-  const max = 1600, s = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
-  const c = document.createElement('canvas');
-  c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+/* ================= SẢN PHẨM ================= */
+const SP = () => DB.SanPham.rows;
+function fillNhom(){
+  const ns = [...new Set(NHOM_DEFAULT.concat(SP().map(p => p.nhom).filter(Boolean)))];
+  const cur = $('spNhom').value;
+  $('spNhom').replaceChildren(new Option('Mọi nhóm', ''), ...ns.map(n => new Option(n, n))); $('spNhom').value = cur;
+  const c2 = $('sp_nhom').value;
+  $('sp_nhom').replaceChildren(...ns.map(n => new Option(n, n))); if (c2) $('sp_nhom').value = c2;
+  $('brands').replaceChildren(...[...new Set(SP().map(p => p.brand).filter(Boolean))].sort().map(b => new Option(b)));
+}
+['spQ', 'spNhom', 'spSt'].forEach(id => $(id).addEventListener('input', renderSp));
+function spFiltered(){
+  const q = norm($('spQ').value.trim()), nh = $('spNhom').value, st = $('spSt').value;
+  return SP().filter(p => (!q || norm(p.brand + ' ' + p.ten + ' ' + p.nhom + ' ' + p.id).includes(q))
+    && (!nh || p.nhom === nh)
+    && (!st || (st === 'on' && isOn(p.hien_thi)) || (st === 'off' && !isOn(p.hien_thi)) || (st === 'pin' && isOn(p.ghim))
+        || ((st === 'Phi' || st === 'Tường') && (p.nguoi === st || p.nguoi === 'Cả hai' || !p.nguoi))));
+}
+function renderSp(){
+  const all = SP(), rows = spFiltered(), canMove = rows.length === all.length && all.length > 1;
+  const on = all.filter(p => isOn(p.hien_thi)).length;
+  $('spCount').textContent = all.length + ' món · ' + on + ' đang hiện' + (rows.length !== all.length ? ' · lọc ra ' + rows.length : '') + (canMove ? ' · ▲▼ = thứ tự trên web (món ★ luôn đứng đầu)' : '');
+  const box = $('spList'); box.replaceChildren();
+  if (!rows.length) { const e = el('div', 'empty', all.length ? 'Không có món nào khớp' : 'Chưa có món nào — bấm “+ Thêm món”'); e.style.gridColumn = '1/-1'; box.append(e); return; }
+  rows.forEach(p => {
+    const r = el('div', 'pr' + (isOn(p.hien_thi) ? '' : ' off') + (canMove ? '' : ' nomv'));
+    if (canMove) {
+      const i = all.indexOf(p), mv = el('div', 'mv');
+      const u = el('button', '', '▲'), d = el('button', '', '▼');
+      u.type = d.type = 'button'; u.setAttribute('aria-label', 'Đưa lên'); d.setAttribute('aria-label', 'Đưa xuống');
+      u.disabled = i === 0; d.disabled = i === all.length - 1;
+      u.onclick = () => moveSp(i, -1); d.onclick = () => moveSp(i, 1);
+      mv.append(u, d); r.append(mv);
+    }
+    const im = el('img', 'th'); im.loading = 'lazy'; setImg(im, p.anh, 120); im.onclick = () => openSp(p); im.style.cursor = 'pointer';
+    const tx = el('div', 'tx'); tx.onclick = () => openSp(p); tx.title = 'Bấm để sửa';
+    const m = el('span', 'm');
+    if (isNew(p.ngay_them)) m.append(el('span', 'tag', 'Mới'));
+    m.append([p.nhom, p.nguoi, p.size_mac && 'size ' + p.size_mac].filter(Boolean).join(' · '));
+    tx.append(el('b', '', p.brand || '—'), el('span', 'n', p.ten || '(chưa có tên)'), m);
+    const ctl = el('div', 'ctl');
+    const sw = el('label', 'sw'); sw.title = 'Hiện / ẩn trên web';
+    const cb = el('input'); cb.type = 'checkbox'; cb.checked = isOn(p.hien_thi); cb.setAttribute('aria-label', 'Hiện ' + (p.ten || ''));
+    cb.onchange = () => quickSave('SanPham', p, {hien_thi: cb.checked}, cb.checked ? 'Đã hiện' : 'Đã ẩn');
+    sw.append(cb, el('span'));
+    const st = el('button', 'star', '★'); st.type = 'button'; st.title = 'Top pick'; st.setAttribute('aria-pressed', isOn(p.ghim)); st.setAttribute('aria-label', 'Top pick ' + (p.ten || ''));
+    st.onclick = () => quickSave('SanPham', p, {ghim: !isOn(p.ghim)}, !isOn(p.ghim) ? 'Đã ghim ★' : 'Đã bỏ ghim');
+    ctl.append(sw, st);
+    r.append(im, tx, ctl);
+    box.append(r);
+  });
+}
+async function quickSave(tab, obj, patch, okText){
+  const old = {}; Object.keys(patch).forEach(k => { old[k] = obj[k]; obj[k] = String(patch[k]); });
+  const re = () => tab === 'SanPham' ? renderSp() : renderOf();
+  re();
+  try { await api({action: 'save', tab, orig: obj.id, row: patch}); toast(okText + ' ✓'); }
+  catch (e) { Object.assign(obj, old); re(); toast('Không lưu được: ' + e.message, 1); }
+}
+let moveT;
+function moveSp(i, dir){
+  const a = SP(), j = i + dir; if (j < 0 || j >= a.length) return;
+  [a[i], a[j]] = [a[j], a[i]]; renderSp();
+  clearTimeout(moveT);
+  moveT = setTimeout(async () => {
+    try { await api({action: 'reorder', tab: 'SanPham', ids: SP().map(p => p.id)}); toast('Đã lưu thứ tự ✓'); }
+    catch (e) { toast('Không lưu được thứ tự: ' + e.message, 1); loadDB().catch(() => {}); }
+  }, 700);
+}
+
+/* ---------- drawer chung ---------- */
+let openDw = null, dirty = false;
+function showDw(id){
+  openDw = $(id); openDw.classList.remove('hidden'); document.body.classList.add('lock'); dirty = false;
+  openDw.querySelector('.panel').scrollTop = 0;
+  history.pushState({dw: id}, '');
+  if (desk()) setTimeout(() => { const f = openDw && openDw.querySelector('#sp_link_mua,#of_ten'); if (f) f.focus(); }, 60);
+}
+function hideDw(){ if (!openDw) return; openDw.classList.add('hidden'); document.body.classList.remove('lock'); openDw = null; dirty = false; }
+function closeDw(force){
+  if (!openDw) return true;
+  if (!force && dirty && !confirm('Bỏ các thay đổi chưa lưu?')) return false;
+  hideDw();
+  if (history.state && history.state.dw) history.back();
+  return true;
+}
+window.addEventListener('popstate', () => {
+  if (!openDw) return;
+  if (dirty && !confirm('Bỏ các thay đổi chưa lưu?')) { history.pushState({dw: openDw.id}, ''); return; }
+  hideDw();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && openDw) closeDw(); });
+document.querySelectorAll('.dw').forEach(d => d.addEventListener('click', e => { if (e.target.closest('[data-close]')) closeDw(); }));
+['spForm', 'ofForm'].forEach(id => $(id).addEventListener('input', () => dirty = true));
+
+/* ---------- chọn ảnh (thu nhỏ trước khi up) ---------- */
+async function shrink(file, max){
+  if (!file || !/^image\//.test(file.type)) throw new Error('File không phải ảnh');
+  const url = URL.createObjectURL(file); const img = new Image(); img.src = url;
+  try { await img.decode(); } catch (e) { URL.revokeObjectURL(url); throw new Error('Không đọc được ảnh này'); }
+  const s = Math.min(1, (max || 1600) / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
   const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
   URL.revokeObjectURL(url);
   const dataUrl = c.toDataURL('image/jpeg', .86);
-  imgData = {data: dataUrl.split(',')[1], mime: 'image/jpeg', url: dataUrl};
-  $('anh').value = '';
-  renderDrop(); preview();
+  return {data: dataUrl.split(',')[1], mime: 'image/jpeg', url: dataUrl};
 }
-function renderDrop(){
-  const d = $('drop');
-  d.querySelectorAll('img,.x').forEach(n => n.remove());
-  const src = imgData ? imgData.url : ($('anh').value.trim() ? imgSrc($('anh').value.trim(), 600) : '');
-  $('dropTxt').classList.toggle('hidden', !!src);
-  if (!src) return;
-  const im = new Image(); im.referrerPolicy = 'no-referrer'; im.alt = ''; im.src = src; d.appendChild(im);
-  const x = document.createElement('button'); x.type = 'button'; x.className = 'x'; x.textContent = '×'; x.setAttribute('aria-label', 'Bỏ ảnh');
-  x.onclick = ev => { ev.stopPropagation(); imgData = null; $('anh').value = ''; $('file').value = ''; renderDrop(); preview(); };
-  d.appendChild(x);
+function picker(drop, linkInput, state){
+  const file = drop.querySelector('input[type=file]');
+  const pick = async f => { try { state.img = await shrink(f, drop.classList.contains('sq') ? 600 : 1600); linkInput.value = ''; dirty = true; paint(); } catch (e) { toast(e.message, 1); } };
+  function paint(){
+    drop.querySelectorAll('img,.chg').forEach(n => n.remove());
+    const src = state.img ? state.img.url : linkInput.value.trim();
+    drop.querySelector('span').classList.toggle('hidden', !!src);
+    if (!src) return;
+    const im = new Image(); setImg(im, src, 600); drop.append(im, el('span', 'chg', 'Đổi ảnh'));
+  }
+  drop.onclick = () => file.click();
+  drop.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); file.click(); } };
+  file.onchange = () => { pick(file.files[0]); file.value = ''; };
+  ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => pick(e.dataTransfer.files[0]));
+  linkInput.addEventListener('input', () => { state.img = null; paint(); });
+  return {paint, pick};
 }
-$('drop').onclick = () => $('file').click();
-$('drop').onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('file').click(); } };
-$('file').onchange = e => readImage(e.target.files[0]);
-['dragenter', 'dragover'].forEach(t => $('drop').addEventListener(t, e => { e.preventDefault(); $('drop').classList.add('over'); }));
-['dragleave', 'drop'].forEach(t => $('drop').addEventListener(t, e => { e.preventDefault(); $('drop').classList.remove('over'); }));
-$('drop').addEventListener('drop', e => readImage(e.dataTransfer.files[0]));
 document.addEventListener('paste', e => {
-  if ($('app').classList.contains('hidden')) return;
   const f = [...(e.clipboardData && e.clipboardData.files || [])].find(f => /^image\//.test(f.type));
-  if (f) { e.preventDefault(); readImage(f); }
-});
-$('anh').addEventListener('input', () => { if ($('anh').value.trim()) imgData = null; renderDrop(); preview(); });
-
-/* ---------- form ---------- */
-let nguoi = 'Tường';
-$('nguoi').onclick = e => {
-  const b = e.target.closest('button'); if (!b) return;
-  nguoi = b.dataset.v;
-  $('nguoi').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
-  $('size_mac').placeholder = nguoi === 'Cả hai' ? 'Phi: L | Tường: S' : 'M';
-  preview();
-};
-['brand', 'ten', 'size_mac', 'link_mua'].forEach(id => $(id).addEventListener('input', preview));
-$('f').addEventListener('input', () => { if ($('msg').classList.contains('err')) msg(''); });
-['ghim', 'hien_thi', 'nhom'].forEach(id => $(id).addEventListener('change', preview));
-
-function preview(){
-  $('pvBrand').textContent = $('brand').value.trim() || 'Brand';
-  $('pvName').textContent = $('ten').value.trim() || 'Tên món';
-  $('pvBadge').classList.toggle('hidden', !$('ghim').checked);
-  const sz = $('size_mac').value.trim();
-  $('pvSize').classList.toggle('hidden', !sz);
-  $('pvSize').textContent = sz ? (nguoi === 'Cả hai' ? sz : nguoi + ' mặc size ' + sz) : '';
-  const ph = $('pvPh'); ph.querySelectorAll('img').forEach(n => n.remove());
-  const src = imgData ? imgData.url : ($('anh').value.trim() ? imgSrc($('anh').value.trim(), 400) : '');
-  if (src) { const im = new Image(); im.referrerPolicy = 'no-referrer'; im.alt = ''; im.src = src; ph.prepend(im); }
-  const nh = $('nhom').value;
-  $('pvMeta').innerHTML = '';
-  const line = t => { const d = document.createElement('div'); d.textContent = t; $('pvMeta').appendChild(d); };
-  line('Trên web nằm ở: ' + (nh === 'Outfit' ? 'Outfit › ' + (nguoi === 'Cả hai' ? 'cả 2 bên' : 'Đồ ' + nguoi + ' mặc') : 'Khác'));
-  if (!$('hien_thi').checked) line('Đang ẩn — chưa hiện lên web');
-}
-
-function msg(t, cls){ $('msg').textContent = t || ''; $('msg').className = 'msg' + (cls ? ' ' + cls : ''); }
-
-function resetForm(keep){
-  ['link_mua', 'ten', 'size_mac', 'anh'].forEach(id => $(id).value = '');
-  if (!keep) $('brand').value = '';
-  $('ghim').checked = false; $('hien_thi').checked = true; $('file').value = '';
-  imgData = null; renderDrop(); preview();
-}
-$('clear').onclick = () => { resetForm(); msg(''); };
-
-$('f').onsubmit = async e => {
+  if (!f || !openDw) return;
   e.preventDefault();
-  const p = {
-    link_mua: $('link_mua').value.trim(), brand: $('brand').value.trim(), ten: $('ten').value.trim(),
-    nhom: $('nhom').value, nguoi, size_mac: $('size_mac').value.trim(), anh: imgData ? '' : $('anh').value.trim(),
-    ghim: $('ghim').checked, hien_thi: $('hien_thi').checked
-  };
-  if (!/^https?:\/\//.test(p.link_mua)) { msg('Thiếu link mua (phải bắt đầu bằng https://)', 'err'); $('link_mua').focus(); return; }
-  if (!p.ten) { msg('Thiếu tên món', 'err'); $('ten').focus(); return; }
-  if (!imgData && !p.anh) { msg('Thiếu ảnh — chọn ảnh từ máy hoặc dán link ảnh', 'err'); return; }
-  const dup = products.find(x => x.link_mua && x.link_mua.trim() === p.link_mua);
-  if (dup && !confirmDup) { confirmDup = true; msg('Link mua này đã có (' + (dup.brand + ' ' + dup.ten).trim() + '). Bấm Lưu lần nữa nếu vẫn muốn thêm.', 'err'); return; }
-  const b = $('save'); b.disabled = true; b.innerHTML = '<span class="spin"></span>' + (imgData ? 'Đang up ảnh + lưu…' : 'Đang lưu…');
-  msg('');
-  try {
-    const r = await post({action: 'add_product', key: KEY, product: p, image: imgData ? {data: imgData.data, mime: imgData.mime} : null});
-    if (!r.ok) {
-      if (r.error === 'Sai mật khẩu') { showGate('Mật khẩu đã đổi, nhập lại nha'); return; }
-      throw new Error(r.error || 'Lỗi không rõ');
-    }
-    msg('Đã lưu ✓ ' + (p.brand + ' ' + p.ten).trim() + ' (id: ' + r.id + ')' + (p.hien_thi ? ' — web cập nhật sau vài giây' : ' — đang ẩn'), 'ok');
-    products.unshift(Object.assign({}, p, {id: r.id, anh: r.anh, hien_thi: String(p.hien_thi)}));
-    renderList();
-    resetForm(true);
-    $('link_mua').focus();
-  } catch (err) { msg(err.message, 'err'); }
-  finally { b.disabled = false; b.textContent = 'Lưu sản phẩm'; confirmDup = false; }
-};
-let confirmDup = false;
-$('link_mua').addEventListener('input', () => confirmDup = false);
+  if (openDw === $('dwSp')) spPick.pick(f); else ofPickFile(f);
+});
 
-/* ---------- danh sách hiện có ---------- */
-const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase();
-async function loadList(){
-  $('list').innerHTML = '<div class="hint">Đang tải…</div>';
-  try {
-    const res = await fetch(API_URL + '?fresh=1', {cache: 'no-store'});
-    const d = await res.json();
-    products = (d.products || []).slice().reverse();
-    const brands = [...new Set(products.map(p => p.brand).filter(Boolean))].sort();
-    $('brands').innerHTML = brands.map(b => '<option value="' + b.replace(/"/g, '&quot;') + '">').join('');
-    renderList();
-  } catch (e) { $('list').innerHTML = '<div class="msg err">Không tải được danh sách</div>'; }
+/* ---------- sửa / thêm món ---------- */
+const spState = {img: null, row: null};
+const spPick = picker($('spDrop'), $('sp_anh'), spState);
+chipsBind($('sp_nguoi'), v => { $('sp_size_mac').placeholder = v === 'Cả hai' ? 'Phi: L | Tường: S' : 'M'; dirty = true; });
+$('spAdd').onclick = () => openSp(null);
+function openSp(p){
+  spState.row = p; spState.img = null; spState.dupOk = false;
+  $('dwSpT').textContent = p ? (p.brand ? p.brand + ' · ' : '') + (p.ten || p.id) : 'Thêm món';
+  $('sp_link_mua').value = p ? p.link_mua || '' : '';
+  $('sp_brand').value = p ? p.brand || '' : '';
+  $('sp_nhom').value = p && p.nhom ? p.nhom : 'Outfit';
+  $('sp_ten').value = p ? p.ten || '' : '';
+  const ng = p ? p.nguoi || '' : 'Tường';
+  chipsVal($('sp_nguoi'), ng); $('sp_size_mac').placeholder = ng === 'Cả hai' ? 'Phi: L | Tường: S' : 'M';
+  $('sp_size_mac').value = p ? p.size_mac || '' : '';
+  $('sp_hien_thi').checked = p ? isOn(p.hien_thi) : true;
+  $('sp_ghim').checked = p ? isOn(p.ghim) : false;
+  $('sp_ngay_them').value = p ? (p.ngay_them || '').slice(0, 10) : today();
+  $('sp_id').value = p ? p.id : '';
+  $('sp_anh').value = p ? p.anh || '' : '';
+  $('spDel').classList.toggle('hidden', !p);
+  spMsg('');
+  spPick.paint(); showDw('dwSp');
 }
-function renderList(){
-  const q = norm($('q').value.trim());
-  const rows = products.filter(p => !q || norm(p.brand + ' ' + p.ten + ' ' + p.nhom).includes(q));
-  $('cnt').textContent = '· ' + products.length + ' món';
-  const box = $('list'); box.innerHTML = '';
-  if (!rows.length) { box.innerHTML = '<div class="hint">Không có món nào khớp</div>'; return; }
-  rows.forEach(p => {
-    const it = document.createElement('div');
-    it.className = 'it' + (String(p.hien_thi).toLowerCase() === 'true' ? '' : ' hid');
-    const im = new Image(); im.loading = 'lazy'; im.referrerPolicy = 'no-referrer'; im.alt = '';
-    im.onerror = () => { im.removeAttribute('src'); };
-    if (p.anh) im.src = imgSrc(p.anh, 120);
-    const t = document.createElement('div'); t.className = 't';
-    const b = document.createElement('b'); b.textContent = p.brand || '—';
-    const s = document.createElement('span'); s.textContent = p.ten || '';
-    t.append(b, s);
-    const tag = document.createElement('div'); tag.className = 'tag';
-    tag.textContent = (p.nhom || '') + (p.nguoi ? ' · ' + p.nguoi : '') + (String(p.hien_thi).toLowerCase() === 'true' ? '' : ' · ẩn');
-    it.append(im, t, tag); box.appendChild(it);
+function spMsg(t, cls){ $('spMsg').textContent = t || ''; $('spMsg').className = 'msg' + (cls ? ' ' + cls : ''); }
+$('spForm').addEventListener('input', () => { if ($('spMsg').classList.contains('err')) spMsg(''); });
+$('spForm').onsubmit = async e => {
+  e.preventDefault();
+  const p = spState.row;
+  const row = {
+    link_mua: $('sp_link_mua').value.trim(), brand: $('sp_brand').value.trim(), nhom: $('sp_nhom').value, ten: $('sp_ten').value.trim(),
+    nguoi: chipsGet($('sp_nguoi')), size_mac: $('sp_size_mac').value.trim(), hien_thi: $('sp_hien_thi').checked, ghim: $('sp_ghim').checked,
+    ngay_them: $('sp_ngay_them').value, anh: $('sp_anh').value.trim()
+  };
+  if (!/^https?:\/\//.test(row.link_mua)) { spMsg('Thiếu link mua (phải bắt đầu bằng https://)', 'err'); $('sp_link_mua').focus(); return; }
+  if (!row.ten) { spMsg('Thiếu tên món', 'err'); $('sp_ten').focus(); return; }
+  if (!spState.img && !row.anh) { spMsg('Thiếu ảnh — chọn ảnh từ máy hoặc dán link ảnh', 'err'); return; }
+  const dup = SP().find(x => x !== p && x.link_mua && x.link_mua.trim() === row.link_mua);
+  if (dup && !spState.dupOk) { spState.dupOk = true; spMsg('Link mua này đã có ở món “' + (dup.brand + ' ' + dup.ten).trim() + '”. Bấm Lưu lần nữa nếu vẫn muốn lưu.', 'err'); return; }
+  const b = $('spSave');
+  try {
+    if (spState.img) { busy(b, true, 'Đang up ảnh…'); row.anh = (await api({action: 'upload', image: {data: spState.img.data, mime: spState.img.mime}, name: row.brand + ' ' + row.ten})).anh; $('sp_anh').value = row.anh; spState.img = null; }
+    busy(b, true, 'Đang lưu…');
+    const j = await api({action: 'save', tab: 'SanPham', orig: p ? p.id : '', row});
+    const obj = Object.assign(p || {}, row, {id: j.id, hien_thi: String(row.hien_thi), ghim: String(row.ghim)});
+    if (!p) SP().push(obj);
+    closeDw(true); fillNhom(); renderSp(); renderOf();
+    toast((p ? 'Đã lưu ' : 'Đã thêm ') + (row.brand + ' ' + row.ten).trim() + ' ✓');
+  } catch (err) { spMsg(err.message, 'err'); }
+  finally { busy(b, false); spState.dupOk = false; }
+};
+$('sp_link_mua').addEventListener('input', () => spState.dupOk = false);
+$('spDel').onclick = async () => {
+  const p = spState.row; if (!p) return;
+  const used = DB.OutfitItem.rows.filter(i => i.sp_id === p.id).length;
+  if (!confirm('Xoá hẳn “' + ((p.brand || '') + ' ' + (p.ten || '')).trim() + '” khỏi Sheet?' + (used ? '\nMón này đang gắn trong ' + used + ' chấm outfit — sẽ gỡ luôn.' : '') + '\n\nMuốn tạm giấu thì tắt nút Hiện thay vì xoá.')) return;
+  const b = $('spDel'); busy(b, true, 'Đang xoá…');
+  try {
+    await api({action: 'delete', tab: 'SanPham', id: p.id});
+    DB.SanPham.rows = SP().filter(x => x !== p);
+    DB.OutfitItem.rows = DB.OutfitItem.rows.filter(i => i.sp_id !== p.id);
+    closeDw(true); renderSp(); renderOf(); toast('Đã xoá ✓');
+  } catch (e) { spMsg(e.message, 'err'); }
+  finally { busy(b, false); }
+};
+
+/* ================= OUTFIT ================= */
+const OF = () => DB.Outfit.rows;
+const itemsOf = id => DB.OutfitItem.rows.filter(i => i.outfit_id === id);
+chipsBind($('ofWho'), renderOf);
+function renderOf(){
+  const who = chipsGet($('ofWho'));
+  const rows = OF().filter(o => !who || o.nguoi === who || o.nguoi === 'Cả hai');
+  $('ofCount').textContent = OF().length + ' outfit · ' + OF().filter(o => isOn(o.hien_thi)).length + ' đang hiện';
+  const box = $('ofList'); box.replaceChildren();
+  if (!rows.length) { const e = el('div', 'empty', OF().length ? 'Không có outfit nào khớp' : 'Chưa có outfit nào — bấm “+ Thêm outfit”'); e.style.gridColumn = '1/-1'; box.append(e); return; }
+  rows.forEach(o => {
+    const c = el('div', 'oc' + (isOn(o.hien_thi) ? '' : ' off'));
+    const ph = el('div', 'ph'); const im = new Image(); im.loading = 'lazy'; setImg(im, o.anh, 500); ph.append(im); ph.onclick = () => openOf(o);
+    const b = el('div', 'b');
+    const r = el('div', 'r');
+    r.append(el('span', '', (o.nguoi || '—') + ' · ' + itemsOf(o.id).length + ' món'));
+    const sw = el('label', 'sw'); sw.title = 'Hiện / ẩn trên web';
+    const cb = el('input'); cb.type = 'checkbox'; cb.checked = isOn(o.hien_thi); cb.setAttribute('aria-label', 'Hiện outfit ' + (o.ten || ''));
+    cb.onchange = () => quickSave('Outfit', o, {hien_thi: cb.checked}, cb.checked ? 'Đã hiện outfit' : 'Đã ẩn outfit');
+    sw.append(cb, el('span')); r.append(sw);
+    const ed = el('button', 'btn sm', 'Sửa · gắn món'); ed.type = 'button'; ed.onclick = () => openOf(o);
+    b.append(el('div', 't', o.ten || o.id), r, ed); c.append(ph, b); box.append(c);
   });
 }
-$('q').addEventListener('input', renderList);
+
+/* ---------- editor outfit + gắn chấm ---------- */
+const ofState = {row: null, img: null, pins: [], active: 0};
+chipsBind($('of_nguoi'), () => dirty = true);
+$('ofAdd').onclick = () => openOf(null);
+$('ofPick').onclick = () => $('ofFile').click();
+$('ofFile').onchange = () => { ofPickFile($('ofFile').files[0]); $('ofFile').value = ''; };
+async function ofPickFile(f){
+  try { ofState.img = await shrink(f, 1800); $('of_anh').value = ''; $('ofPickTxt').textContent = 'Ảnh mới · up khi bấm Lưu'; dirty = true; ofLoadImg(ofState.img.url); }
+  catch (e) { toast(e.message, 1); }
+}
+$('of_anh').addEventListener('change', () => { ofState.img = null; $('ofPickTxt').textContent = ''; ofLoadImg($('of_anh').value.trim()); });
+function ofLoadImg(url){
+  const img = $('ofImg');
+  img.onload = img.onerror = null;
+  if (!url) { img.hidden = true; img.removeAttribute('src'); $('ofPh0').hidden = false; $('ofPh0').textContent = 'Chọn ảnh outfit để bắt đầu gắn món'; ofRender(); return; }
+  $('ofPh0').hidden = false; $('ofPh0').textContent = 'Đang tải ảnh…'; img.hidden = true; ofRender();
+  img.onload = () => { img.hidden = false; $('ofPh0').hidden = true; ofRender(); };
+  const id = driveId(url);
+  img.onerror = () => { if (id && !img.dataset.fb) { img.dataset.fb = 1; img.src = 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1400'; } else { $('ofPh0').textContent = 'Không tải được ảnh — kiểm tra link / quyền share.'; } };
+  delete img.dataset.fb; img.src = /^data:/.test(url) ? url : imgSrc(url, 1400);
+}
+function openOf(o){
+  ofState.row = o; ofState.img = null; ofState.active = 0; ofState.missOk = false;
+  $('dwOfT').textContent = o ? 'Outfit · ' + (o.ten || o.id) : 'Thêm outfit';
+  $('of_anh').value = o ? o.anh || '' : ''; $('ofPickTxt').textContent = '';
+  $('of_ten').value = o ? o.ten || '' : '';
+  chipsVal($('of_nguoi'), o ? o.nguoi || '' : 'Tường');
+  $('of_ghi_chu').value = o ? o.ghi_chu || '' : '';
+  $('of_hien_thi').checked = o ? isOn(o.hien_thi) : true;
+  const num = v => Math.round(parseFloat(String(v).replace(',', '.')));
+  ofState.pins = o ? itemsOf(o.id).map(r => ({x: num(r.x), y: num(r.y), sp: r.sp_id, ghi_chu: r.ghi_chu || ''})).filter(p => !isNaN(p.x) && !isNaN(p.y)) : [];
+  $('ofDel').classList.toggle('hidden', !o);
+  ofMsg('');
+  showDw('dwOf');
+  ofLoadImg($('of_anh').value.trim());
+}
+function ofMsg(t, cls){ $('ofMsg').textContent = t || ''; $('ofMsg').className = 'msg' + (cls ? ' ' + cls : ''); }
+function ofRender(){
+  const pic = $('ofPic'), S = ofState; pic.querySelectorAll('.pin').forEach(p => p.remove());
+  const list = $('ofPins'); list.replaceChildren();
+  const ready = !$('ofImg').hidden;
+  S.pins.forEach((p, i) => {
+    const no = i + 1;
+    if (ready) { const d = el('div', 'pin' + (S.active === no ? ' on' : ''), String(no)); d.style.left = p.x + '%'; d.style.top = p.y + '%'; d.dataset.i = i; pic.append(d); }
+    const row = el('div', 'pi' + (S.active === no ? ' on' : ''));
+    const sel = el('select'); sel.append(new Option('— Chọn món —', ''));
+    SP().forEach(pr => sel.append(new Option([pr.brand, pr.ten].filter(Boolean).join(' – ') + (isOn(pr.hien_thi) ? '' : ' (ẩn)'), pr.id)));
+    if (p.sp && !SP().some(pr => pr.id === p.sp)) sel.append(new Option(p.sp + ' (không còn trong Sản phẩm)', p.sp));
+    sel.value = p.sp; sel.setAttribute('aria-label', 'Món cho chấm ' + no);
+    sel.onchange = () => { p.sp = sel.value; dirty = true; ofCount(); };
+    sel.onfocus = () => { S.active = no; ofMark(); };
+    const del = el('button', 'del', '×'); del.type = 'button'; del.title = 'Xoá chấm'; del.setAttribute('aria-label', 'Xoá chấm ' + no);
+    del.onclick = () => { S.pins.splice(i, 1); S.active = 0; dirty = true; ofRender(); };
+    row.append(el('span', 'no', String(no)), sel, del); list.append(row);
+  });
+  if (!S.pins.length) list.append(el('p', 'hint', ready ? 'Chưa có chấm nào — bấm lên ảnh để thêm.' : 'Thêm ảnh trước, rồi bấm lên ảnh để gắn món.'));
+  ofCount();
+}
+function ofCount(){ const n = ofState.pins.filter(p => p.sp).length, m = ofState.pins.length - n; $('ofPinCnt').textContent = '· ' + n + ' món' + (m ? ' · ' + m + ' chấm chưa chọn' : ''); }
+function ofMark(){
+  document.querySelectorAll('#ofPic .pin').forEach((d, i) => d.classList.toggle('on', i + 1 === ofState.active));
+  document.querySelectorAll('#ofPins .pi').forEach((d, i) => d.classList.toggle('on', i + 1 === ofState.active));
+}
+function posFrom(e){
+  const r = $('ofImg').getBoundingClientRect();
+  return {x: Math.round(Math.min(100, Math.max(0, (e.clientX - r.left) / r.width * 100))), y: Math.round(Math.min(100, Math.max(0, (e.clientY - r.top) / r.height * 100)))};
+}
+let drag = null;
+$('ofPic').addEventListener('pointerdown', e => {
+  if ($('ofImg').hidden) return;
+  const pe = e.target.closest('.pin');
+  if (pe) { drag = +pe.dataset.i; ofState.active = drag + 1; ofMark(); pe.setPointerCapture(e.pointerId); e.preventDefault(); return; }
+  ofState.pins.push(Object.assign(posFrom(e), {sp: ''})); ofState.active = ofState.pins.length; dirty = true; ofRender();
+  const s = document.querySelectorAll('#ofPins select')[ofState.pins.length - 1];
+  if (s && desk()) s.focus({preventScroll: true});
+});
+$('ofPic').addEventListener('pointermove', e => {
+  if (drag === null) return;
+  Object.assign(ofState.pins[drag], posFrom(e)); dirty = true;
+  const d = document.querySelectorAll('#ofPic .pin')[drag]; d.style.left = ofState.pins[drag].x + '%'; d.style.top = ofState.pins[drag].y + '%';
+});
+const endDrag = () => { if (drag !== null) { drag = null; ofRender(); } };
+$('ofPic').addEventListener('pointerup', endDrag); $('ofPic').addEventListener('pointercancel', endDrag);
+
+$('ofForm').onsubmit = async e => {
+  e.preventDefault();
+  const o = ofState.row;
+  const row = {ten: $('of_ten').value.trim(), nguoi: chipsGet($('of_nguoi')), ghi_chu: $('of_ghi_chu').value.trim(), hien_thi: $('of_hien_thi').checked, anh: $('of_anh').value.trim()};
+  if (!ofState.img && !row.anh) { ofMsg('Thiếu ảnh outfit', 'err'); return; }
+  if (!row.ten) { ofMsg('Thiếu tên outfit', 'err'); $('of_ten').focus(); return; }
+  const miss = ofState.pins.filter(p => !p.sp).length;
+  if (miss && !ofState.missOk) { ofState.missOk = true; ofMsg(miss + ' chấm chưa chọn món — sẽ bị bỏ khi lưu. Bấm Lưu lần nữa để tiếp tục.', 'err'); return; }
+  const b = $('ofSave');
+  try {
+    if (ofState.img) { busy(b, true, 'Đang up ảnh…'); row.anh = (await api({action: 'upload', image: {data: ofState.img.data, mime: ofState.img.mime}, name: 'outfit ' + row.nguoi + ' ' + row.ten})).anh; $('of_anh').value = row.anh; ofState.img = null; $('ofPickTxt').textContent = ''; }
+    busy(b, true, 'Đang lưu…');
+    const j = await api({action: 'save', tab: 'Outfit', orig: o ? o.id : '', row});
+    const items = ofState.pins.filter(p => p.sp).map(p => ({sp_id: p.sp, x: p.x, y: p.y, ghi_chu: p.ghi_chu || ''}));
+    await api({action: 'set_items', outfit_id: j.id, items});
+    const obj = Object.assign(o || {}, row, {id: j.id, hien_thi: String(row.hien_thi)});
+    if (!o) OF().push(obj);
+    DB.OutfitItem.rows = DB.OutfitItem.rows.filter(i => i.outfit_id !== j.id).concat(items.map(i => ({outfit_id: j.id, sp_id: i.sp_id, x: String(i.x), y: String(i.y), ghi_chu: i.ghi_chu})));
+    closeDw(true); renderOf(); toast((o ? 'Đã lưu outfit ' : 'Đã thêm outfit ') + row.ten + ' · ' + items.length + ' món ✓');
+  } catch (err) { ofMsg(err.message, 'err'); }
+  finally { busy(b, false); ofState.missOk = false; }
+};
+$('ofDel').onclick = async () => {
+  const o = ofState.row; if (!o) return;
+  if (!confirm('Xoá hẳn outfit “' + (o.ten || o.id) + '” và các chấm gắn món của nó?\n\nMuốn tạm giấu thì tắt nút Hiện.')) return;
+  const b = $('ofDel'); busy(b, true, 'Đang xoá…');
+  try {
+    await api({action: 'delete', tab: 'Outfit', id: o.id});
+    DB.Outfit.rows = OF().filter(x => x !== o); DB.OutfitItem.rows = DB.OutfitItem.rows.filter(i => i.outfit_id !== o.id);
+    closeDw(true); renderOf(); toast('Đã xoá outfit ✓');
+  } catch (e) { ofMsg(e.message, 'err'); }
+  finally { busy(b, false); }
+};
+
+/* ================= THÔNG TIN KÊNH ================= */
+const ttState = {img: null};
+const ttPick = picker($('ttAvDrop'), $('tt_avatar'), ttState);
+const KNOWN = ['avatar', 'ten_kenh', 'handle', 'bio', 'tiktok', 'instagram', 'youtube', 'zalo', 'email'];
+function infoMap(){ const m = {}; DB.ThongTin.rows.forEach(r => m[r.key] = r.value); return m; }
+function fillInfo(){
+  const m = infoMap();
+  const ex = $('ttExtra'); ex.replaceChildren();
+  Object.keys(m).filter(k => k && !KNOWN.includes(k)).forEach(k => {
+    const id = 'tt_x_' + k.replace(/\W/g, '_');
+    const l = el('label', '', k); l.htmlFor = id;
+    const i = el('input'); i.type = 'text'; i.id = id; i.dataset.k = k;
+    ex.append(l, i);
+  });
+  document.querySelectorAll('#ttForm [data-k]').forEach(i => i.value = m[i.dataset.k] || '');
+  ttState.img = null; ttPick.paint(); $('ttMsg').textContent = '';
+}
+$('ttReset').onclick = fillInfo;
+$('ttForm').onsubmit = async e => {
+  e.preventDefault();
+  const b = $('ttSave'), msg = $('ttMsg'); msg.textContent = ''; msg.className = 'msg';
+  try {
+    if (ttState.img) { busy(b, true, 'Đang up ảnh…'); $('tt_avatar').value = (await api({action: 'upload', image: {data: ttState.img.data, mime: ttState.img.mime}, name: 'avatar'})).anh; ttState.img = null; }
+    const m = infoMap();
+    const info = [...document.querySelectorAll('#ttForm [data-k]')].map(i => ({key: i.dataset.k, value: i.value.trim()})).filter(kv => (m[kv.key] || '') !== kv.value);
+    if (!info.length) { msg.textContent = 'Không có gì thay đổi'; return; }
+    busy(b, true, 'Đang lưu…');
+    await api({action: 'save_info', info});
+    info.forEach(kv => { const r = DB.ThongTin.rows.find(x => x.key === kv.key); if (r) r.value = kv.value; else DB.ThongTin.rows.push(kv); });
+    fillInfo(); toast('Đã lưu ' + info.length + ' mục thông tin ✓');
+  } catch (err) { msg.textContent = err.message; msg.className = 'msg err'; }
+  finally { busy(b, false); }
+};
+
+/* ================= THỐNG KÊ ================= */
+let CLICKS = null;
+chipsBind($('tkRange'), renderTk);
+$('tkReload').onclick = () => loadClicks();
+async function loadClicks(){
+  $('tkBody').replaceChildren(el('div', 'empty', 'Đang tải lượt bấm…'));
+  try { CLICKS = (await api({action: 'clicks'})).rows; renderTk(); }
+  catch (e) { $('tkBody').replaceChildren(el('div', 'msg err', 'Không tải được: ' + e.message)); }
+}
+const NGUON = {truc_tiep: 'Trực tiếp', tiktok: 'TikTok', tiktok_bio: 'TikTok bio', instagram: 'Instagram', ig_bio: 'IG bio', facebook: 'Facebook', zalo: 'Zalo'};
+function renderTk(){
+  if (!CLICKS) return;
+  const days = +chipsGet($('tkRange'));
+  let from = '';
+  if (days) { const d = new Date(); d.setDate(d.getDate() - days + 1); from = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  const rows = CLICKS.filter(r => !from || String(r[0]).slice(0, 10) >= from);
+  const count = fn => { const m = new Map(); rows.forEach(r => { const k = fn(r) || '(trống)'; m.set(k, (m.get(k) || 0) + 1); }); return [...m.entries()].sort((a, b) => b[1] - a[1]); };
+  const nameOf = id => { const p = SP().find(x => x.id === id); return p ? ((p.brand ? p.brand + ' · ' : '') + p.ten) : null; };
+  const body = $('tkBody'); body.replaceChildren();
+  const k = el('div', 'kpis');
+  [[rows.length, 'lượt bấm Mua ngay'], [CLICKS.filter(r => String(r[0]).slice(0, 10) === today()).length, 'hôm nay'], [new Set(rows.map(r => r[1])).size, 'món được bấm'], [rows.filter(r => r[3] === 'outfit').length, 'bấm từ Shop the look']]
+    .forEach(([n, t]) => { const c = el('div', 'kpi'); c.append(el('b', '', n.toLocaleString('vi-VN')), el('span', '', t)); k.append(c); });
+  body.append(k);
+  if (!rows.length) { body.append(el('div', 'empty', 'Chưa có lượt bấm nào trong khoảng này')); return; }
+  const g = el('div', 'stats'); body.append(g);
+  const table = (title, data, head, cls, limit) => {
+    const box = el('div', cls || ''); box.append(el('h2', '', title));
+    const t = el('table'); const th = el('tr'); th.append(el('th', '', head), el('th', 'n', 'Lượt'), el('th', 'n', '%')); t.append(th);
+    data.slice(0, limit || 50).forEach(([k, n]) => { const tr = el('tr'); tr.append(el('td', '', k), el('td', 'n', n), el('td', 'n', Math.round(n / rows.length * 100) + '%')); t.append(tr); });
+    box.append(t); g.append(box);
+  };
+  table('Món được bấm nhiều nhất', count(r => r[1]).map(([id, n]) => [nameOf(id) || (rows.find(r => r[1] === id) || [])[2] || id, n]), 'Món', 'full', 20);
+  table('Nguồn truy cập', count(r => r[5]).map(([k, n]) => [NGUON[k] || k, n]), 'Nguồn');
+  table('Thiết bị', count(r => r[6]), 'Thiết bị');
+  table('Bấm từ', count(r => r[3]).map(([k, n]) => [k === 'tu_do' ? 'Tủ đồ' : k === 'outfit' ? 'Shop the look' : k, n]), 'Vị trí');
+  const byOutfit = count(r => r[4]).filter(([k]) => k !== '(trống)').map(([id, n]) => [(OF().find(o => o.id === id) || {}).ten || id, n]);
+  if (byOutfit.length) table('Outfit kéo nhiều lượt mua', byOutfit, 'Outfit');
+  const byDay = count(r => String(r[0]).slice(0, 10)).sort((a, b) => a[0] < b[0] ? 1 : -1);
+  table('Theo ngày', byDay.map(([d, n]) => [d.split('-').reverse().join('/'), n]), 'Ngày', '', 60);
+}
 
 /* ---------- boot ---------- */
-preview();
 if (KEY) showApp(); else showGate();
 </script>
 </body>
