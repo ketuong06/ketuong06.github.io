@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Thêm sản phẩm · Tường Bình Thường</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script>try{var t=localStorage.getItem('kt-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Be+Vietnam+Pro:wght@400;500&display=swap">
+<style>
+:root{--bg:#fff;--fg:#111;--muted:#6b6b6b;--line:#e4e4e4;--tile:#f3f3f3;--inv-bg:#111;--inv-fg:#fff;--err:#c62828;--ok:#1b7f3b;
+  --label:"Archivo",ui-sans-serif,system-ui,sans-serif;--body:"Be Vietnam Pro",ui-sans-serif,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;--err:#ff6b6b;--ok:#5fd18a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c0c0c;--fg:#f2f2f2;--muted:#9a9a9a;--line:#262626;--tile:#1a1a1a;--inv-bg:#f2f2f2;--inv-fg:#0c0c0c;--err:#ff6b6b;--ok:#5fd18a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--body)}
+.wrap{max-width:480px;margin:0 auto;padding:20px 16px 48px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.up{font-family:var(--label);text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted)}
+h1{font:500 20px/1.25 var(--label);margin:4px 0 6px}
+h2{font:500 15px/1.3 var(--label);margin:28px 0 8px}
+p.hint{color:var(--muted);font-size:13px;margin:0 0 16px}
+label{display:block;font-size:12px;color:var(--muted);margin:12px 0 4px}
+label b{color:var(--fg);font-weight:500}
+select,input[type=text],input[type=url],input[type=password],input[type=search]{width:100%;font:14px var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);padding:9px 10px;border-radius:0;-webkit-appearance:none;appearance:none}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 15px) 55%,calc(100% - 10px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:28px}
+select:focus,input:focus{outline:2px solid var(--fg);outline-offset:-1px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:500 13px var(--body);padding:7px 12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer}
+.chips button[aria-pressed="true"]{border-color:var(--fg);background:var(--inv-bg);color:var(--inv-fg)}
+.chk{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--fg);cursor:pointer}
+.chk input{width:18px;height:18px;accent-color:var(--fg);margin:0}
+.btn{font:500 13px var(--body);padding:10px 16px;border:1px solid var(--fg);background:var(--bg);color:var(--fg);cursor:pointer;transition:transform .12s}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--inv-bg);color:var(--inv-fg)}
+.btn[disabled]{opacity:.5;cursor:default}
+.btn.sm{padding:6px 10px;font-size:12px}
+.link{border:0;background:none;color:var(--muted);font:13px var(--body);text-decoration:underline;cursor:pointer;padding:0}
+.theme{width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--line);border-radius:999px;background:none;color:var(--fg);cursor:pointer;padding:0;flex:none}
+.theme:hover{border-color:var(--fg)}
+/* ảnh */
+.drop{position:relative;width:min(240px,100%);display:grid;place-items:center;aspect-ratio:3/4;background:var(--tile);border:1px dashed var(--line);cursor:pointer;overflow:hidden;text-align:center;color:var(--muted);font-size:13px;padding:16px}
+.drop.over{border-color:var(--fg)}
+.drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.drop .x{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:0;background:var(--bg);color:var(--fg);cursor:pointer;font-size:18px;line-height:1;z-index:2;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.drop input{display:none}
+.or{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;margin:10px 0 0}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+/* preview card như trên web */
+.card{border:0}
+.card .ph{aspect-ratio:3/4;background:var(--tile);overflow:hidden;position:relative}
+.card .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.card .badge{position:absolute;top:8px;left:8px;font:600 10px/1 var(--label);letter-spacing:.06em;text-transform:uppercase;background:var(--inv-bg);color:var(--inv-fg);padding:5px 7px}
+.card .brand{font:500 13px var(--label);margin-top:8px;text-transform:uppercase;letter-spacing:.04em}
+.card .name{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .size{font-size:12px;color:var(--muted)}
+.card .buy{display:block;margin-top:8px;text-align:center;font:500 13px var(--body);padding:9px;background:var(--inv-bg);color:var(--inv-fg)}
+.pv{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:start}
+.pv .meta{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+/* trạng thái */
+.msg{margin-top:12px;font-size:13px;min-height:1.5em}
+.msg.err{color:var(--err)}.msg.ok{color:var(--ok)}
+.actions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;align-items:center}
+/* list */
+.list{display:grid;gap:6px}
+.it{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);padding:6px}
+.it img{width:44px;height:58px;object-fit:cover;background:var(--tile);display:block}
+.it .t{font-size:13px;overflow:hidden}
+.it .t b{display:block;font:500 12px var(--label);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it .t span{display:block;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it .tag{font-size:11px;color:var(--muted);white-space:nowrap}
+.it.hid{opacity:.55}
+.gate{max-width:360px;margin:12vh auto 0}
+.hidden{display:none!important}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}.btn{transition:none}}
+@media (min-width:960px){
+  .wrap{max-width:1180px;padding:32px 40px 64px}
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:48px;align-items:start}
+  .side{position:sticky;top:24px}
+  .drop{width:100%}
+  .formgrid{display:grid;grid-template-columns:260px minmax(0,1fr);gap:28px;align-items:start}
+  .pv{grid-template-columns:1fr}
+  .pv .card{max-width:220px}
+  h2.first{margin-top:0}
+  .list{max-height:52vh;overflow:auto;padding-right:4px}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top">
+    <div>
+      <span class="up">Tool nội bộ · @ketuong06</span>
+      <h1>Thêm sản phẩm</h1>
+    </div>
+    <button class="theme" id="themeBtn" type="button" aria-label="Đổi sáng / tối">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+    </button>
+  </div>
+
+  <!-- Đăng nhập -->
+  <section id="gate" class="gate hidden">
+    <p class="hint">Nhập mật khẩu quản lý để thêm món vào Tủ đồ.</p>
+    <form id="gateForm">
+      <label for="key">Mật khẩu</label>
+      <input type="password" id="key" autocomplete="current-password" required>
+      <div class="actions"><button class="btn pri" id="gateBtn">Vào</button></div>
+      <div class="msg" id="gateMsg"></div>
+    </form>
+  </section>
+
+  <!-- App -->
+  <section id="app" class="hidden">
+    <p class="hint">Điền xong bấm <b>Lưu</b> → món tự vào tab <b>SanPham</b> và lên web sau vài giây. <a href="./" target="_blank" rel="noopener" style="color:inherit">Mở web ↗</a> · <button class="link" id="logout" type="button">Đăng xuất</button></p>
+    <div class="cols">
+      <form id="f" autocomplete="off" novalidate>
+        <div class="formgrid">
+          <div>
+            <label><b>Ảnh</b> (bấm / kéo thả / dán)</label>
+            <div class="drop" id="drop" tabindex="0" role="button" aria-label="Chọn ảnh">
+              <span id="dropTxt">Chọn ảnh từ máy<br><small>ảnh dọc 3:4 đẹp nhất</small></span>
+              <input type="file" id="file" accept="image/*">
+            </div>
+            <div class="or">hoặc</div>
+            <label for="anh">Link ảnh (Drive / Shopee)</label>
+            <input type="url" id="anh" placeholder="https://…">
+          </div>
+          <div>
+            <label for="link_mua"><b>Link mua</b> *</label>
+            <input type="url" id="link_mua" placeholder="https://s.shopee.vn/…" required>
+            <div class="row2">
+              <div><label for="brand"><b>Brand</b></label><input type="text" id="brand" list="brands" placeholder="Jolie"></div>
+              <div><label for="nhom"><b>Nhóm</b></label>
+                <select id="nhom"><option>Outfit</option><option>Phụ kiện</option><option>Đồ quay</option><option>Khác</option></select>
+              </div>
+            </div>
+            <datalist id="brands"></datalist>
+            <label for="ten"><b>Tên món</b> *</label>
+            <input type="text" id="ten" placeholder="Đầm hoa nhí tay phồng" required>
+            <label><b>Ai dùng</b></label>
+            <div class="chips" id="nguoi">
+              <button type="button" data-v="Phi">Phi</button>
+              <button type="button" data-v="Tường" aria-pressed="true">Tường</button>
+              <button type="button" data-v="Cả hai">Cả hai</button>
+            </div>
+            <label for="size_mac"><b>Size mặc</b> (không bắt buộc)</label>
+            <input type="text" id="size_mac" placeholder="M">
+            <label class="chk"><input type="checkbox" id="hien_thi" checked> Hiện lên web ngay</label>
+            <label class="chk"><input type="checkbox" id="ghim"> ★ Top pick (ghim lên đầu)</label>
+            <div class="actions">
+              <button class="btn pri" id="save" type="submit">Lưu sản phẩm</button>
+              <button class="btn" id="clear" type="button">Xoá form</button>
+            </div>
+            <div class="msg" id="msg" role="status"></div>
+          </div>
+        </div>
+      </form>
+
+      <aside class="side">
+        <h2 class="first">Xem trước</h2>
+        <div class="pv">
+          <div class="card">
+            <div class="ph" id="pvPh"><span class="badge hidden" id="pvBadge">★ Top pick</span></div>
+            <div class="brand" id="pvBrand">Brand</div>
+            <div class="name" id="pvName">Tên món</div>
+            <div class="size hidden" id="pvSize"></div>
+            <span class="buy">Mua ngay</span>
+          </div>
+          <div class="meta" id="pvMeta"></div>
+        </div>
+        <h2>Đang có trên Sheet <span class="up" id="cnt"></span></h2>
+        <input type="search" id="q" placeholder="Tìm để tránh nhập trùng…">
+        <div class="list" id="list" style="margin-top:8px"></div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbwrYGjv7IcnLyARS0W_wS2CAgxqbYyW_3aKSxlMlLdeRf8ZH8AIot4oxPOu31RpUfqK0g/exec';
+const KEY_LS = 'kt-admin-key';
+const $ = id => document.getElementById(id);
+let KEY = '';
+try { KEY = localStorage.getItem(KEY_LS) || ''; } catch (e) {}
+let imgData = null;      // {data(base64), mime, url(objectURL)}
+let products = [];
+
+/* ---------- theme ---------- */
+$('themeBtn').onclick = () => {
+  const r = document.documentElement;
+  const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme:dark)').matches;
+  r.dataset.theme = dark ? 'light' : 'dark';
+  try { localStorage.setItem('kt-theme', r.dataset.theme); } catch (e) {}
+};
+
+/* ---------- API ---------- */
+async function post(body){
+  const res = await fetch(API_URL, {method: 'POST', body: JSON.stringify(body)}); // text/plain → không preflight
+  const txt = await res.text();
+  try { return JSON.parse(txt); } catch (e) { throw new Error('Apps Script trả về không đúng (' + txt.slice(0, 80) + ') — đã deploy phiên bản mới chưa?'); }
+}
+
+/* ---------- đăng nhập ---------- */
+function showGate(err){
+  $('app').classList.add('hidden'); $('gate').classList.remove('hidden');
+  $('gateMsg').textContent = err || ''; $('gateMsg').className = 'msg' + (err ? ' err' : '');
+  setTimeout(() => $('key').focus(), 50);
+}
+function showApp(){
+  $('gate').classList.add('hidden'); $('app').classList.remove('hidden');
+  loadList();
+}
+$('gateForm').onsubmit = async e => {
+  e.preventDefault();
+  const k = $('key').value.trim(); if (!k) return;
+  const b = $('gateBtn'); b.disabled = true; b.innerHTML = '<span class="spin"></span>Đang kiểm tra';
+  try {
+    const r = await post({action: 'check', key: k});
+    if (!r.ok) throw new Error(r.error || 'Sai mật khẩu');
+    KEY = k; try { localStorage.setItem(KEY_LS, k); } catch (e) {}
+    $('key').value = ''; showApp();
+  } catch (err) { showGate(err.message); }
+  finally { b.disabled = false; b.textContent = 'Vào'; }
+};
+$('logout').onclick = () => { KEY = ''; try { localStorage.removeItem(KEY_LS); } catch (e) {} showGate(); };
+
+/* ---------- ảnh ---------- */
+function driveId(url){ const m = String(url).match(/(?:\/d\/|[?&]id=)([A-Za-z0-9_-]{20,})/); return m ? m[1] : null; }
+function imgSrc(url, w){ const id = driveId(url); return id ? 'https://lh3.googleusercontent.com/d/' + id + '=w' + (w || 400) : url; }
+
+async function readImage(file){
+  if (!file || !/^image\//.test(file.type)) return msg('File không phải ảnh', 'err');
+  // thu nhỏ còn cạnh dài ≤ 1600px, JPEG 0.86 cho nhẹ (ảnh điện thoại 4–8MB → ~300KB)
+  const url = URL.createObjectURL(file);
+  const img = new Image(); img.src = url;
+  try { await img.decode(); } catch (e) { URL.revokeObjectURL(url); return msg('Không đọc được ảnh này', 'err'); }
+  const max = 1600, s = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement('canvas');
+  c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+  const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+  URL.revokeObjectURL(url);
+  const dataUrl = c.toDataURL('image/jpeg', .86);
+  imgData = {data: dataUrl.split(',')[1], mime: 'image/jpeg', url: dataUrl};
+  $('anh').value = '';
+  renderDrop(); preview();
+}
+function renderDrop(){
+  const d = $('drop');
+  d.querySelectorAll('img,.x').forEach(n => n.remove());
+  const src = imgData ? imgData.url : ($('anh').value.trim() ? imgSrc($('anh').value.trim(), 600) : '');
+  $('dropTxt').classList.toggle('hidden', !!src);
+  if (!src) return;
+  const im = new Image(); im.referrerPolicy = 'no-referrer'; im.alt = ''; im.src = src; d.appendChild(im);
+  const x = document.createElement('button'); x.type = 'button'; x.className = 'x'; x.textContent = '×'; x.setAttribute('aria-label', 'Bỏ ảnh');
+  x.onclick = ev => { ev.stopPropagation(); imgData = null; $('anh').value = ''; $('file').value = ''; renderDrop(); preview(); };
+  d.appendChild(x);
+}
+$('drop').onclick = () => $('file').click();
+$('drop').onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('file').click(); } };
+$('file').onchange = e => readImage(e.target.files[0]);
+['dragenter', 'dragover'].forEach(t => $('drop').addEventListener(t, e => { e.preventDefault(); $('drop').classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => $('drop').addEventListener(t, e => { e.preventDefault(); $('drop').classList.remove('over'); }));
+$('drop').addEventListener('drop', e => readImage(e.dataTransfer.files[0]));
+document.addEventListener('paste', e => {
+  if ($('app').classList.contains('hidden')) return;
+  const f = [...(e.clipboardData && e.clipboardData.files || [])].find(f => /^image\//.test(f.type));
+  if (f) { e.preventDefault(); readImage(f); }
+});
+$('anh').addEventListener('input', () => { if ($('anh').value.trim()) imgData = null; renderDrop(); preview(); });
+
+/* ---------- form ---------- */
+let nguoi = 'Tường';
+$('nguoi').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  nguoi = b.dataset.v;
+  $('nguoi').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  $('size_mac').placeholder = nguoi === 'Cả hai' ? 'Phi: L | Tường: S' : 'M';
+  preview();
+};
+['brand', 'ten', 'size_mac', 'link_mua'].forEach(id => $(id).addEventListener('input', preview));
+$('f').addEventListener('input', () => { if ($('msg').classList.contains('err')) msg(''); });
+['ghim', 'hien_thi', 'nhom'].forEach(id => $(id).addEventListener('change', preview));
+
+function preview(){
+  $('pvBrand').textContent = $('brand').value.trim() || 'Brand';
+  $('pvName').textContent = $('ten').value.trim() || 'Tên món';
+  $('pvBadge').classList.toggle('hidden', !$('ghim').checked);
+  const sz = $('size_mac').value.trim();
+  $('pvSize').classList.toggle('hidden', !sz);
+  $('pvSize').textContent = sz ? (nguoi === 'Cả hai' ? sz : nguoi + ' mặc size ' + sz) : '';
+  const ph = $('pvPh'); ph.querySelectorAll('img').forEach(n => n.remove());
+  const src = imgData ? imgData.url : ($('anh').value.trim() ? imgSrc($('anh').value.trim(), 400) : '');
+  if (src) { const im = new Image(); im.referrerPolicy = 'no-referrer'; im.alt = ''; im.src = src; ph.prepend(im); }
+  const nh = $('nhom').value;
+  $('pvMeta').innerHTML = '';
+  const line = t => { const d = document.createElement('div'); d.textContent = t; $('pvMeta').appendChild(d); };
+  line('Trên web nằm ở: ' + (nh === 'Outfit' ? 'Outfit › ' + (nguoi === 'Cả hai' ? 'cả 2 bên' : 'Đồ ' + nguoi + ' mặc') : 'Khác'));
+  if (!$('hien_thi').checked) line('Đang ẩn — chưa hiện lên web');
+}
+
+function msg(t, cls){ $('msg').textContent = t || ''; $('msg').className = 'msg' + (cls ? ' ' + cls : ''); }
+
+function resetForm(keep){
+  ['link_mua', 'ten', 'size_mac', 'anh'].forEach(id => $(id).value = '');
+  if (!keep) $('brand').value = '';
+  $('ghim').checked = false; $('hien_thi').checked = true; $('file').value = '';
+  imgData = null; renderDrop(); preview();
+}
+$('clear').onclick = () => { resetForm(); msg(''); };
+
+$('f').onsubmit = async e => {
+  e.preventDefault();
+  const p = {
+    link_mua: $('link_mua').value.trim(), brand: $('brand').value.trim(), ten: $('ten').value.trim(),
+    nhom: $('nhom').value, nguoi, size_mac: $('size_mac').value.trim(), anh: imgData ? '' : $('anh').value.trim(),
+    ghim: $('ghim').checked, hien_thi: $('hien_thi').checked
+  };
+  if (!/^https?:\/\//.test(p.link_mua)) { msg('Thiếu link mua (phải bắt đầu bằng https://)', 'err'); $('link_mua').focus(); return; }
+  if (!p.ten) { msg('Thiếu tên món', 'err'); $('ten').focus(); return; }
+  if (!imgData && !p.anh) { msg('Thiếu ảnh — chọn ảnh từ máy hoặc dán link ảnh', 'err'); return; }
+  const dup = products.find(x => x.link_mua && x.link_mua.trim() === p.link_mua);
+  if (dup && !confirmDup) { confirmDup = true; msg('Link mua này đã có (' + (dup.brand + ' ' + dup.ten).trim() + '). Bấm Lưu lần nữa nếu vẫn muốn thêm.', 'err'); return; }
+  const b = $('save'); b.disabled = true; b.innerHTML = '<span class="spin"></span>' + (imgData ? 'Đang up ảnh + lưu…' : 'Đang lưu…');
+  msg('');
+  try {
+    const r = await post({action: 'add_product', key: KEY, product: p, image: imgData ? {data: imgData.data, mime: imgData.mime} : null});
+    if (!r.ok) {
+      if (r.error === 'Sai mật khẩu') { showGate('Mật khẩu đã đổi, nhập lại nha'); return; }
+      throw new Error(r.error || 'Lỗi không rõ');
+    }
+    msg('Đã lưu ✓ ' + (p.brand + ' ' + p.ten).trim() + ' (id: ' + r.id + ')' + (p.hien_thi ? ' — web cập nhật sau vài giây' : ' — đang ẩn'), 'ok');
+    products.unshift(Object.assign({}, p, {id: r.id, anh: r.anh, hien_thi: String(p.hien_thi)}));
+    renderList();
+    resetForm(true);
+    $('link_mua').focus();
+  } catch (err) { msg(err.message, 'err'); }
+  finally { b.disabled = false; b.textContent = 'Lưu sản phẩm'; confirmDup = false; }
+};
+let confirmDup = false;
+$('link_mua').addEventListener('input', () => confirmDup = false);
+
+/* ---------- danh sách hiện có ---------- */
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase();
+async function loadList(){
+  $('list').innerHTML = '<div class="hint">Đang tải…</div>';
+  try {
+    const res = await fetch(API_URL + '?fresh=1', {cache: 'no-store'});
+    const d = await res.json();
+    products = (d.products || []).slice().reverse();
+    const brands = [...new Set(products.map(p => p.brand).filter(Boolean))].sort();
+    $('brands').innerHTML = brands.map(b => '<option value="' + b.replace(/"/g, '&quot;') + '">').join('');
+    renderList();
+  } catch (e) { $('list').innerHTML = '<div class="msg err">Không tải được danh sách</div>'; }
+}
+function renderList(){
+  const q = norm($('q').value.trim());
+  const rows = products.filter(p => !q || norm(p.brand + ' ' + p.ten + ' ' + p.nhom).includes(q));
+  $('cnt').textContent = '· ' + products.length + ' món';
+  const box = $('list'); box.innerHTML = '';
+  if (!rows.length) { box.innerHTML = '<div class="hint">Không có món nào khớp</div>'; return; }
+  rows.forEach(p => {
+    const it = document.createElement('div');
+    it.className = 'it' + (String(p.hien_thi).toLowerCase() === 'true' ? '' : ' hid');
+    const im = new Image(); im.loading = 'lazy'; im.referrerPolicy = 'no-referrer'; im.alt = '';
+    im.onerror = () => { im.removeAttribute('src'); };
+    if (p.anh) im.src = imgSrc(p.anh, 120);
+    const t = document.createElement('div'); t.className = 't';
+    const b = document.createElement('b'); b.textContent = p.brand || '—';
+    const s = document.createElement('span'); s.textContent = p.ten || '';
+    t.append(b, s);
+    const tag = document.createElement('div'); tag.className = 'tag';
+    tag.textContent = (p.nhom || '') + (p.nguoi ? ' · ' + p.nguoi : '') + (String(p.hien_thi).toLowerCase() === 'true' ? '' : ' · ẩn');
+    it.append(im, t, tag); box.appendChild(it);
+  });
+}
+$('q').addEventListener('input', renderList);
+
+/* ---------- boot ---------- */
+preview();
+if (KEY) showApp(); else showGate();
+</script>
+</body>
+</html>

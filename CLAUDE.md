@@ -14,9 +14,10 @@ Apps Script web app "ketuong06 click logger"   ← apps-script/Code.gs (bản th
    GET  /exec        → JSON {products, info, looks, lookItems}   (CacheService 60s)
    GET  /exec?fresh=1 → bỏ qua cache (pin.html dùng)
    POST /exec        → ghi 1 dòng vào tab Clicks (lượt bấm "Mua ngay")
+   POST /exec {action:'check'|'add_product', key} → nhap.html thêm sản phẩm (cần ADMIN_KEY)
         │
         ▼
-index.html / pin.html  (const API_URL = '.../exec')
+index.html / pin.html / nhap.html  (const API_URL = '.../exec')
 ```
 
 - **Sheet để private** — web và repo KHÔNG chứa Sheet ID / link Sheet. Không quay lại cách đọc gviz/CSV công khai.
@@ -29,13 +30,16 @@ index.html / pin.html  (const API_URL = '.../exec')
 - `apps-script/Code.gs` trong repo = bản copy, `SHEET_ID = 'YOUR_SHEET_ID'` (placeholder, ID thật chỉ nằm trong Apps Script). Sửa code thì sửa trong editor Apps Script rồi copy ngược về repo (giữ placeholder).
 - Deploy lại: **Triển khai → Quản lý bài triển khai → ✏️ sửa → Phiên bản: Phiên bản mới → Triển khai**. KHÔNG tạo "bài triển khai mới" (URL `/exec` sẽ đổi → phải sửa `API_URL` ở cả `index.html` và `pin.html`).
 - `doGet` trả các cột: SanPham `id, hien_thi, nhom, nguoi, brand, ten, link_mua, anh, size_mac, ghim, ngay_them`; ThongTin `key, value`; Outfit `id, hien_thi, nguoi, ten, anh`; OutfitItem `outfit_id, sp_id, x, y`. Mọi giá trị là string (`"true"`/`"false"`, ngày `yyyy-MM-dd`). Thêm cột mới cho web → thêm vào `TABS` trong Apps Script + deploy phiên bản mới.
-- `doPost` chỉ nhận `bam_tu` = `tu_do` | `outfit`, ghi `[thời gian, sp_id, món, bam_tu, outfit_id, nguồn, thiết bị, trang]` vào tab Clicks.
+- `doPost` (không có `action`) chỉ nhận `bam_tu` = `tu_do` | `outfit`, ghi `[thời gian, sp_id, món, bam_tu, outfit_id, nguồn, thiết bị, trang]` vào tab Clicks.
+- `doPost` có `action` → `admin()`: so `key` với Script Property `ADMIN_KEY` (sai → `{ok:false,error:'Sai mật khẩu'}`). `check` = kiểm tra mật khẩu; `add_product` = tạo id (slug không dấu từ brand + tên, trùng thì thêm `-2`, `-3`…), nếu có ảnh base64 thì lưu vào folder `IMG_FOLDER_ID` (link `drive.google.com/file/d/<id>/view`), appendRow vào SanPham theo đúng thứ tự cột dòng 1, `ngay_them` = hôm nay, rồi xoá cache `data` để web thấy ngay.
+- **Script Properties** (Cài đặt dự án ⚙ → Thuộc tính tập lệnh): `ADMIN_KEY` (mật khẩu nhap.html), `IMG_FOLDER_ID` (ID folder ảnh public). Không ghi 2 giá trị này vào code hay repo. Lần đầu thêm DriveApp phải chạy hàm `test` trong editor để cấp quyền Drive.
 
 ## File
 | File | Vai trò |
 |---|---|
 | `index.html` | Trang chính. 2 layout trong 1 file: **phone** (mặc định) và **desktop** (`@media (min-width:960px)`, lưới 4 cột ≥ 1280px) |
 | `pin.html` | Tool nội bộ gắn món vào ảnh outfit: chọn outfit → bấm lên ảnh → chọn món → copy TSV `outfit_id, sp_id, x, y` (x, y = % nguyên) dán vào tab `OutfitItem`. Chọn "— Outfit mới —" thì reset trắng. Không link từ trang chính, có `noindex`. Đọc API với `?fresh=1` |
+| `nhap.html` | Tool nội bộ **thêm sản phẩm không cần mở Sheet**: đăng nhập bằng `ADMIN_KEY` (lưu `localStorage: kt-admin-key`), form link mua / brand (gợi ý từ brand đã có) / nhóm / tên / ai dùng (Phi · Tường · Cả hai) / size / hiện / ghim; ảnh chọn từ máy, kéo thả hoặc dán (tự thu nhỏ ≤ 1600px JPEG) hoặc dán link ảnh; xem trước card; cảnh báo trùng link mua; danh sách món đang có + tìm. Không link từ trang chính, `noindex` |
 | `apps-script/Code.gs` | Bản tham khảo code Apps Script (placeholder SHEET_ID) |
 | `favicon.svg` / `favicon.ico` / `apple-touch-icon.png` / `icon-192.png` / `icon-512.png` / `icon-maskable-512.png` / `manifest.webmanifest` | Icon giỏ hàng (svg tự đổi màu theo sáng/tối) + PWA manifest |
 | `og.jpg` | Ảnh chia sẻ OG/Twitter 1200×630 |
