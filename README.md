@@ -17,6 +17,23 @@ Trang "Tủ đồ" của kênh Tường Bình Thường (@ketuong06) — https:/
   - Phone: ảnh trên với chấm đánh số, danh sách món bên dưới; bấm chấm → cuộn tới món.
   - Link chia sẻ được: `https://ketuong06.github.io/#look-<outfit_id>` (tự chuyển sang tab Shop the look). Esc / nút × / Back để đóng.
 
+## Hiệu ứng (micro-interactions)
+| Mã | Ở đâu | Hiệu ứng |
+|---|---|---|
+| 1B | Hàng tab | Nền tab trượt (`.seg-pill`) + nội dung tab fade lên (`.fx-panel`) |
+| 2A + 9A | Lưới sản phẩm / outfit | Card hiện lần lượt (stagger 45ms), card dưới màn hình chỉ hiện khi cuộn tới (IntersectionObserver, `reveal()`) |
+| 3A | Hover card (desktop) | Ảnh zoom 5% trong khung `.ph` |
+| 4A | Bấm/chạm | Nhấn lún scale .95–.97 |
+| 5A | Nút tim | Pop (phóng to → nảy) |
+| 6A+ | Mở Shop the look | Ảnh bay từ lưới ra giữa (ghost img + Web Animations); món đồ fade + zoom in lần lượt. Mở từ link → fade + zoom nhẹ |
+| 7A | Chấm + đường nối | Chấm bật lên lần lượt, đường nối tự vẽ (stroke-dashoffset), sau đó chấm "thở" (`.fx-live`) |
+| 8A | Lúc tải | Skeleton có vệt sáng chạy (shimmer) |
+| 10A | Nút sáng/tối | Icon xoay + cả trang đổi màu mượt 0.35s (`html.theme-anim`) |
+
+- `prefers-reduced-motion: reduce` → tắt hết, hiện ngay.
+- Data mạng giống cache → không vẽ lại (tránh chạy hiệu ứng 2 lần).
+- Class hiệu ứng tự gỡ khi chạy xong (`doneAnim`) để hover/nhấn vẫn hoạt động.
+
 ## Sheet
 | Tab | Cột |
 |---|---|

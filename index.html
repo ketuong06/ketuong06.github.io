@@ -24,6 +24,9 @@
   --bg:#0c0c0c; --fg:#f2f2f2; --muted:#9a9a9a; --line:#262626; --tile:#1a1a1a;
   --inv-bg:#f2f2f2; --inv-fg:#0c0c0c; color-scheme:dark}
 :root[data-theme="light"]{color-scheme:light}
+:root{--ease:cubic-bezier(.2,.7,.2,1);--ease-pop:cubic-bezier(.34,1.56,.64,1);--shine:rgba(255,255,255,.65)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--shine:rgba(255,255,255,.07)}}
+:root[data-theme="dark"]{--shine:rgba(255,255,255,.07)}
 
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--body)}
 .wrap{max-width:480px;margin:0 auto;padding-block:20px 40px;
@@ -52,9 +55,12 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 .cta{display:block;text-align:center;margin-top:16px;padding:12px;border-radius:999px;
   background:var(--inv-bg);color:var(--inv-fg);text-decoration:none;font-weight:500}
 
-.seg{display:grid;grid-template-columns:1fr 1fr;margin-top:20px;padding:4px;border-radius:999px;border:1px solid var(--line)}
-.seg button{font:500 14px var(--body);padding:9px;border:0;border-radius:999px;background:none;color:var(--muted);cursor:pointer}
-.seg button[aria-selected="true"]{background:var(--tile);color:var(--fg)}
+.seg{position:relative;display:grid;grid-template-columns:1fr 1fr;margin-top:20px;padding:4px;border-radius:999px;border:1px solid var(--line)}
+.seg-pill{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:var(--tile);
+  transition:transform .38s var(--ease);pointer-events:none}
+.seg[data-i="1"] .seg-pill{transform:translateX(100%)}
+.seg button{position:relative;z-index:1;font:500 14px var(--body);padding:9px;border:0;border-radius:999px;background:none;color:var(--muted);cursor:pointer;transition:color .25s ease}
+.seg button[aria-selected="true"]{color:var(--fg)}
 
 .filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-top:20px}
 .filters::-webkit-scrollbar{display:none}
@@ -65,7 +71,8 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px 10px}
 .card{position:relative;min-width:0}
 .card a{display:grid;gap:3px;color:inherit;text-decoration:none}
-.card img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--tile);margin-bottom:8px;display:block}
+.ph{display:block;position:relative;overflow:hidden;aspect-ratio:3/4;background:var(--tile);margin-bottom:8px}
+.ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s var(--ease)}
 .card .brand{font-size:13px;font-weight:500}
 .card .name{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card .buy{margin-top:4px;text-decoration:underline;text-underline-offset:3px}
@@ -75,12 +82,15 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 .heart[aria-pressed="true"] svg{fill:currentColor}
 
 /* loading skeleton */
-.sk{background:var(--tile);animation:pulse 1.2s ease-in-out infinite}
+.sk{position:relative;overflow:hidden;background:var(--tile)}
+.sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,var(--shine),transparent);animation:shimmer 1.3s ease-in-out infinite}
+@keyframes shimmer{to{transform:translateX(100%)}}
 .sk-card .sk-img{aspect-ratio:3/4;margin-bottom:8px}
 .sk-card .sk-line{height:12px;margin:6px 0;width:70%}
 .sk-card .sk-line.s{width:45%}
 @keyframes pulse{50%{opacity:.5}}
-@media (prefers-reduced-motion:reduce){.sk{animation:none}}
+@media (prefers-reduced-motion:reduce){.sk::after{animation:none}}
 .msg{color:var(--muted);font-size:13px;text-align:center;padding:32px 8px;grid-column:1/-1}
 
 
@@ -94,10 +104,10 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 #lookfilters{margin-top:20px}
 .look{border:0;background:none;padding:0;margin:0;min-width:0;
   text-align:left;color:inherit;font:inherit;cursor:pointer;display:grid;gap:2px;align-content:start}
-.look img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--tile);display:block;margin-bottom:6px;transition:filter .25s ease}
+.look .ph{margin-bottom:6px}
 .look .t{font-size:13px;font-weight:500;line-height:1.35}
 .look .n{font-size:12px;color:var(--muted)}
-@media (hover:hover){.look:hover img{filter:brightness(.92)}}
+@media (hover:hover){.look:hover .ph img{transform:scale(1.05)}}
 
 /* shop the look overlay */
 body.lock{overflow:hidden}
@@ -135,8 +145,56 @@ body.lock{overflow:hidden}
 
 footer{margin-top:40px;color:var(--muted);text-align:center}
 a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
-.card img{transition:filter .25s ease}
-@media (hover:hover){.card a:hover img{filter:brightness(.92)}.card a:hover .buy{text-decoration-thickness:2px}}
+@media (hover:hover){.card a:hover .ph img{transform:scale(1.05)}.card a:hover .buy{text-decoration-thickness:2px}}
+
+/* 4A: press */
+.card a,.look,.filters button,.seg button,.cta,.it,.theme,.stl-close{transition:transform .14s ease}
+.card a:active,.look:active,.it:active{transform:scale(.97)}
+.filters button:active,.seg button:active,.cta:active,.theme:active,.stl-close:active{transform:scale(.95)}
+.pin:active{transform:translate(-50%,-50%) scale(.9)}
+
+/* 5A: heart pop */
+.heart.pop svg{animation:pop .45s var(--ease-pop)}
+@keyframes pop{0%{transform:scale(1)}35%{transform:scale(1.4)}65%{transform:scale(.88)}100%{transform:scale(1)}}
+
+/* 2A + 9A: staggered reveal (also on scroll) */
+.fx-pre{opacity:0;transform:translateY(14px)}
+.fx-rise{animation:rise .5s var(--ease) both;animation-delay:var(--d,0ms)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* 1B: panel fade */
+.fx-panel{animation:fadeup .32s var(--ease) both}
+@keyframes fadeup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* 6A: overlay */
+.stl.fx-open{animation:fadein .28s ease both}
+.stl.fx-close{animation:fadeout .2s ease both}
+.stl.fx-open-scale .stl-stage{animation:zoomin .38s var(--ease) both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes fadeout{from{opacity:1}to{opacity:0}}
+@keyframes zoomin{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+.fx-ghost{position:fixed;z-index:60;object-fit:cover;pointer-events:none;margin:0}
+.fx-item{animation:itemin .45s var(--ease) both;animation-delay:var(--d,0ms)}
+@keyframes itemin{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+
+/* 7A: pins pop in, then breathe */
+.pin.fx-pin{animation:pinin .42s var(--ease-pop) both;animation-delay:var(--d,0ms)}
+@keyframes pinin{from{opacity:0;transform:translate(-50%,-50%) scale(0)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.pin::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--fg);opacity:0;pointer-events:none}
+.stl.fx-live .pin::after{animation:breathe 2.6s ease-out infinite;animation-delay:var(--b,0ms)}
+@keyframes breathe{0%{opacity:.55;transform:scale(.85)}70%,100%{opacity:0;transform:scale(1.55)}}
+
+/* 10A: theme toggle */
+.theme.spin svg{animation:spin .45s var(--ease)}
+@keyframes spin{from{transform:rotate(-120deg) scale(.4);opacity:0}to{transform:none;opacity:1}}
+html.theme-anim,html.theme-anim body,html.theme-anim *{transition:background-color .35s ease,color .35s ease,border-color .35s ease,fill .35s ease,stroke .35s ease !important}
+
+@media (prefers-reduced-motion:reduce){
+  .fx-pre{opacity:1;transform:none}
+  .fx-rise,.fx-panel,.fx-item,.pin.fx-pin,.stl.fx-open-scale .stl-stage,.heart.pop svg,.theme.spin svg{animation:none}
+  .stl.fx-live .pin::after{animation:none}
+  .ph img,.seg-pill{transition:none}
+}
 
 /* ===== Desktop (>= 960px): sidebar profile + wide product grid ===== */
 @media (min-width:960px){
@@ -206,7 +264,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
 
   <div class="content">
 
-  <div class="seg" role="tablist">
+  <div class="seg" role="tablist" data-i="0">
+    <span class="seg-pill" aria-hidden="true"></span>
     <button id="tab-shop" role="tab" aria-selected="true" aria-controls="panel-shop">Tủ đồ</button>
     <button id="tab-looks" role="tab" aria-selected="false" aria-controls="panel-looks">Shop the look</button>
   </div>
@@ -361,15 +420,18 @@ function card(p){
   const img = el('img'); img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
   img.alt = [p.brand, p.ten].filter(Boolean).join(' – ');
   if (p.anh){ img.src = imgSrc(p.anh); imgFallback(img, p.anh) }
-  a.append(img, el('span', 'brand', p.brand), el('span', 'name', p.ten));
+  const ph = el('span', 'ph'); ph.append(img);
+  a.append(ph, el('span', 'brand', p.brand), el('span', 'name', p.ten));
   a.append(el('span', 'buy up', 'Mua ngay'));
 
   const id = p.id || p.ten;
   const h = el('button', 'heart'); h.setAttribute('aria-label', 'Lưu ' + (p.ten || ''));
   h.setAttribute('aria-pressed', saved.includes(id));
+  h.addEventListener('animationend', () => h.classList.remove('pop'));
   h.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>';
   h.addEventListener('click', () => {
     const on = h.getAttribute('aria-pressed') !== 'true'; h.setAttribute('aria-pressed', on);
+    if (on){ h.classList.remove('pop'); void h.offsetWidth; h.classList.add('pop') }
     saved = on ? [...new Set([...saved, id])] : saved.filter(x => x !== id);
     store.set(SAVED_KEY, saved);
   });
@@ -388,6 +450,31 @@ let PRODUCTS = [], LOOKS = [], LOOK_ITEMS = [];
 // món để trống người mặc hoặc "Cả hai" thì hiện ở cả 2 bên
 const forWho = (who, s) => s === 'all' || !who || who === s || /^c(ả|a) hai$/i.test(who);
 const desk = window.matchMedia('(min-width: 960px)');
+const RM = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+/* ---------- motion helpers ---------- */
+// 2A + 9A: card nào đang trong màn hình thì hiện lần lượt, card ở dưới thì đợi cuộn tới mới hiện
+const io = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
+  const vis = entries.filter(e => e.isIntersecting).map(e => e.target)
+    .sort((a, b) => a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
+  vis.forEach((n, i) => { io.unobserve(n); n.style.setProperty('--d', Math.min(i, 8) * 45 + 'ms'); n.classList.remove('fx-pre'); n.classList.add('fx-rise'); doneAnim(n, 'fx-rise') });
+}, {rootMargin: '0px 0px -6% 0px', threshold: 0.05}) : null;
+// gỡ class hiệu ứng khi chạy xong để hover / nhấn hoạt động bình thường
+function doneAnim(n, cls){
+  const h = e => { if (e.target !== n) return; n.classList.remove(cls); n.removeEventListener('animationend', h) };
+  n.addEventListener('animationend', h);
+}
+function reveal(nodes){
+  nodes = [...nodes].filter(n => !n.hidden);
+  if (RM.matches || !io){ nodes.forEach(n => n.classList.remove('fx-pre', 'fx-rise')); return }
+  nodes.forEach(n => { io.unobserve(n); n.classList.remove('fx-rise'); n.classList.add('fx-pre') });
+  void document.body.offsetWidth;
+  nodes.forEach(n => io.observe(n));
+}
+function panelIn(panel){
+  if (RM.matches) return;
+  panel.classList.remove('fx-panel'); void panel.offsetWidth; panel.classList.add('fx-panel');
+}
 const canHover = window.matchMedia('(hover: hover)');
 
 function renderProducts(list){
@@ -425,6 +512,7 @@ function applyFilter(){
     if (!c.hidden) n++;
   });
   $('#showing').textContent = 'Đang hiện ' + n + ' món';
+  reveal($$('#grid .card'));
 }
 
 /* ---------- lookbook + shop the look ---------- */
@@ -453,10 +541,12 @@ function renderLooks(){
     const b = el('button', 'look'); b.type = 'button';
     const img = el('img'); img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
     img.alt = o.ten || 'Outfit'; img.src = imgSrc(o.anh); imgFallback(img, o.anh);
-    b.append(img, el('span', 'up', 'Outfit · ' + (o.nguoi || '')), el('span', 't', o.ten || ''), el('span', 'n', itemsOf(o.id).length + ' món'));
-    b.addEventListener('click', () => openLook(o.id));
+    const ph = el('span', 'ph'); ph.append(img);
+    b.append(ph, el('span', 'up', 'Outfit · ' + (o.nguoi || '')), el('span', 't', o.ten || ''), el('span', 'n', itemsOf(o.id).length + ' món'));
+    b.addEventListener('click', () => openLook(o.id, img));
     return b;
   }));
+  if (!$('#panel-looks').hidden) reveal($$('#lgrid .look'));
 }
 function itemCard(p, no){
   const a = el('a', 'it'); a.href = safeUrl(p.link_mua); a.target = '_blank'; a.rel = 'noopener sponsored'; a.dataset.i = no;
@@ -475,7 +565,8 @@ function focusItem(no, scroll){
     if (c) c.scrollIntoView({behavior: 'smooth', block: 'center'});
   }
 }
-function showLook(id){
+let lineAnim = false, opening = false;
+function showLook(id, src){
   const o = visibleLooks().find(x => x.id === id);
   if (!o){ hideLook(); return }
   selectTab('tab-looks');
@@ -483,7 +574,15 @@ function showLook(id){
   $('#stl-who').textContent = 'Outfit · ' + (o.nguoi || '');
   $('#stl-title').textContent = o.ten || 'Outfit';
   const img = $('#stl-img'); delete img.dataset.fb; img.referrerPolicy = 'no-referrer';
-  img.alt = o.ten || 'Outfit'; img.onload = drawLines; img.src = imgSrc(o.anh, 1400); imgFallback(img, o.anh, 1400);
+  img.alt = o.ten || 'Outfit'; img.onload = drawLines;
+  // dùng ảnh nhỏ đã có sẵn để hiện ngay, rồi thay ảnh nét khi tải xong
+  const hi = imgSrc(o.anh, 1400);
+  if (src && src.complete && src.naturalWidth){
+    img.src = src.currentSrc || src.src;
+    const pre = new Image(); pre.referrerPolicy = 'no-referrer';
+    pre.onload = () => { if ($('#stl-img') === img && !$('#stl').hidden) img.src = hi };
+    pre.src = hi;
+  } else { img.src = hi; imgFallback(img, o.anh, 1400) }
   const pic = $('#stl-pic'); pic.querySelectorAll('.pin').forEach(x => x.remove());
   const L = $('#stl-l'), Rc = $('#stl-r'), list = $('#stl-list');
   [L, Rc, list].forEach(x => x.replaceChildren());
@@ -499,17 +598,58 @@ function showLook(id){
     list.append(itemCard(it.p, no));
   });
   if (!its.length) list.append(el('p', 'msg', 'Outfit này chưa gắn món nào.'));
-  const stl = $('#stl'); stl.hidden = false; stl.scrollTop = 0;
+  const stl = $('#stl');
+  clearTimeout(window.__hideT);
+  const wasOpen = !stl.hidden && !stl.classList.contains('fx-close');
+  stl.classList.remove('fx-close', 'fx-open', 'fx-open-scale', 'fx-live');
+  stl.hidden = false; stl.scrollTop = 0;
   document.body.classList.add('lock');
-  requestAnimationFrame(drawLines);
   $('#stl-close').focus({preventScroll: true});
+  if (RM.matches || wasOpen){ lineAnim = false; opening = false; stl.classList.add('fx-live'); requestAnimationFrame(drawLines); return }
+
+  // 6A: ảnh bay từ lưới ra giữa (hoặc fade + zoom nếu mở từ link)
+  opening = true; $('#stl-lines').replaceChildren();
+  [...pic.querySelectorAll('.pin'), ...$$('#stl .it')].forEach(n => n.style.opacity = '0');
+  void stl.offsetWidth; stl.classList.add('fx-open');
+  const after = () => {
+    opening = false;
+    img.style.visibility = '';
+    lineAnim = true;
+    // món đồ hiện dần: fade + zoom in, chấm bật lên lần lượt, đường nối tự vẽ
+    $$('#stl .it').forEach(n => { const i = +n.dataset.i - 1; n.style.opacity = ''; n.style.setProperty('--d', (120 + i * 70) + 'ms'); n.classList.remove('fx-item'); void n.offsetWidth; n.classList.add('fx-item'); doneAnim(n, 'fx-item') });
+    pic.querySelectorAll('.pin').forEach(n => { const i = +n.dataset.i - 1; n.style.opacity = ''; n.style.setProperty('--d', (i * 90) + 'ms'); n.style.setProperty('--b', (900 + i * 250) + 'ms'); n.classList.add('fx-pin'); doneAnim(n, 'fx-pin') });
+    drawLines();
+    setTimeout(() => stl.classList.add('fx-live'), 400);
+  };
+  const srcRect = src && src.isConnected ? src.getBoundingClientRect() : null;
+  if (!srcRect || !srcRect.width || !img.animate){
+    stl.classList.add('fx-open-scale'); setTimeout(after, 200); return;
+  }
+  const go = () => {
+    const to = img.getBoundingClientRect();
+    if (!to.width){ stl.classList.add('fx-open-scale'); after(); return }
+    const ghost = el('img', 'fx-ghost'); ghost.src = src.currentSrc || src.src; ghost.alt = ''; ghost.referrerPolicy = 'no-referrer';
+    Object.assign(ghost.style, {left: srcRect.left + 'px', top: srcRect.top + 'px', width: srcRect.width + 'px', height: srcRect.height + 'px'});
+    document.body.append(ghost); img.style.visibility = 'hidden';
+    ghost.animate([
+      {left: srcRect.left + 'px', top: srcRect.top + 'px', width: srcRect.width + 'px', height: srcRect.height + 'px'},
+      {left: to.left + 'px', top: to.top + 'px', width: to.width + 'px', height: to.height + 'px'}
+    ], {duration: 460, easing: 'cubic-bezier(.2,.7,.2,1)'}).onfinish = () => { ghost.remove(); after() };
+  };
+  if (img.complete && img.naturalWidth) requestAnimationFrame(go);
+  else img.addEventListener('load', () => requestAnimationFrame(go), {once: true});
 }
 function hideLook(){
-  $('#stl').hidden = true; document.body.classList.remove('lock');
+  const stl = $('#stl');
+  if (stl.hidden) return;
+  const done = () => { stl.hidden = true; stl.classList.remove('fx-close', 'fx-open', 'fx-open-scale', 'fx-live'); document.body.classList.remove('lock') };
+  if (RM.matches){ done(); return }
+  stl.classList.remove('fx-open', 'fx-open-scale'); void stl.offsetWidth; stl.classList.add('fx-close');
+  window.__hideT = setTimeout(done, 190);
 }
-function openLook(id){
+function openLook(id, src){
   history.pushState({kt: 1}, '', '#look-' + encodeURIComponent(id));
-  showLook(id);
+  showLook(id, src);
 }
 function closeLook(){
   if (history.state && history.state.kt) history.back();
@@ -521,7 +661,7 @@ function route(){
 }
 function drawLines(){
   const svg = $('#stl-lines'); svg.replaceChildren();
-  if ($('#stl').hidden || !desk.matches) return;
+  if (opening || $('#stl').hidden || !desk.matches) return;
   const st = $('#stl-stage').getBoundingClientRect(), pic = $('#stl-img').getBoundingClientRect();
   svg.setAttribute('width', st.width); svg.setAttribute('height', st.height);
   $$('#stl-pic .pin').forEach(pin => {
@@ -534,8 +674,15 @@ function drawLines(){
     ['halo', 'ln'].forEach(cls => {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', d); path.setAttribute('class', cls); path.dataset.i = no; svg.append(path);
+      if (lineAnim && path.animate){
+        const len = path.getTotalLength();
+        path.style.strokeDasharray = len; path.style.strokeDashoffset = len;
+        path.animate([{strokeDashoffset: len}, {strokeDashoffset: 0}], {duration: 520, delay: 150 + (no - 1) * 90, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'forwards'})
+          .onfinish = () => { path.style.strokeDasharray = ''; path.style.strokeDashoffset = '' };
+      }
     });
   });
+  lineAnim = false;
 }
 $('#stl-close').addEventListener('click', closeLook);
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#stl').hidden) closeLook() });
@@ -561,16 +708,33 @@ const syncTheme = () => {
 };
 $('#theme').addEventListener('click', () => {
   const next = isDark() ? 'light' : 'dark';
-  document.documentElement.dataset.theme = next;
+  const root = document.documentElement, btn = $('#theme');
+  if (!RM.matches){
+    root.classList.add('theme-anim'); clearTimeout(window.__tt);
+    window.__tt = setTimeout(() => root.classList.remove('theme-anim'), 400);
+    btn.classList.remove('spin'); void btn.offsetWidth; btn.classList.add('spin');
+  }
+  root.dataset.theme = next;
   try{ localStorage.setItem('kt-theme', next) }catch(e){}
   syncTheme();
 });
+$('#theme').addEventListener('animationend', e => e.currentTarget.classList.remove('spin'));
 mq.addEventListener ? mq.addEventListener('change', syncTheme) : mq.addListener(syncTheme);
 syncTheme();
 
 /* ---------- tabs ---------- */
 function selectTab(id){
-  $$('.seg button').forEach(x => { const on = x.id === id; x.setAttribute('aria-selected', on); document.getElementById(x.getAttribute('aria-controls')).hidden = !on });
+  const btns = [...$$('.seg button')];
+  const cur = btns.find(x => x.getAttribute('aria-selected') === 'true');
+  if (cur && cur.id === id) return;
+  btns.forEach((x, i) => {
+    const on = x.id === id, panel = document.getElementById(x.getAttribute('aria-controls'));
+    x.setAttribute('aria-selected', on); panel.hidden = !on;
+    if (on){
+      $('.seg').dataset.i = i; panelIn(panel);
+      reveal(panel.querySelectorAll(id === 'tab-looks' ? '.look' : '.card'));
+    }
+  });
 }
 $$('.seg button').forEach(t => t.addEventListener('click', () => selectTab(t.id)));
 $('#year').textContent = new Date().getFullYear();
@@ -585,10 +749,12 @@ $('#year').textContent = new Date().getFullYear();
   try{
     const opt = t => fetchTab(t).catch(() => []);
     const [products, info, looks, lookItems] = await Promise.all([fetchTab(TAB_PRODUCTS), fetchTab(TAB_INFO), opt(TAB_LOOKS), opt(TAB_LOOK_ITEMS)]);
+    const fresh = {products, info, looks, lookItems};
+    if (cache && JSON.stringify(fresh) === JSON.stringify(cache)) return; // không đổi gì → khỏi vẽ lại (tránh chạy hiệu ứng 2 lần)
     LOOKS = looks; LOOK_ITEMS = lookItems;
     renderInfo(info); renderProducts(products); renderLooks();
     if (!$('#stl').hidden || location.hash) route();
-    store.set(CACHE_KEY, {products, info, looks, lookItems});
+    store.set(CACHE_KEY, fresh);
   }catch(e){
     console.error('[ketuong] load failed:', e);
     if (!cache){
