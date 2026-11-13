@@ -83,10 +83,6 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 @media (prefers-reduced-motion:reduce){.sk{animation:none}}
 .msg{color:var(--muted);font-size:13px;text-align:center;padding:32px 8px;grid-column:1/-1}
 
-.channels{display:grid;border-top:1px solid var(--line);margin-top:20px}
-.channels a{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);
-  color:var(--fg);text-decoration:none}
-.channels a span:last-child{color:var(--muted);font-size:13px}
 
 /* sub filter (Outfit → Phi / Tường) */
 .filters.sub{margin-top:10px}
@@ -94,15 +90,10 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 .filters.sub button{border-color:var(--line);padding:6px 12px;font-size:12px}
 .filters.sub button[aria-pressed="true"]{border-color:var(--inv-bg)}
 
-/* lookbook row */
-.looks{margin-top:20px}
-.looks[hidden]{display:none}
-.looks-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
-.looks-h small{color:var(--muted);font-size:12px}
-.looks-row{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;padding-bottom:2px}
-.looks-row::-webkit-scrollbar{display:none}
-.look{flex:none;width:44%;max-width:200px;scroll-snap-align:start;border:0;background:none;padding:0;margin:0;
-  text-align:left;color:inherit;font:inherit;cursor:pointer;display:grid;gap:2px}
+/* shop the look grid (tab) */
+#lookfilters{margin-top:20px}
+.look{border:0;background:none;padding:0;margin:0;min-width:0;
+  text-align:left;color:inherit;font:inherit;cursor:pointer;display:grid;gap:2px;align-content:start}
 .look img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--tile);display:block;margin-bottom:6px;transition:filter .25s ease}
 .look .t{font-size:13px;font-weight:500;line-height:1.35}
 .look .n{font-size:12px;color:var(--muted)}
@@ -161,16 +152,15 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
   .links{flex-direction:column;gap:10px}
   .links a{font-size:14px}
   .cta{margin-top:24px}
-  .seg,#panel-ch{display:none}
-  #panel-shop[hidden]{display:block}
-  .filters{margin-top:0;flex-wrap:wrap;overflow:visible}
+  .seg{margin-top:0;max-width:380px}
+  .filters{margin-top:24px;flex-wrap:wrap;overflow:visible}
   .filters button{padding:9px 18px;font-size:14px}
   .showing{margin:18px 0 20px}
   .grid{grid-template-columns:repeat(3,1fr);gap:40px 20px}
   .filters.sub{margin-top:12px}
   .filters.sub button{padding:7px 14px;font-size:13px}
-  .looks{margin-top:28px}
-  .look{width:200px}
+  #lookfilters{margin-top:24px}
+  .look .t{font-size:14px}
   /* overlay desktop: items left/right, photo center, connector lines */
   .stl-top{padding:16px 40px}
   .stl-top h2{font-size:18px}
@@ -218,22 +208,20 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
 
   <div class="seg" role="tablist">
     <button id="tab-shop" role="tab" aria-selected="true" aria-controls="panel-shop">Tủ đồ</button>
-    <button id="tab-ch" role="tab" aria-selected="false" aria-controls="panel-ch">Kênh</button>
+    <button id="tab-looks" role="tab" aria-selected="false" aria-controls="panel-looks">Shop the look</button>
   </div>
 
   <section id="panel-shop" role="tabpanel" aria-labelledby="tab-shop">
     <div class="filters" id="filters" role="group" aria-label="Lọc sản phẩm"></div>
     <div class="filters sub" id="subfilters" role="group" aria-label="Lọc theo người mặc" hidden></div>
-    <section class="looks" id="looks" hidden>
-      <div class="looks-h"><span class="up">Shop the look</span><small>Bấm vào ảnh để xem từng món</small></div>
-      <div class="looks-row" id="looks-row"></div>
-    </section>
     <p class="showing" id="showing" aria-live="polite">Đang tải…</p>
     <div class="grid" id="grid"></div>
   </section>
 
-  <section id="panel-ch" role="tabpanel" aria-labelledby="tab-ch" hidden>
-    <nav class="channels" id="channels"></nav>
+  <section id="panel-looks" role="tabpanel" aria-labelledby="tab-looks" hidden>
+    <div class="filters sub" id="lookfilters" role="group" aria-label="Lọc outfit theo người mặc"></div>
+    <p class="showing" id="look-showing">Bấm vào ảnh để xem từng món trong outfit</p>
+    <div class="grid lgrid" id="lgrid"></div>
   </section>
   </div>
   </div>
@@ -351,20 +339,16 @@ function renderInfo(info){
   if (kv.avatar){ av.src = imgSrc(kv.avatar); imgFallback(av, kv.avatar) }
   if (kv.ten_kenh) av.alt = kv.ten_kenh;
 
-  const links = $('#links'), chs = $('#channels');
-  links.replaceChildren(); chs.replaceChildren();
-  let n = 0;
-  CHANNELS.forEach(({k, label}) => {
-    const url = kv[k]; if (!url) return; n++;
+  const links = $('#links');
+  links.replaceChildren();
+  CHANNELS.forEach(({k}) => {
+    const url = kv[k]; if (!url) return;
     const handle = url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '').split('/').pop();
     if (k !== 'tiktok'){
       const a = el('a'); a.href = safeUrl(url); a.target = '_blank'; a.rel = 'noopener';
       a.innerHTML = ICONS[k]; a.append(handle.replace(/^@/, ''));
       links.append(a);
     }
-    const c = el('a'); c.href = safeUrl(url); c.target = '_blank'; c.rel = 'noopener';
-    c.append(el('span', null, label), el('span', null, handle + ' ↗'));
-    chs.append(c);
   });
   const cta = $('#cta');
   if (kv.tiktok){ cta.href = safeUrl(kv.tiktok); cta.hidden = false }
@@ -372,7 +356,7 @@ function renderInfo(info){
 
 let saved = store.get(SAVED_KEY, []);
 function card(p){
-  const d = el('div', 'card'); d.dataset.c = p.nhom || 'Khác'; d.dataset.w = p.nguoi || '';
+  const d = el('div', 'card'); d.dataset.c = groupOf(p); d.dataset.w = p.nguoi || '';
   const a = el('a'); a.href = safeUrl(p.link_mua); a.target = '_blank'; a.rel = 'noopener sponsored';
   const img = el('img'); img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
   img.alt = [p.brand, p.ten].filter(Boolean).join(' – ');
@@ -393,7 +377,11 @@ function card(p){
   return d;
 }
 
-const OUTFIT = 'Outfit';
+const OUTFIT = 'Outfit', OTHER = 'Khác';
+// Trên web chỉ có 2 nhóm: Outfit + Khác (Phụ kiện, Đồ quay, Khác... gom vào Khác). Sheet vẫn giữ nhóm chi tiết.
+const groupOf = p => (p.nhom || '').trim().toLowerCase() === OUTFIT.toLowerCase() ? OUTFIT : OTHER;
+const LSUBS = [{k:'all', label:'Tất cả'}, {k:'Phi', label:'Outfit của Phi'}, {k:'Tường', label:'Outfit của Tường'}];
+let lsub = 'all';
 const SUBS = [{k:'all', label:'Tất cả'}, {k:'Phi', label:'Đồ Phi mặc'}, {k:'Tường', label:'Đồ Tường mặc'}];
 let current = 'all', sub = 'all';
 let PRODUCTS = [], LOOKS = [], LOOK_ITEMS = [];
@@ -406,8 +394,7 @@ function renderProducts(list){
   PRODUCTS = list;
   const items = list.filter(p => isOn(p.hien_thi) && (p.ten || p.brand));
 
-  let groups = [...new Set(items.map(p => p.nhom || 'Khác'))];
-  if (groups.includes(OUTFIT)) groups = [OUTFIT, ...groups.filter(g => g !== OUTFIT)];
+  const groups = [OUTFIT, OTHER].filter(g => items.some(p => groupOf(p) === g));
   if (current !== 'all' && !groups.includes(current)) current = 'all';
   const fwrap = $('#filters'); fwrap.replaceChildren();
   ['all', ...groups].forEach(g => {
@@ -438,7 +425,6 @@ function applyFilter(){
     if (!c.hidden) n++;
   });
   $('#showing').textContent = 'Đang hiện ' + n + ' món';
-  renderLooks();
 }
 
 /* ---------- lookbook + shop the look ---------- */
@@ -452,9 +438,18 @@ function itemsOf(id){
 }
 const visibleLooks = () => LOOKS.filter(o => isOn(o.hien_thi) && o.id && o.anh);
 function renderLooks(){
-  const list = current === OUTFIT ? visibleLooks().filter(o => sub === 'all' || o.nguoi === sub) : [];
-  $('#looks').hidden = !list.length;
-  $('#looks-row').replaceChildren(...list.map(o => {
+  const all = visibleLooks();
+  const fw = $('#lookfilters'); fw.replaceChildren(); fw.hidden = !all.length;
+  LSUBS.forEach(({k, label}) => {
+    const b = el('button', null, label); b.type = 'button'; b.setAttribute('aria-pressed', k === lsub);
+    b.addEventListener('click', () => { lsub = k; renderLooks() });
+    fw.append(b);
+  });
+  const list = all.filter(o => lsub === 'all' || o.nguoi === lsub);
+  $('#look-showing').textContent = all.length ? 'Đang hiện ' + list.length + ' outfit · bấm vào ảnh để xem từng món' : '';
+  const g = $('#lgrid');
+  if (!list.length){ g.replaceChildren(el('p', 'msg', all.length ? 'Chưa có outfit nào ở mục này.' : 'Outfit mới sắp lên nha!')); return }
+  g.replaceChildren(...list.map(o => {
     const b = el('button', 'look'); b.type = 'button';
     const img = el('img'); img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
     img.alt = o.ten || 'Outfit'; img.src = imgSrc(o.anh); imgFallback(img, o.anh);
@@ -483,6 +478,7 @@ function focusItem(no, scroll){
 function showLook(id){
   const o = visibleLooks().find(x => x.id === id);
   if (!o){ hideLook(); return }
+  selectTab('tab-looks');
   const its = itemsOf(id).sort((a, b) => a.y - b.y);
   $('#stl-who').textContent = 'Outfit · ' + (o.nguoi || '');
   $('#stl-title').textContent = o.ten || 'Outfit';
@@ -573,9 +569,10 @@ mq.addEventListener ? mq.addEventListener('change', syncTheme) : mq.addListener(
 syncTheme();
 
 /* ---------- tabs ---------- */
-$$('.seg button').forEach(t => t.addEventListener('click', () => {
-  $$('.seg button').forEach(x => { const on = x === t; x.setAttribute('aria-selected', on); document.getElementById(x.getAttribute('aria-controls')).hidden = !on });
-}));
+function selectTab(id){
+  $$('.seg button').forEach(x => { const on = x.id === id; x.setAttribute('aria-selected', on); document.getElementById(x.getAttribute('aria-controls')).hidden = !on });
+}
+$$('.seg button').forEach(t => t.addEventListener('click', () => selectTab(t.id)));
 $('#year').textContent = new Date().getFullYear();
 
 /* ---------- boot: hiện cache ngay, rồi lấy data mới ---------- */
@@ -583,13 +580,13 @@ $('#year').textContent = new Date().getFullYear();
   const cache = store.get(CACHE_KEY, null);
   if (cache){
     LOOKS = cache.looks || []; LOOK_ITEMS = cache.lookItems || [];
-    renderInfo(cache.info); renderProducts(cache.products); route();
+    renderInfo(cache.info); renderProducts(cache.products); renderLooks(); route();
   } else skeleton();
   try{
     const opt = t => fetchTab(t).catch(() => []);
     const [products, info, looks, lookItems] = await Promise.all([fetchTab(TAB_PRODUCTS), fetchTab(TAB_INFO), opt(TAB_LOOKS), opt(TAB_LOOK_ITEMS)]);
     LOOKS = looks; LOOK_ITEMS = lookItems;
-    renderInfo(info); renderProducts(products);
+    renderInfo(info); renderProducts(products); renderLooks();
     if (!$('#stl').hidden || location.hash) route();
     store.set(CACHE_KEY, {products, info, looks, lookItems});
   }catch(e){

@@ -8,11 +8,14 @@ Trang "Tủ đồ" của kênh Tường Bình Thường (@ketuong06) — https:/
 - Giao diện sáng/tối: tự theo máy người xem; nút ở góc phải trên cùng để chỉnh tay (lưu `localStorage: kt-theme`).
 
 ## Tính năng
-- Bộ lọc 2 tầng: hàng 1 theo `nhom` (Outfit luôn đứng đầu); chọn **Outfit** thì hiện hàng 2: Tất cả · Đồ Phi mặc · Đồ Tường mặc (theo cột `nguoi`; "Cả hai"/trống = hiện cả 2 bên).
-- **Shop the look**: trong mục Outfit có hàng ảnh outfit toàn thân (tab `Outfit`). Bấm ảnh mở overlay:
+- Hàng tab (cả phone + desktop): **Tủ đồ | Shop the look**. Không còn tab Kênh (link kênh nằm ở profile).
+- Tab **Tủ đồ** — bộ lọc 2 tầng:
+  - Hàng 1: Tất cả · **Outfit** · **Khác**. `nhom` = Outfit → Outfit; mọi nhóm khác (Phụ kiện, Đồ quay, Khác…) gom vào **Khác** trên web, Sheet vẫn giữ nhóm chi tiết.
+  - Chọn Outfit → hàng 2: Tất cả · Đồ Phi mặc · Đồ Tường mặc (theo cột `nguoi`; "Cả hai"/trống = hiện cả 2 bên).
+- Tab **Shop the look** — lưới ảnh outfit toàn thân (tab `Outfit`), lọc: Tất cả · Outfit của Phi · Outfit của Tường. Bấm ảnh mở overlay:
   - Desktop: ảnh ở giữa, card món chia 2 bên (x < 50 → trái), đường nối từ card tới chấm trên ảnh.
   - Phone: ảnh trên với chấm đánh số, danh sách món bên dưới; bấm chấm → cuộn tới món.
-  - Link chia sẻ được: `https://ketuong06.github.io/#look-<outfit_id>`. Esc / nút × / Back để đóng.
+  - Link chia sẻ được: `https://ketuong06.github.io/#look-<outfit_id>` (tự chuyển sang tab Shop the look). Esc / nút × / Back để đóng.
 
 ## Sheet
 | Tab | Cột |
