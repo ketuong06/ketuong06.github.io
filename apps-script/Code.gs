@@ -38,10 +38,19 @@ function readTab(ss, t) {
     .filter(o => Object.values(o).some(v => v !== '' && v !== 'false'));
 }
 
+// API công khai: chỉ trả món / outfit đang hiện (hien_thi = TRUE) và chấm gắn món giữa chúng.
+// Món / outfit ẩn KHÔNG ra khỏi Apps Script — trang quản trị đọc đủ qua action 'load' (cần mật khẩu).
 function getData() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
   const out = {};
   Object.keys(TABS).forEach(k => out[k] = readTab(ss, TABS[k]));
+  const on = v => /^(true|1|x|có)$/i.test(String(v).trim());
+  out.products = out.products.filter(p => p.id && on(p.hien_thi));
+  out.looks = out.looks.filter(o => o.id && on(o.hien_thi));
+  const pids = {}, lids = {};
+  out.products.forEach(p => pids[p.id] = 1);
+  out.looks.forEach(o => lids[o.id] = 1);
+  out.lookItems = out.lookItems.filter(i => lids[i.outfit_id] && pids[i.sp_id]);
   return JSON.stringify(out);
 }
 
