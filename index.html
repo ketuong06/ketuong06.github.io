@@ -55,14 +55,20 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 .cta{display:block;text-align:center;margin-top:16px;padding:12px;border-radius:999px;
   background:var(--inv-bg);color:var(--inv-fg);text-decoration:none;font-weight:500}
 
-.seg{position:relative;display:grid;grid-template-columns:1fr 1fr;margin-top:20px;padding:4px;border-radius:999px;border:1px solid var(--line)}
+.stick{position:sticky;top:0;z-index:20;background:var(--bg);margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  padding:0 max(16px,env(safe-area-inset-left,0px)) 10px;transition:box-shadow .2s ease}
+.stick.stuck{box-shadow:0 1px 0 var(--line)}
+.mini{display:flex;justify-content:space-between;align-items:center;height:30px;opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s}
+.mini a{color:var(--fg);text-decoration:none}
+.stick.stuck .mini{opacity:1;visibility:visible}
+.seg{position:relative;display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:999px;border:1px solid var(--line)}
 .seg-pill{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:var(--tile);
   transition:transform .38s var(--ease);pointer-events:none}
 .seg[data-i="1"] .seg-pill{transform:translateX(100%)}
 .seg button{position:relative;z-index:1;font:500 14px var(--body);padding:9px;border:0;border-radius:999px;background:none;color:var(--muted);cursor:pointer;transition:color .25s ease}
 .seg button[aria-selected="true"]{color:var(--fg)}
 
-.filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-top:20px}
+.filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-top:10px}
 .filters::-webkit-scrollbar{display:none}
 .filters button{flex:none;font:500 13px var(--body);padding:8px 14px;border:1px solid var(--fg);
   background:var(--bg);color:var(--fg);cursor:pointer}
@@ -72,7 +78,10 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 .card{position:relative;min-width:0}
 .card a{display:grid;gap:3px;color:inherit;text-decoration:none}
 .ph{display:block;position:relative;overflow:hidden;aspect-ratio:3/4;background:var(--tile);margin-bottom:8px}
-.ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s var(--ease)}
+.ph::before{content:"";position:absolute;inset:-14px;background:var(--lq,none) center/cover no-repeat;filter:blur(14px);transform:scale(1.08)}
+.ph img{position:relative;width:100%;height:100%;object-fit:cover;display:block;opacity:0;filter:blur(10px);
+  transition:opacity .5s ease,filter .6s ease,transform .7s var(--ease)}
+.ph img.ok{opacity:1;filter:none}
 .card .brand{font-size:13px;font-weight:500}
 .card .name{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card .buy{margin-top:4px;text-decoration:underline;text-underline-offset:3px}
@@ -101,7 +110,7 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 .filters.sub button[aria-pressed="true"]{border-color:var(--inv-bg)}
 
 /* shop the look grid (tab) */
-#lookfilters{margin-top:20px}
+#lookfilters{margin-top:10px}
 .look{border:0;background:none;padding:0;margin:0;min-width:0;
   text-align:left;color:inherit;font:inherit;cursor:pointer;display:grid;gap:2px;align-content:start}
 .look .ph{margin-bottom:6px}
@@ -121,6 +130,30 @@ body.lock{overflow:hidden}
 .stl-close{flex:none;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--line);border-radius:999px;
   background:none;color:var(--fg);cursor:pointer;padding:0}
 .stl-close:hover{border-color:var(--fg)}
+.stl-top > div:first-child{min-width:0;flex:1}
+.stl-top h2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stl-act{display:flex;gap:8px;flex:none}
+.stl-act[hidden]{display:none}
+.stl-close.done{border-color:var(--fg)}
+.stl-close .i-ok{display:none}
+.stl-close.done .i-ok{display:block}
+.stl-close.done .i-link{display:none}
+.tip{position:absolute;z-index:4;left:0;top:0;transform:translate(-50%,calc(-100% - 22px));background:var(--inv-bg);color:var(--inv-fg);
+  font:500 12px/1.35 var(--body);padding:6px 10px;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis;
+  pointer-events:none;opacity:0;transition:opacity .15s ease}
+.tip.l{transform:translate(-14px,calc(-100% - 22px))}
+.tip.r{transform:translate(calc(-100% + 14px),calc(-100% - 22px))}
+.tip.on{opacity:1}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom,0px));z-index:70;transform:translate(-50%,16px);
+  background:var(--inv-bg);color:var(--inv-fg);font:500 13px var(--body);padding:10px 16px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:opacity .2s ease,transform .25s var(--ease)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.totop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:30;
+  width:44px;height:44px;border-radius:50%;border:0;background:var(--inv-bg);color:var(--inv-fg);display:grid;place-items:center;cursor:pointer;
+  opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .25s ease,transform .3s var(--ease)}
+.totop.show{opacity:1;transform:none;pointer-events:auto}
+.totop:active{transform:scale(.92)}
+.totop svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .stl-close svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round}
 .stl-stage{position:relative;max-width:480px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-left,0px)) 40px}
 .stl-pic{position:relative;line-height:0}
@@ -162,8 +195,18 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
 .fx-rise{animation:rise .5s var(--ease) both;animation-delay:var(--d,0ms)}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
-/* 1B: panel fade */
+/* 1B: panel fade (+ trượt theo hướng tab) */
 .fx-panel{animation:fadeup .32s var(--ease) both}
+.fx-panel[data-dir="r"]{animation-name:slidein-r}
+.fx-panel[data-dir="l"]{animation-name:slidein-l}
+@keyframes slidein-r{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes slidein-l{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+/* 19: chuyển outfit */
+.stl-stage.fx-swap-r{animation:slidein-r .34s var(--ease) both}
+.stl-stage.fx-swap-l{animation:slidein-l .34s var(--ease) both}
+/* 25: hiện chữ từng dòng */
+.fx-line{animation:lineup .6s var(--ease) both;animation-delay:var(--d,0ms)}
+@keyframes lineup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes fadeup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* 6A: overlay */
@@ -194,6 +237,9 @@ html.theme-anim,html.theme-anim body,html.theme-anim *{transition:background-col
   .fx-rise,.fx-panel,.fx-item,.pin.fx-pin,.stl.fx-open-scale .stl-stage,.heart.pop svg,.theme.spin svg{animation:none}
   .stl.fx-live .pin::after{animation:none}
   .ph img,.seg-pill{transition:none}
+  .ph img{filter:none;opacity:1}
+  .fx-line,.stl-stage.fx-swap-r,.stl-stage.fx-swap-l{animation:none}
+  .totop,.toast{transition:opacity .15s}
 }
 
 /* ===== Desktop (>= 960px): sidebar profile + wide product grid ===== */
@@ -210,14 +256,16 @@ html.theme-anim,html.theme-anim body,html.theme-anim *{transition:background-col
   .links{flex-direction:column;gap:10px}
   .links a{font-size:14px}
   .cta{margin-top:24px}
-  .seg{margin-top:0;max-width:380px}
-  .filters{margin-top:24px;flex-wrap:wrap;overflow:visible}
+  .stick{margin:0;padding:0 0 12px}
+  .mini{display:none}
+  .seg{max-width:380px}
+  .filters{margin-top:12px;flex-wrap:wrap;overflow:visible}
   .filters button{padding:9px 18px;font-size:14px}
   .showing{margin:18px 0 20px}
   .grid{grid-template-columns:repeat(3,1fr);gap:40px 20px}
   .filters.sub{margin-top:12px}
   .filters.sub button{padding:7px 14px;font-size:13px}
-  #lookfilters{margin-top:24px}
+  #lookfilters{margin-top:12px}
   .look .t{font-size:14px}
   /* overlay desktop: items left/right, photo center, connector lines */
   .stl-top{padding:16px 40px}
@@ -264,10 +312,14 @@ html.theme-anim,html.theme-anim body,html.theme-anim *{transition:background-col
 
   <div class="content">
 
+  <div id="stick-s" aria-hidden="true" style="height:1px;margin-top:-1px"></div>
+  <div class="stick" id="stick">
+  <div class="mini"><span class="up" data-k="handle">@ketuong06</span><a class="up" id="mini-tt" target="_blank" rel="noopener" href="https://www.tiktok.com/@ketuong06">TikTok ↗</a></div>
   <div class="seg" role="tablist" data-i="0">
     <span class="seg-pill" aria-hidden="true"></span>
     <button id="tab-shop" role="tab" aria-selected="true" aria-controls="panel-shop">Tủ đồ</button>
     <button id="tab-looks" role="tab" aria-selected="false" aria-controls="panel-looks">Shop the look</button>
+  </div>
   </div>
 
   <section id="panel-shop" role="tabpanel" aria-labelledby="tab-shop">
@@ -288,15 +340,25 @@ html.theme-anim,html.theme-anim body,html.theme-anim *{transition:background-col
   <footer class="up"><span data-k="ten_kenh">Tường Bình Thường</span> · <span id="year"></span></footer>
 </main>
 
+<button class="totop" id="totop" type="button" aria-label="Lên đầu trang"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <div class="stl" id="stl" role="dialog" aria-modal="true" aria-labelledby="stl-title" hidden>
   <div class="stl-top">
     <div><span class="up" id="stl-who">Outfit</span><h2 id="stl-title">Outfit</h2></div>
-    <button class="stl-close" id="stl-close" type="button" aria-label="Đóng"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="stl-act" id="stl-nav">
+      <button class="stl-close" id="stl-prev" type="button" aria-label="Outfit trước"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="stl-close" id="stl-next" type="button" aria-label="Outfit kế tiếp"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+    <div class="stl-act">
+      <button class="stl-close" id="stl-copy" type="button" aria-label="Copy link outfit" title="Copy link outfit"><svg class="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg><svg class="i-ok" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+      <button class="stl-close" id="stl-close" type="button" aria-label="Đóng"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
   </div>
   <div class="stl-stage" id="stl-stage">
     <svg class="stl-lines" id="stl-lines" aria-hidden="true"></svg>
     <div class="stl-col" id="stl-l"></div>
-    <div class="stl-pic" id="stl-pic"><img id="stl-img" alt=""></div>
+    <div class="stl-pic" id="stl-pic"><img id="stl-img" alt=""><div class="tip" id="stl-tip" aria-hidden="true"></div></div>
     <div class="stl-col" id="stl-r"></div>
     <div class="stl-list" id="stl-list"></div>
   </div>
@@ -384,11 +446,34 @@ function imgFallback(img, url, w){
     img.src = 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + (w || IMG_WIDTH);
   }, {once:true});
 }
+// 11: ảnh mờ → nét (blur-up)
+function lqSrc(url){
+  const id = driveId(url);
+  if (id) return 'https://lh3.googleusercontent.com/d/' + id + '=w32';
+  if (/susercontent\.com\/file\//.test(url) && !/_tn$/.test(url)) return url + '_tn';
+  return '';
+}
+function blurUp(ph, img, url){
+  const lq = lqSrc(url); if (lq) ph.style.setProperty('--lq', 'url("' + lq + '")');
+  let errs = 0; const ok = () => img.classList.add('ok');
+  if (img.complete && img.naturalWidth){ ok(); return }
+  img.addEventListener('load', ok);
+  img.addEventListener('error', () => { if (++errs >= (driveId(url) ? 2 : 1)) ok() });
+}
 const isOn = v => !/^(false|0|no|không|khong|ẩn|an)$/i.test(String(v).trim()); // trống = hiện
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e };
 const safeUrl = u => /^https?:\/\//i.test(u) ? u : '#';
 
 /* ---------- render ---------- */
+let introDone = false;
+function intro(){
+  if (introDone) return; introDone = true;
+  if (RM.matches) return;
+  ['#avatar', '.side h1', '.side .handle', '.side .bio', '#links', '#cta'].forEach((sel, i) => {
+    const n = $(sel); if (!n) return;
+    n.style.setProperty('--d', (i * 90) + 'ms'); n.classList.add('fx-line'); doneAnim(n, 'fx-line');
+  });
+}
 function renderInfo(info){
   const kv = Object.fromEntries(info.map(r => [r.key, r.value]));
   $$('[data-k]').forEach(n => { if (kv[n.dataset.k]) n.textContent = kv[n.dataset.k] });
@@ -410,7 +495,8 @@ function renderInfo(info){
     }
   });
   const cta = $('#cta');
-  if (kv.tiktok){ cta.href = safeUrl(kv.tiktok); cta.hidden = false }
+  if (kv.tiktok){ cta.href = safeUrl(kv.tiktok); cta.hidden = false; $('#mini-tt').href = safeUrl(kv.tiktok) }
+  intro();
 }
 
 let saved = store.get(SAVED_KEY, []);
@@ -420,7 +506,7 @@ function card(p){
   const img = el('img'); img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
   img.alt = [p.brand, p.ten].filter(Boolean).join(' – ');
   if (p.anh){ img.src = imgSrc(p.anh); imgFallback(img, p.anh) }
-  const ph = el('span', 'ph'); ph.append(img);
+  const ph = el('span', 'ph'); ph.append(img); if (p.anh) blurUp(ph, img, p.anh); else img.classList.add('ok');
   a.append(ph, el('span', 'brand', p.brand), el('span', 'name', p.ten));
   a.append(el('span', 'buy up', 'Mua ngay'));
 
@@ -471,9 +557,26 @@ function reveal(nodes){
   void document.body.offsetWidth;
   nodes.forEach(n => io.observe(n));
 }
-function panelIn(panel){
+function panelIn(panel, dir){
   if (RM.matches) return;
-  panel.classList.remove('fx-panel'); void panel.offsetWidth; panel.classList.add('fx-panel');
+  panel.classList.remove('fx-panel'); panel.dataset.dir = dir || ''; void panel.offsetWidth; panel.classList.add('fx-panel');
+}
+// 14: số chạy từ số cũ tới số mới
+function countTo(node, n, fmt){
+  const from = node.dataset.n === undefined ? n : +node.dataset.n;
+  node.dataset.n = n; cancelAnimationFrame(node._raf);
+  if (RM.matches || from === n){ node.textContent = fmt(n); return }
+  const t0 = performance.now(), dur = 450;
+  const step = t => {
+    const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    node.textContent = fmt(Math.round(from + (n - from) * e));
+    if (k < 1) node._raf = requestAnimationFrame(step);
+  };
+  node._raf = requestAnimationFrame(step);
+}
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), 1800);
 }
 const canHover = window.matchMedia('(hover: hover)');
 
@@ -511,7 +614,7 @@ function applyFilter(){
     c.hidden = (current !== 'all' && c.dataset.c !== current) || (current === OUTFIT && !forWho(c.dataset.w, sub));
     if (!c.hidden) n++;
   });
-  $('#showing').textContent = 'Đang hiện ' + n + ' món';
+  countTo($('#showing'), n, v => 'Đang hiện ' + v + ' món');
   reveal($$('#grid .card'));
 }
 
@@ -534,14 +637,15 @@ function renderLooks(){
     fw.append(b);
   });
   const list = all.filter(o => lsub === 'all' || o.nguoi === lsub);
-  $('#look-showing').textContent = all.length ? 'Đang hiện ' + list.length + ' outfit · bấm vào ảnh để xem từng món' : '';
+  if (all.length) countTo($('#look-showing'), list.length, v => 'Đang hiện ' + v + ' outfit · bấm vào ảnh để xem từng món');
+  else $('#look-showing').textContent = '';
   const g = $('#lgrid');
   if (!list.length){ g.replaceChildren(el('p', 'msg', all.length ? 'Chưa có outfit nào ở mục này.' : 'Outfit mới sắp lên nha!')); return }
   g.replaceChildren(...list.map(o => {
     const b = el('button', 'look'); b.type = 'button';
     const img = el('img'); img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
     img.alt = o.ten || 'Outfit'; img.src = imgSrc(o.anh); imgFallback(img, o.anh);
-    const ph = el('span', 'ph'); ph.append(img);
+    const ph = el('span', 'ph'); ph.append(img); blurUp(ph, img, o.anh);
     b.append(ph, el('span', 'up', 'Outfit · ' + (o.nguoi || '')), el('span', 't', o.ten || ''), el('span', 'n', itemsOf(o.id).length + ' món'));
     b.addEventListener('click', () => openLook(o.id, img));
     return b;
@@ -554,7 +658,8 @@ function itemCard(p, no){
   if (p.anh){ img.src = imgSrc(p.anh, 300); imgFallback(img, p.anh, 300) }
   const tx = el('span', 'tx'); tx.append(el('span', 'b', p.brand), el('span', 'nm', p.ten), el('span', 'buy up', 'Mua ngay'));
   a.append(el('span', 'no', String(no)), img, tx);
-  a.addEventListener('mouseenter', () => { if (canHover.matches) focusItem(no) });
+  a.addEventListener('mouseenter', () => { if (canHover.matches){ focusItem(no); showTip(no) } });
+  a.addEventListener('mouseleave', hideTip);
   a.addEventListener('focus', () => focusItem(no));
   return a;
 }
@@ -565,13 +670,44 @@ function focusItem(no, scroll){
     if (c) c.scrollIntoView({behavior: 'smooth', block: 'center'});
   }
 }
-let lineAnim = false, opening = false;
-function showLook(id, src){
+let lineAnim = false, opening = false, CUR = null;
+function lookOrder(){
+  const all = visibleLooks(), f = all.filter(o => lsub === 'all' || o.nguoi === lsub);
+  return (f.some(o => o.id === CUR) ? f : all).map(o => o.id);
+}
+function navLook(dir){
+  const ids = lookOrder(); if (ids.length < 2) return;
+  const i = ids.indexOf(CUR), next = ids[(i + dir + ids.length) % ids.length];
+  history.replaceState(history.state, '', '#look-' + encodeURIComponent(next));
+  showLook(next, null, dir);
+}
+// chạy hiệu ứng món đồ + chấm + đường nối
+function itemsIn(){
+  const stl = $('#stl'), pic = $('#stl-pic');
+  lineAnim = true;
+  $$('#stl .it').forEach(n => { const i = +n.dataset.i - 1; n.style.opacity = ''; n.style.setProperty('--d', (120 + i * 70) + 'ms'); n.classList.remove('fx-item'); void n.offsetWidth; n.classList.add('fx-item'); doneAnim(n, 'fx-item') });
+  pic.querySelectorAll('.pin').forEach(n => { const i = +n.dataset.i - 1; n.style.opacity = ''; n.style.setProperty('--d', (i * 90) + 'ms'); n.style.setProperty('--b', (900 + i * 250) + 'ms'); n.classList.add('fx-pin'); doneAnim(n, 'fx-pin') });
+  drawLines();
+  setTimeout(() => stl.classList.add('fx-live'), 400);
+}
+// 20: tên món hiện trên chấm khi rê chuột
+function showTip(no){
+  const pin = $('#stl-pic .pin[data-i="' + no + '"]'), tip = $('#stl-tip');
+  if (!pin || !canHover.matches){ tip.classList.remove('on'); return }
+  const x = parseFloat(pin.style.left), y = parseFloat(pin.style.top);
+  tip.textContent = pin.dataset.name; tip.style.left = x + '%'; tip.style.top = y + '%';
+  tip.classList.toggle('l', x < 22); tip.classList.toggle('r', x > 78); tip.classList.add('on');
+}
+const hideTip = () => $('#stl-tip').classList.remove('on');
+function showLook(id, src, dir){
   const o = visibleLooks().find(x => x.id === id);
   if (!o){ hideLook(); return }
   selectTab('tab-looks');
+  CUR = id; hideTip();
+  const order = lookOrder();
+  $('#stl-nav').hidden = order.length < 2;
   const its = itemsOf(id).sort((a, b) => a.y - b.y);
-  $('#stl-who').textContent = 'Outfit · ' + (o.nguoi || '');
+  $('#stl-who').textContent = 'Outfit · ' + (o.nguoi || '') + (order.length > 1 ? ' · ' + (order.indexOf(id) + 1) + '/' + order.length : '');
   $('#stl-title').textContent = o.ten || 'Outfit';
   const img = $('#stl-img'); delete img.dataset.fb; img.referrerPolicy = 'no-referrer';
   img.alt = o.ten || 'Outfit'; img.onload = drawLines;
@@ -590,9 +726,11 @@ function showLook(id, src){
     const no = i + 1;
     const pin = el('button', 'pin', String(no)); pin.type = 'button'; pin.dataset.i = no;
     pin.style.left = it.x + '%'; pin.style.top = it.y + '%';
-    pin.setAttribute('aria-label', no + '. ' + [it.p.brand, it.p.ten].filter(Boolean).join(' – '));
+    pin.dataset.name = [it.p.brand, it.p.ten].filter(Boolean).join(' – ');
+    pin.setAttribute('aria-label', no + '. ' + pin.dataset.name);
     pin.addEventListener('click', () => focusItem(no, true));
-    pin.addEventListener('mouseenter', () => { if (canHover.matches) focusItem(no) });
+    pin.addEventListener('mouseenter', () => { if (canHover.matches){ focusItem(no); showTip(no) } });
+    pin.addEventListener('mouseleave', hideTip);
     pic.append(pin);
     (it.x < 50 ? L : Rc).append(itemCard(it.p, no));
     list.append(itemCard(it.p, no));
@@ -605,6 +743,17 @@ function showLook(id, src){
   stl.hidden = false; stl.scrollTop = 0;
   document.body.classList.add('lock');
   $('#stl-close').focus({preventScroll: true});
+  if (wasOpen && dir && !RM.matches){
+    // 19: chuyển sang outfit kế — trượt theo hướng + món đồ hiện lại
+    const stage = $('#stl-stage');
+    [...pic.querySelectorAll('.pin'), ...$$('#stl .it')].forEach(n => n.style.opacity = '0');
+    $('#stl-lines').replaceChildren();
+    stage.classList.remove('fx-swap-l', 'fx-swap-r'); void stage.offsetWidth; stage.classList.add(dir > 0 ? 'fx-swap-r' : 'fx-swap-l');
+    doneAnim(stage, dir > 0 ? 'fx-swap-r' : 'fx-swap-l');
+    opening = true;
+    setTimeout(() => { opening = false; itemsIn() }, 220);
+    return;
+  }
   if (RM.matches || wasOpen){ lineAnim = false; opening = false; stl.classList.add('fx-live'); requestAnimationFrame(drawLines); return }
 
   // 6A: ảnh bay từ lưới ra giữa (hoặc fade + zoom nếu mở từ link)
@@ -614,12 +763,8 @@ function showLook(id, src){
   const after = () => {
     opening = false;
     img.style.visibility = '';
-    lineAnim = true;
     // món đồ hiện dần: fade + zoom in, chấm bật lên lần lượt, đường nối tự vẽ
-    $$('#stl .it').forEach(n => { const i = +n.dataset.i - 1; n.style.opacity = ''; n.style.setProperty('--d', (120 + i * 70) + 'ms'); n.classList.remove('fx-item'); void n.offsetWidth; n.classList.add('fx-item'); doneAnim(n, 'fx-item') });
-    pic.querySelectorAll('.pin').forEach(n => { const i = +n.dataset.i - 1; n.style.opacity = ''; n.style.setProperty('--d', (i * 90) + 'ms'); n.style.setProperty('--b', (900 + i * 250) + 'ms'); n.classList.add('fx-pin'); doneAnim(n, 'fx-pin') });
-    drawLines();
-    setTimeout(() => stl.classList.add('fx-live'), 400);
+    itemsIn();
   };
   const srcRect = src && src.isConnected ? src.getBoundingClientRect() : null;
   if (!srcRect || !srcRect.width || !img.animate){
@@ -642,7 +787,7 @@ function showLook(id, src){
 function hideLook(){
   const stl = $('#stl');
   if (stl.hidden) return;
-  const done = () => { stl.hidden = true; stl.classList.remove('fx-close', 'fx-open', 'fx-open-scale', 'fx-live'); document.body.classList.remove('lock') };
+  const done = () => { stl.hidden = true; stl.classList.remove('fx-close', 'fx-open', 'fx-open-scale', 'fx-live'); stl.style.transform = stl.style.opacity = stl.style.transition = ''; hideTip(); document.body.classList.remove('lock') };
   if (RM.matches){ done(); return }
   stl.classList.remove('fx-open', 'fx-open-scale'); void stl.offsetWidth; stl.classList.add('fx-close');
   window.__hideT = setTimeout(done, 190);
@@ -685,7 +830,90 @@ function drawLines(){
   lineAnim = false;
 }
 $('#stl-close').addEventListener('click', closeLook);
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#stl').hidden) closeLook() });
+$('#stl-prev').addEventListener('click', () => navLook(-1));
+$('#stl-next').addEventListener('click', () => navLook(1));
+document.addEventListener('keydown', e => {
+  if ($('#stl').hidden) return;
+  if (e.key === 'Escape') closeLook();
+  else if (e.key === 'ArrowRight') navLook(1);
+  else if (e.key === 'ArrowLeft') navLook(-1);
+});
+// 21: copy link outfit
+$('#stl-copy').addEventListener('click', async () => {
+  const url = location.origin + location.pathname + '#look-' + encodeURIComponent(CUR);
+  let ok = false;
+  try{ await navigator.clipboard.writeText(url); ok = true }catch(e){
+    const ta = el('textarea'); ta.value = url; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.append(ta); ta.select(); try{ ok = document.execCommand('copy') }catch(e2){} ta.remove();
+  }
+  const b = $('#stl-copy'); b.classList.toggle('done', ok);
+  toast(ok ? 'Đã copy link outfit ✓' : 'Không copy được — copy link trên thanh địa chỉ nha');
+  clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove('done'), 1800);
+});
+// 18 + 19: vuốt trong màn outfit (phone) — vuốt xuống để đóng, vuốt ngang để qua outfit khác
+(() => {
+  const stl = $('#stl'); let x0, y0, dx = 0, dy = 0, mode = null;
+  stl.addEventListener('touchstart', e => {
+    if (e.touches.length > 1) return;
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; dx = dy = 0;
+    mode = stl.scrollTop <= 0 ? 'maybe' : 'h-only';
+  }, {passive: true});
+  stl.addEventListener('touchmove', e => {
+    if (!mode) return;
+    dx = e.touches[0].clientX - x0; dy = e.touches[0].clientY - y0;
+    if (mode === 'maybe' || mode === 'h-only'){
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      mode = Math.abs(dy) > Math.abs(dx) ? (mode === 'maybe' && dy > 0 ? 'down' : null) : 'h';
+    }
+    if (mode === 'down'){
+      e.preventDefault();
+      stl.style.transition = 'none';
+      stl.style.transform = 'translateY(' + Math.max(0, dy) * 0.65 + 'px)';
+      stl.style.opacity = String(1 - Math.min(dy / 700, 0.45));
+    }
+  }, {passive: false});
+  stl.addEventListener('touchend', () => {
+    if (mode === 'down'){
+      if (dy > 110){
+        stl.style.transition = 'transform .22s ease, opacity .22s ease';
+        stl.style.transform = 'translateY(60%)'; stl.style.opacity = '0';
+        setTimeout(closeLook, 160);
+      } else {
+        stl.style.transition = 'transform .3s cubic-bezier(.2,.7,.2,1), opacity .3s ease';
+        stl.style.transform = ''; stl.style.opacity = '';
+      }
+    } else if (mode === 'h' && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5){
+      navLook(dx < 0 ? 1 : -1);
+    }
+    mode = null;
+  });
+})();
+// 17: vuốt ngang để chuyển tab Tủ đồ ↔ Shop the look (phone)
+(() => {
+  const area = $('.content'); let x0, y0, t0, skip;
+  area.addEventListener('touchstart', e => {
+    skip = e.touches.length > 1 || !!e.target.closest('.filters, .seg');
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
+  }, {passive: true});
+  area.addEventListener('touchend', e => {
+    if (skip) return;
+    const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+    if (Date.now() - t0 > 700 || Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
+    selectTab(dx < 0 ? 'tab-looks' : 'tab-shop');
+  }, {passive: true});
+})();
+// 15: hàng tab dính lên đầu khi cuộn
+if ('IntersectionObserver' in window){
+  new IntersectionObserver(([e]) => $('#stick').classList.toggle('stuck', !e.isIntersecting && e.boundingClientRect.top < 0)).observe($('#stick-s'));
+}
+// 16: nút lên đầu trang
+(() => {
+  const b = $('#totop'); let tick = false;
+  const upd = () => { b.classList.toggle('show', scrollY > 700); tick = false };
+  addEventListener('scroll', () => { if (!tick){ tick = true; requestAnimationFrame(upd) } }, {passive: true});
+  b.addEventListener('click', () => scrollTo({top: 0, behavior: RM.matches ? 'auto' : 'smooth'}));
+  upd();
+})();
 window.addEventListener('popstate', route);
 window.addEventListener('resize', drawLines);
 if (window.ResizeObserver) new ResizeObserver(drawLines).observe($('#stl-stage'));
@@ -731,7 +959,11 @@ function selectTab(id){
     const on = x.id === id, panel = document.getElementById(x.getAttribute('aria-controls'));
     x.setAttribute('aria-selected', on); panel.hidden = !on;
     if (on){
-      $('.seg').dataset.i = i; panelIn(panel);
+      const prev = +($('.seg').dataset.i || 0);
+      $('.seg').dataset.i = i; panelIn(panel, i > prev ? 'r' : i < prev ? 'l' : '');
+      // đang cuộn sâu thì đưa về đầu nội dung tab
+      const st = $('#stick-s').getBoundingClientRect().top;
+      if (st < 0) scrollTo({top: scrollY + st, behavior: 'auto'});
       reveal(panel.querySelectorAll(id === 'tab-looks' ? '.look' : '.card'));
     }
   });

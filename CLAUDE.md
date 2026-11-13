@@ -30,6 +30,17 @@ Trang "Tủ đồ" của kênh Tường Bình Thường (@ketuong06) — https:/
 | 8A | Lúc tải | Skeleton có vệt sáng chạy (shimmer) |
 | 10A | Nút sáng/tối | Icon xoay + cả trang đổi màu mượt 0.35s (`html.theme-anim`) |
 
+| 11 | Ảnh grid + outfit | Blur-up: ảnh mờ (bản nhỏ `=w32` / `_tn`) → nét dần khi tải xong |
+| 14 | "Đang hiện X món / outfit" | Số chạy từ số cũ tới số mới |
+| 15 | Hàng tab | Dính lên đầu khi cuộn (`.stick`); phone hiện thêm dòng mini `@ketuong06 · TikTok ↗` |
+| 16 | Nút ↑ | Hiện khi cuộn > 700px, bấm cuộn mượt lên đầu |
+| 17 | Phone | Vuốt ngang vùng nội dung để chuyển tab (bỏ qua khi vuốt trên hàng lọc) |
+| 18 | Phone, màn outfit | Vuốt xuống (khi đang ở đầu) để đóng |
+| 19 | Màn outfit | Nút ‹ › trên header, phím ← →, vuốt ngang để qua outfit kế (theo bộ lọc Phi/Tường đang chọn); header hiện "1/3" |
+| 20 | Desktop, màn outfit | Rê chuột vào chấm / card → bong bóng tên món trên chấm |
+| 21 | Màn outfit | Nút copy link outfit (`#look-<id>`) + toast "Đã copy link outfit ✓" |
+| 25 | Profile | Lúc mở trang: avatar, tên, handle, bio, link, nút TikTok trượt lên từng dòng |
+
 - `prefers-reduced-motion: reduce` → tắt hết, hiện ngay.
 - Data mạng giống cache → không vẽ lại (tránh chạy hiệu ứng 2 lần).
 - Class hiệu ứng tự gỡ khi chạy xong (`doneAnim`) để hover/nhấn vẫn hoạt động.
