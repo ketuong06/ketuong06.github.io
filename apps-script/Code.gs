@@ -275,8 +275,9 @@ function uploadImage(img, name) {
   return 'https://drive.google.com/file/d/' + file.getId() + '/view';
 }
 
+const MARKS = new RegExp('[' + String.fromCharCode(0x300) + '-' + String.fromCharCode(0x36f) + ']', 'g'); // dấu tiếng Việt sau NFD
 function slug(t) {
-  return String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd')
+  return String(t).normalize('NFD').replace(MARKS, '').replace(/[đĐ]/g, 'd')
     .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
 }
 
