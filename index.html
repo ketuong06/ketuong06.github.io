@@ -31,8 +31,6 @@
 .avatar{width:88px;height:88px;border-radius:50%;object-fit:cover;background:var(--tile)}
 h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 .handle{color:var(--muted);font-size:13px}
-.stats{margin:6px 0 0;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-.stats span{color:var(--fg);font-weight:500}
 .bio{margin:14px 0 10px;white-space:pre-line}
 .links{display:flex;flex-wrap:wrap;gap:6px 16px}
 .links a{display:inline-flex;align-items:center;gap:6px;color:var(--fg);text-decoration:none;font-size:13px}
@@ -91,7 +89,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
     <div>
       <h1 data-k="ten_kenh">Tường Bình Thường</h1>
       <div class="handle" data-k="handle">@ketuong06</div>
-      <p class="stats"><span id="stat-items">–</span> món đồ, <span id="stat-ch">–</span> kênh</p>
     </div>
   </section>
   <p class="bio" data-k="bio"></p>
@@ -225,7 +222,6 @@ function renderInfo(info){
     c.append(el('span', null, label), el('span', null, handle + ' ↗'));
     chs.append(c);
   });
-  $('#stat-ch').textContent = n;
   const cta = $('#cta');
   if (kv.tiktok){ cta.href = safeUrl(kv.tiktok); cta.hidden = false }
 }
@@ -256,7 +252,6 @@ function card(p){
 let current = 'all';
 function renderProducts(list){
   const items = list.filter(p => isOn(p.hien_thi) && (p.ten || p.brand));
-  $('#stat-items').textContent = items.length;
 
   const groups = [...new Set(items.map(p => p.nhom || 'Khác'))];
   if (current !== 'all' && !groups.includes(current)) current = 'all';
