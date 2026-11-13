@@ -77,6 +77,36 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 
 footer{margin-top:40px;color:var(--muted);text-align:center}
 a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.card img{transition:filter .25s ease}
+@media (hover:hover){.card a:hover img{filter:brightness(.92)}.card a:hover .buy{text-decoration-thickness:2px}}
+
+/* ===== Desktop (>= 960px): sidebar profile + wide product grid ===== */
+@media (min-width:960px){
+  .wrap{max-width:1240px;padding:28px 40px 56px}
+  .bar{padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:40px}
+  .layout{display:grid;grid-template-columns:280px 1fr;gap:64px;align-items:start}
+  .side{position:sticky;top:28px}
+  .profile{grid-template-columns:1fr;gap:18px}
+  .avatar{width:128px;height:128px}
+  h1{font-size:26px}
+  .handle{font-size:14px;margin-top:4px}
+  .bio{margin:18px 0 16px;font-size:15px}
+  .links{flex-direction:column;gap:10px}
+  .links a{font-size:14px}
+  .cta{margin-top:24px}
+  .seg,#panel-ch{display:none}
+  #panel-shop[hidden]{display:block}
+  .filters{margin-top:0;flex-wrap:wrap;overflow:visible}
+  .filters button{padding:9px 18px;font-size:14px}
+  .showing{margin:18px 0 20px}
+  .grid{grid-template-columns:repeat(3,1fr);gap:40px 20px}
+  .card .brand,.card .name{font-size:14px}
+  .card .name{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.9em}
+  footer{margin-top:72px;padding-top:24px;border-top:1px solid var(--line)}
+}
+@media (min-width:1280px){
+  .grid{grid-template-columns:repeat(4,1fr)}
+}
 </style>
 </head>
 <body>
@@ -84,6 +114,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
 <main class="wrap">
   <div class="bar"><span class="up" data-k="handle">@ketuong06</span><span class="up">VN</span></div>
 
+  <div class="layout">
+  <aside class="side">
   <section class="profile">
     <img class="avatar" id="avatar" alt="Tường Bình Thường">
     <div>
@@ -94,6 +126,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
   <p class="bio" data-k="bio"></p>
   <div class="links" id="links"></div>
   <a class="cta" id="cta" target="_blank" rel="noopener" hidden>Theo dõi trên TikTok</a>
+  </aside>
+
+  <div class="content">
 
   <div class="seg" role="tablist">
     <button id="tab-shop" role="tab" aria-selected="true" aria-controls="panel-shop">Tủ đồ</button>
@@ -109,6 +144,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:
   <section id="panel-ch" role="tabpanel" aria-labelledby="tab-ch" hidden>
     <nav class="channels" id="channels"></nav>
   </section>
+  </div>
+  </div>
 
   <footer class="up"><span data-k="ten_kenh">Tường Bình Thường</span> · <span id="year"></span></footer>
 </main>
