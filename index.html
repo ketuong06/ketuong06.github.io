@@ -11,13 +11,13 @@
 <style>
 /* Layout: ZARA-style monochrome column (480px). Profile header -> segmented tabs -> 2-col grid */
 :root{
-  --bg:#ffffff; --fg:#111111; --muted:#6b6b6b; --line:#e4e4e4; --tile:#f3f3f3; --sale:#c8102e;
+  --bg:#ffffff; --fg:#111111; --muted:#6b6b6b; --line:#e4e4e4; --tile:#f3f3f3;
   --inv-bg:#111111; --inv-fg:#ffffff;
   --label:"Archivo",ui-sans-serif,system-ui,sans-serif;
   --body:"Be Vietnam Pro",ui-sans-serif,system-ui,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0c0c0c; --fg:#f2f2f2; --muted:#9a9a9a; --line:#262626; --tile:#1a1a1a; --sale:#ff5a6e;
+  --bg:#0c0c0c; --fg:#f2f2f2; --muted:#9a9a9a; --line:#262626; --tile:#1a1a1a;
   --inv-bg:#f2f2f2; --inv-fg:#0c0c0c; color-scheme:dark}}
 
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--body)}
@@ -60,11 +60,6 @@ h1{font:500 20px/1.2 var(--label);margin:0;text-wrap:balance}
 .card img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--tile);margin-bottom:8px;display:block}
 .card .brand{font-size:13px;font-weight:500}
 .card .name{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.price{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;font-variant-numeric:tabular-nums;font-size:13px}
-.price b{font-weight:500}
-.price.sale b{color:var(--sale)}
-.price s{color:var(--muted);font-size:12px}
-.price em{font-style:normal;color:var(--sale);font-size:12px}
 .card .buy{margin-top:4px;text-decoration:underline;text-underline-offset:3px}
 .heart{position:absolute;top:8px;right:8px;width:34px;height:34px;display:grid;place-items:center;
   border:0;background:var(--bg);color:var(--fg);cursor:pointer}
@@ -207,8 +202,6 @@ function imgFallback(img, url){
     img.src = 'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + IMG_WIDTH;
   }, {once:true});
 }
-const toNum = v => { const n = parseInt(String(v).replace(/[^\d]/g, ''), 10); return isNaN(n) ? 0 : n };
-const vnd = n => n.toLocaleString('vi-VN') + '₫';
 const isOn = v => !/^(false|0|no|không|khong|ẩn|an)$/i.test(String(v).trim()); // trống = hiện
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e };
 const safeUrl = u => /^https?:\/\//i.test(u) ? u : '#';
@@ -247,17 +240,10 @@ let saved = store.get(SAVED_KEY, []);
 function card(p){
   const d = el('div', 'card'); d.dataset.c = p.nhom || 'Khác';
   const a = el('a'); a.href = safeUrl(p.link_mua); a.target = '_blank'; a.rel = 'noopener sponsored';
-  const img = el('img'); img.loading = 'lazy'; img.decoding = 'async';
+  const img = el('img'); img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
   img.alt = [p.brand, p.ten].filter(Boolean).join(' – ');
   if (p.anh){ img.src = imgSrc(p.anh); imgFallback(img, p.anh) }
   a.append(img, el('span', 'brand', p.brand), el('span', 'name', p.ten));
-
-  const gia = toNum(p.gia), goc = toNum(p.gia_goc);
-  if (gia){
-    const pr = el('span', 'price'); pr.append(el('b', null, vnd(gia)));
-    if (goc > gia){ pr.classList.add('sale'); pr.append(el('s', null, vnd(goc)), el('em', null, '-' + Math.round((1 - gia/goc)*100) + '%')) }
-    a.append(pr);
-  }
   a.append(el('span', 'buy up', 'Mua ngay'));
 
   const id = p.id || p.ten;
